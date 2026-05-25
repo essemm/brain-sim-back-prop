@@ -9,7 +9,7 @@
  * It is submitted as an undergraduate thesis at the University of Sydney
  * for the degree of Bachelor of Engineering.
  *
- * Copyright Scott Andrew MacGibbon, 23rd September 1989.
+ * Copyright Scott Andrew MacGibbon, 23rd September 1988.
  */
 
 /*
@@ -19,10 +19,10 @@
 
 /* Define title and version number */
 
-#define name      "fishNET"
-#define title     "Back-propagation neural network simulator."
-#define subtitle  "Both cumulative and individual delta adds"
-#define version   "Version 1.0.92 (Both cumulative and individual delta adds)"
+#define PROG_NAME "fishNET"
+#define PROG_TITLE    "Back-propagation neural network simulator."
+#define PROG_SUBTITLE "Both cumulative and individual delta adds"
+#define PROG_VERSION  "Version 1.0.92 (Both cumulative and individual delta adds)"
 
 /* Include necessary follow */
 
@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <stdio.h>      /* This is to set up the exception handler */
 #include <signal.h>     /* for the expressions */
+#include <string.h>
 
 /* Type declarations are included below */
 
@@ -73,7 +74,7 @@ char *argv[];
     int     start_line;
     int     l;
     int     k;
-    int     answer;
+    char    answer;
 
     int     file_name_read;
     FILE    *saved;
@@ -275,8 +276,8 @@ char *argv[];
         argc--;
     }
 
-    printf("%s %s\n", name, version);
-    printf("%s\n", title);
+    printf("%s %s\n", PROG_NAME, PROG_VERSION);
+    printf("%s\n", PROG_TITLE);
 
     /* for MSDOS systems, setup the BOOT/BEEP with the default
      * exception handler.
@@ -412,7 +413,7 @@ char *argv[];
 
         if ( !VERBOSE )
         {
-            print_case(runcase, parameter);
+            print_case((OP_DATA *) runcase, parameter->per_layer[0]);
             fprintf(stdout, "\n");
         }
 

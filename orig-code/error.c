@@ -49,7 +49,8 @@ char    *function;
 /* This is the interrupt handler for controls termination of the program. */
 
 void
-interrupt_handler()
+interrupt_handler(sig)
+int sig;
 {
     signal( SIGINT, SIG_IGN );
     fprintf( stderr, "Saving network after control-c detected.\n" );
@@ -63,7 +64,8 @@ interrupt_handler()
  */
 
 void
-sfpe_handler()
+sfpe_handler(sig)
+int sig;
 {
     signal( SIGFPE, SIG_IGN );
     fprintf( stderr, "FLOATING POINT STATUS: error encountered.\n" );

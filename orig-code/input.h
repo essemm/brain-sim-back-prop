@@ -3,12 +3,6 @@
 /* Function declarations for functions called from the file input.c */
 
 #ifndef DEBUG
-  QUESTION *   input_parameters(void);
-#else
-  QUESTION *   input_parameters();
-#endif
-
-#ifndef DEBUG
   QUESTION *   input_parameters(char *);
 #else
   QUESTION *   input_parameters();
@@ -24,16 +18,4 @@
   I_S *        get_data(DATA_FILE);
 #else
   I_S *        get_data();
-#endif
-
-#ifndef DEBUG
-  QUESTION *   input_parameters(char *);
-#else
-  QUESTION *   input_parameters();
-#endif
-
-#ifndef DEBUG
-  void         flagset_parameters(char *);
-#else
-  void         flagset_parameters();
 #endif

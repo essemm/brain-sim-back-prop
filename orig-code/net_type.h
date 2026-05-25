@@ -10,6 +10,8 @@
 typedef struct {
     char    name[50];
     char    type;
+    int     i_o_cases;
+    int     neurons;
 } DATA_FILE;
 
 /* Parameters which are used by the program and entered by the user are
@@ -64,7 +66,7 @@ typedef struct {
 } LAYER;
 
 /*
- * The following type is used to store input and output data for the network.
+ * The following types are used to store input and output data for the network.
  */
 
 typedef struct {
@@ -72,7 +74,11 @@ typedef struct {
 } I_S;
 
 typedef struct {
-    I_S     *items;
+    double  x;
+} OP_DATA;
+
+typedef struct {
+    OP_DATA *item;
 } I_O;
 
 /* This type is for use by the function which returns both pointers to a

@@ -21,13 +21,13 @@
 #endif
 
 #ifndef DEBUG
-  void   interrupt_handler(void);
+  void   interrupt_handler(int);
 #else
   void   interrupt_handler();
 #endif
 
 #ifndef DEBUG
-  void   sfpe_handler(void);
+  void   sfpe_handler(int);
 #else
   void   sfpe_handler();
 #endif

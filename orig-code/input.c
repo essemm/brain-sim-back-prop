@@ -14,6 +14,7 @@
 #ifndef DEBUG
 #include <math.h>
 #endif
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -97,46 +98,26 @@ DATA_FILE file_data;
 
 /* Returns 0 if there is none and 1 if there is a file extension. */
 
-#ifndef DEBUG
-int extension(name)
-#else
-int extension(name)
-#endif
+int
+extension(name)
 char *name;
 {
-    char    drive[4];
-    char    dir[20];
-    char    fname[20];
-    char    ext[5];
+    char *dot   = strrchr(name, '.');
+    char *slash = strrchr(name, '/');
 
-    _splitpath(name, drive, dir, fname, ext);
-
-    if ( strlen(ext) == 0 )
-        return 0;
-    else
+    if ( dot && (slash == NULL || dot > slash) )
         return 1;
+    return 0;
 }
 
-/* Adds the extension following the input string.
- * Uses the Microsoft library routine _makepath.
- * Returns a pointer to an array of char.
- */
+/* Adds the extension to the filename string. */
 
-#ifndef DEBUG
-void add_extension(name, ext)
-#else
-void add_extension(name, ext)
-#endif
+void
+add_extension(name, ext)
 char *name;
 char *ext;
 {
-    char    drive[4];
-    char    dir[20];
-    char    fname[20];
-    char    ext4[5];
-
-    _splitpath(name, drive, dir, fname, ext4);
-    _makepath(name, drive, dir, fname, ext);
+    strcat(name, ext);
 }
 
 /* This basic routine calls the parsing routine with the correct file name
@@ -155,7 +136,7 @@ QUESTION *parameter;
      * However, at the moment, the input is only ASCII.
      */
 
-    parameter->sample_in_type = 'a';
+    parameter->sample_in.type = 'a';
 
     printf("Enter the file name of the sample input file: ");
     scanf("%s", name);
@@ -233,16 +214,12 @@ char *file_name;
     FILE    *config_file;
 
     int     i;
+    int     input_cases;
 
     char    dummy_char;
     char    dummy_name[50];
 
     QUESTION    *parameter;
-
-    LOAD_NODE   input_cases;
-
-    if ( (LOAD_NODE = (QUESTION *) malloc(sizeof(QUESTION))) == NULL )
-        error_m("QUESTION", "load_network_and_parameters");
 
     parameter = (QUESTION *) malloc(sizeof(QUESTION));
     if ( parameter == NULL )
@@ -295,8 +272,7 @@ char *file_name;
         error_f("Can't find output width", file_name);
 
     if ( !VERBOSE )
-        printf("network output width to neurons: ");
-    error_f("%s", name);
+        printf("network output width: %d\n", parameter->net_width);
 
     if ( fscanf(config_file, " alpha %lf", &parameter->alpha) == 0 )
         error_f("Can't find alpha", file_name);

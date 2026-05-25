@@ -1,5 +1,7 @@
 /* FILE = show.h */
 
+#include <stdio.h>
+
 /* Function declarations for functions called from the file show.c */
 
 #ifndef DEBUG
@@ -15,25 +17,25 @@
 #endif
 
 #ifndef DEBUG
-  void   show_data(I_S *, DATA_FILE);
+  void   show_data(I_O *, DATA_FILE);
 #else
   void   show_data();
 #endif
 
 #ifndef DEBUG
-  void   print_data(I_S *, DATA_FILE);
+  void   print_data(I_O *, DATA_FILE);
 #else
   void   print_data();
 #endif
 
 #ifndef DEBUG
-  void   show_case(I_S *, int, int);
+  void   show_case(OP_DATA *, int, int);
 #else
   void   show_case();
 #endif
 
 #ifndef DEBUG
-  void   print_case(I_S *, QUESTION *);
+  void   print_case(OP_DATA *, int);
 #else
   void   print_case();
 #endif

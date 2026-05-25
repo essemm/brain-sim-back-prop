@@ -18,10 +18,9 @@
 
 #define MAXSWEEPS  1000
 
-#ifdef DEBUG
 #include <math.h>
-#endif
 #include <stdlib.h>
+#include <time.h>
 
 /* Type definitions follow. */
 

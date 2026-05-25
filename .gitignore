@@ -12,3 +12,5 @@ fishnet
 
 # Thesis scan images
 scans/
+CLAUDE.md
+*.tmp

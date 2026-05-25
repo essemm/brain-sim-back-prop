@@ -8,7 +8,13 @@
 #ifndef DEBUG
 #include <math.h>
 #endif
+#include <stdio.h>
 #include <stdlib.h>
+
+/* stdprn is a DOS-only printer handle; on other platforms redirect to stderr */
+#ifndef stdprn
+#define stdprn stderr
+#endif
 
 /* The declarations follow. */
 
@@ -52,26 +58,21 @@ QUESTION *parameter;
         ){
             fprintf(PORT, "  n = %d, out = %f, ", j, neuron->ty);
 
-            if ( i < parameter->layers - 1 )
-            {
-                for (
-                    k = 0, weight = neuron->weight;
-                    k < parameter->per_layer[i+1];
-                    k++, weight++
-                ){
-                    fprintf(PORT,
-                        "%f(%f,%f,%f) ",
-                        k, weight->w,
-                        weight->hold_delta_w,
-                        weight->old_dw);
-                }
+            for (
+                k = 0, weight = neuron->weight;
+                k < parameter->per_layer[i+1];
+                k++, weight++
+            ){
+                fprintf(PORT,
+                    "%f(%f,%f,%f) ",
+                    k, weight->w,
+                    weight->hold_delta_w,
+                    weight->old_dw);
             }
 
             fprintf(PORT, "\n");
         }
     }
-
-    fprintf(PORT, "\n");
 }
 
 /* Display the whole network on edges. */
@@ -129,13 +130,14 @@ QUESTION *parameter;
 
 void
 show_data(data, file_data)
-I_S      *data;
+I_O      *data;
 DATA_FILE file_data;
 {
     int     i;
     int     j;
 
-    I_S     *work;
+    I_O     *work;
+    OP_DATA *xptr;
 
     FILE    *PORT;
 
@@ -143,17 +145,17 @@ DATA_FILE file_data;
 
     for (
         i = 0, work = data;
-        i < file_data.name[0];   /* uses name as placeholder */
-        i++
+        i < file_data.i_o_cases;
+        i++, work++
     ){
         fprintf(PORT, "Case = %d.\n", i);
 
         for (
-            j = 0;
-            j < file_data.name[0];
-            j++, work++
+            j = 0, xptr = work->item;
+            j < file_data.neurons;
+            j++, xptr++
         ){
-            fprintf(PORT, "%f", work->x);
+            fprintf(PORT, "%f", xptr->x);
         }
 
         fprintf(PORT, "\n");
@@ -164,31 +166,32 @@ DATA_FILE file_data;
 
 void
 print_data(data, file_data)
-I_S      *data;
+I_O      *data;
 DATA_FILE file_data;
 {
     int     i;
     int     j;
 
-    I_S     *work;
+    I_O     *work;
+    OP_DATA *xptr;
 
     FILE    *PORT;
 
-    PORT = stdout;
+    PORT = stdprn;
 
     for (
         i = 0, work = data;
-        i < file_data.name[0];
-        i++
+        i < file_data.i_o_cases;
+        i++, work++
     ){
         fprintf(PORT, "Case = %d.\n", i);
 
         for (
-            j = 0;
-            j < file_data.name[0];
-            j++, work++
+            j = 0, xptr = work->item;
+            j < file_data.neurons;
+            j++, xptr++
         ){
-            fprintf(PORT, "%f", work->x);
+            fprintf(PORT, "%f", xptr->x);
         }
 
         fprintf(PORT, "\n");
@@ -199,13 +202,13 @@ DATA_FILE file_data;
 
 void
 show_case(data, neurons, width)
-I_S     *data;
+OP_DATA *data;
 int     neurons;
 int     width;
 {
     int     i;
 
-    I_S     *work;
+    OP_DATA *work;
 
     FILE    *PORT;
 
@@ -223,29 +226,26 @@ int     width;
     fprintf(PORT, "\n");
 }
 
-/* Displays the required I/O case on edges. */
+/* Prints the required I/O case. */
 
 void
-show_case_edges(data, neurons, width)
-I_S     *data;
+print_case(data, neurons)
+OP_DATA *data;
 int     neurons;
-int     width;
 {
     int     i;
 
-    I_S     *work;
+    OP_DATA *work;
 
     FILE    *PORT;
 
-    PORT = stdout;
+    PORT = stdprn;
 
     fprintf(PORT, "Data =\n");
 
     for ( i = 0, work = data; i < neurons; i++, work++ )
     {
         fprintf(PORT, "%f ", work->x);
-        if ( (i+1) % width == 0 )
-            fprintf(PORT, "\n");
     }
 
     fprintf(PORT, "\n");
