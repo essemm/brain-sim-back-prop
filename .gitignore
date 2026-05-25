@@ -7,5 +7,8 @@ fishnet
 # macOS
 .DS_Store
 
+# Claude Code
+.claude/
+
 # Thesis scan images
 scans/
