@@ -6,3 +6,6 @@ fishnet
 
 # macOS
 .DS_Store
+
+# Thesis scan images
+scans/
