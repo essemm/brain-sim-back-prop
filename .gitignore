@@ -1,0 +1,8 @@
+# Build output
+*.o
+*.obj
+*.exe
+fishnet
+
+# macOS
+.DS_Store
