@@ -1,0 +1,11 @@
+Letter recognition expected outputs - A V C E T
+[start]
+ 1.0 0.0 0.0 0.0 0.0
+[start]
+ 0.0 1.0 0.0 0.0 0.0
+[start]
+ 0.0 0.0 1.0 0.0 0.0
+[start]
+ 0.0 0.0 0.0 1.0 0.0
+[start]
+ 0.0 0.0 0.0 0.0 1.0

@@ -1,0 +1,100 @@
+/* Process parameters passed to the program. The parameters are listed below:
+ *
+ *      Directive:
+ *      or      :
+ *      Flag    : Meaning
+ *      -----------------
+ *
+ *      SCREEN I/O.
+ *
+ *      -v      : verbose. Display all data used by the program as it is
+ *                calculated or read in from files. Prints out to stdprn
+ *                the outputs from the network from the execute file.
+ *      -q      : quiet. Display nothing (except error messages).
+ *                This flag is mutually exclusive with the verbose flag. Use
+ *                of both will generate an error.
+ *      default : displays rudimentary information about learning and network
+ *                operation.
+ *
+ *      PRELOADING CONFIGURATION FILE.
+ *
+ *      -c[name]: configuration file name. Preload the simulator with the
+ *                definitions of network size and learning parameters in the
+ *                format specified in the thesis.
+ *      default : none. (No file preloaded.)
+ *
+ *      PRELOADING TAUGHT NETWORK FILE.
+ *
+ *      -n[name]: network file name. Preload the simulator with the complete
+ *                definitions of an operating (pre-taught) network. See thesis
+ *                for format.
+ *                This directive is mutually exclusive with the configuration
+ *                file directive. Use of both will generate an error.
+ *      default : none. (No file preloaded.)
+ *
+ *      INSTRUCTIONS for NETWORK FILE.
+ *
+ *      -e      : execute. Operate the preloaded network with the data files
+ *                specified in the network file loaded by the -n[name]
+ *                directive.
+ *                This flag cannot be used unless the -n[name] directive is
+ *                used first.
+ *      -t      : train. Retrain or continue training the preloaded network
+ *                with the data files specified in the network file loaded
+ *                by the -n[name] directive.
+ *                This flag cannot be used unless the -n[name] directive is
+ *                used first.
+ *                This flag is mutually exclusive with the execute directive.
+ *      default : If neither of the above flags is specified and the -n[name]
+ *                directive is used, an error occurs.
+ *
+ *      SAVING of NETWORK FILE.
+ *
+ *      -s      : store. Store the network file to the file specified in the
+ *                configuration file or read from the keyboard. This occurs
+ *                after the network is trained or the maximum number of I/O
+ *                case sweeps has been completed.
+ *                This flag can't be used with the -e (execute preloaded
+ *                network) flag, but may be used with the -t flag.
+ *      -d      : don't store. Don't store the network to the file specified
+ *                in the configuration file or read from the keyboard.
+ *                This flag is mutually exclusive to the -s store flag.
+ *	-x	: store only learning information. This flag is usefull when
+ *		  running large numbers of simulations to find out how many
+ *		  sweeps are needed to learn. In this mode, the program
+ *		  will save only the comment, the number of layers and the
+ *		  number of neurons in those layers. It will also save the 
+ *		  parameters alpha and epsilon and the number of sweeps (time
+ *		  units) which elapsed while the network was being fully 
+ *		  trained. This flag is mutually exclusive to the -s and -d
+ *		  flags.
+ *      default : If neither of the flags is specified, the user is quiried
+ *                via the screen and keyboard.
+ *
+ *      MODE of adding dE/dw values calculated during learning.
+ *
+ *      -1      : each. Calculate delta_w for each I/O case.
+ *      -a      : all. Add the dE/dw's for all I/O cases to be presented
+ *                during learning, and calculate delta_w after all cases have
+ *                been presented.
+ *      default : If neither of the flags is specified, -a (all) is assumed,
+ *                as this is more common.
+ *
+ *      PRINTING the HELP messages.
+ *
+ *      -?,-h   : display the brief help messages. This produces an output
+ *                very similar to this display.
+ *
+ *      UNRECOGNISED command line options.
+ *
+ *      -[anything else]
+ *              : Display a message to "try fishNET -?".
+ *
+ *      DEFAULT (no flags or directives)
+ *
+ *      -[nothing!!]
+ *              : Recommended mode for beginners. This mode lets the program
+ *                ask the user for information about network size and I/O
+ *                files as required.
+ *
+ */

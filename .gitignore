@@ -2,7 +2,8 @@
 *.o
 *.obj
 *.exe
-fishnet
+fishNET
+obj/
 
 # macOS
 .DS_Store

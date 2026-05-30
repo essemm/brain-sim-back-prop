@@ -1,19 +1,27 @@
-# Makefile for fishnet (8087 version), modified from automatic version
-# Last mod by SAM 13/10/88.
-#
+# Makefile for fishNET
+# Modernised from the original 1988 DOS version.
 
-.c.o:
-        cc -c -O $*.c
+CC     = cc
+CFLAGS = -O2 -Wall -Wno-unused-result -Isrc
 
-fishNET.o : fishNET.c net_type.h show.h input.h learn.h error.h
+OBJS = obj/fishnet.o obj/input.o obj/learn.o obj/show.o obj/error.o
 
-input.o : input.c net_type.h error.h learn.h show.h fishNET.h
+obj/%.o : src/%.c | obj
+	$(CC) -c $(CFLAGS) $< -o $@
 
-learn.o : learn.c net_type.h show.h input.h error.h fishNET.h
+fishNET : $(OBJS)
+	$(CC) -o fishNET $(OBJS) -lm
 
-show.o : show.c net_type.h error.h fishNET.h
+obj :
+	mkdir obj
 
-error.o : error.c net_type.h fishNET.h show.h learn.h
+obj/fishnet.o : src/fishnet.c src/net_type.h src/show.h src/input.h src/learn.h src/error.h
+obj/input.o   : src/input.c   src/net_type.h src/error.h src/learn.h src/show.h src/fishnet.h
+obj/learn.o   : src/learn.c   src/net_type.h src/show.h  src/input.h src/error.h src/fishnet.h
+obj/show.o    : src/show.c    src/net_type.h src/error.h src/fishnet.h
+obj/error.o   : src/error.c   src/net_type.h src/fishnet.h src/show.h src/learn.h
 
-fishNET : fishNET.o input.o learn.o show.o error.o
-        cc -o fishNET fishNET.o input.o learn.o show.o error.o -lm
+clean :
+	rm -rf obj fishNET
+
+.PHONY : clean
