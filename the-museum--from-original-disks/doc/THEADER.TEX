@@ -1,0 +1,330 @@
+% FILE: thesisheader.tex
+% 
+% by Scott MacGIBBON, Version 1.0 18/10/88.
+% Adapted from header.tex on above date.
+%
+% Macros for chapter & section numbering, appendix numbering, 
+% and headers and footers are below.
+%
+% Macros for lists are included.
+%
+\font\chapnumfont=amssmc40
+%\font\chapnumfont=ambx10 scaled 1440
+\font\bigbf=ambx10 scaled 1440
+\font\bigrm=amr10 scaled 1440
+\font\bigit=amsl10 scaled 1440
+\font\medit=amsl10 scaled 1200
+\font\medbf=ambx10 scaled 1200
+\font\medrm=amr10 scaled 1200
+\font\tenrm=amr10
+\font\ninerm=amr9
+\font\eightrm=amr8
+\font\sevenrm=amr7
+\font\ninett=amtt9
+%
+% Experimental setting of \parskip to try and increase distances between
+% paragraphs.
+%
+\parskip=2.0pt plus 1.0pt
+%
+% and now try and increase spacing between lines...
+%
+\openup1\jot
+%
+% Setup macro for signalling that there is a chapter heading here.
+%
+\newif\iftitle
+\def\titlepage{\global\titletrue}
+\def\chapname{}
+\def\negname{}
+%
+% Macros for headers and footers appears below.
+%
+\headline={\ifnum\pageno>0 
+			\iftitle \global\titlefalse\nohead
+			\else \normalhead \fi
+	\else	\ifnum\pageno=0\nohead
+		\else
+			\iftitle \global\titlefalse\nohead
+			\else \neghead \fi
+	\fi	\fi}
+\def\nohead{\hfill}
+\def\normalhead{\tenrm\chapname \hfill Thesis on Brain Simulatio\rlap{n}}
+\def\neghead{\tenrm\negname \hfill}
+%
+\footline={\ifnum\pageno=0\nofoot
+	\else\normalfoot
+	\fi}
+\def\nofoot{\hfill}
+\def\normalfoot{\hfill\tenrm\folio\hfill}
+%%% The macros to generate sections and subsections (ssec's) etc
+%%% are found below.
+%
+% First, set up the counting variables.
+%
+\newcount\partno	\global\partno=-1
+\newcount\chapno	\global\chapno=-1
+\newcount\secno		\global\secno=0
+\newcount\ssecno	\global\ssecno=0
+\newcount\sssecno	\global\sssecno=0
+\newcount\ssssecno	\global\ssssecno=0
+\newcount\appno		\global\appno=64
+\newcount\sappno	\global\sappno=0
+\newcount\ssappno	\global\ssappno=0
+%
+\newcount\lineno % for numbering lines in verbatim include files
+%
+% Setup output file for contents.
+%
+\newwrite\cntnts
+\immediate\openout\cntnts=contents.tex
+%
+% The macro below, \contents, adds the table of contents.
+%
+\outer\def\contents {
+	\immediate\closeout\cntnts
+	\xdef\negname{\llap{C}ontents}
+	\titlepage
+	\openup-1\jot
+	\noindent
+	{\chapnumfont C}{\bigbf ontents}
+	\bigskip
+	\obeylines
+	\input contents.tex
+	\vfill\supereject
+}
+%
+% The macro below, \ack, adds the acknowledgements
+%
+\outer\def\ack {
+	\xdef\negname{\llap{A}cknowledgements}
+	\titlepage
+	\noindent
+	{\chapnumfont A}{\bigbf cknowledgements}
+	\bigskip
+	\input acknowledge
+	\vfill\supereject
+}
+%
+% The chapter starting macros follow below.
+%
+% First, set up a boolean to indicate the first part, which doesn't
+% require the \vfill\supereject.
+%
+\newif\iffirstpart
+\global\firstparttrue
+\outer\def\part #1 #2\par{
+	\advance\partno by 1
+	\iffirstpart\global\firstpartfalse
+		\else\vfill\supereject\fi
+	\immediate\write\cntnts{\string\smallskip}
+	\immediate\write\cntnts{\string\noindent\string\bf\ Part\ \string\bf\the\partno\ #1\string\rm\string\dotfill\folio}
+	\message{\the\partno}
+	% Now write the chapter onto the page:
+	\titlepage
+	\vskip1cm
+	\noindent
+	{\bigbf \llap{P}art\ {\chapnumfont\the\partno:}#1\hfil}
+	\bigskip
+	{\sl\hfil #2}
+}
+%
+%
+\outer\def\chap #1\par{
+	\global\secno=0		\global\ssecno=0
+	\global\sssecno=0	\global\ssssecno=0
+	\advance\chapno by 1
+	\vfill\supereject
+	\immediate\write\cntnts{\string\smallskip}
+	\immediate\write\cntnts{\string\noindent\string\bf\the\chapno\string\bf\ #1\string\rm\string\dotfill\folio}
+	\xdef\chapname{\llap{C}hapter\ \the\chapno. #1\unskip}
+	\message{\the\chapno #1}
+	% Now write the chapter onto the page:
+	\titlepage
+	\noindent
+	{\bigbf \llap{C}hapter\ {\chapnumfont\the\chapno:} #1}
+	\bigskip\noindent
+}
+%
+% This is a section within the chapter macro.
+%
+\outer\def\sec #1\par{
+	\global\ssecno=0
+	\global\sssecno=0	\global\ssssecno=0
+	\advance\secno by 1
+	\immediate\write\cntnts{\string\indent\the\chapno.\the\secno\ #1\string\dotfill\folio}
+	\message{\the\chapno.\the\secno}
+	% Now write the section number onto the page:
+	\vskip 0pt plus.2\vsize\penalty-250
+	\medskip
+	\vskip 0pt plus-0.2\vsize
+	\noindent
+	{\medbf\the\chapno.\the\secno. #1}
+	\nobreak\smallskip\noindent
+}
+%
+% This is a subsection macro within the chapter.
+%
+\outer\def\ssec #1\par{
+	\global\sssecno=0	\global\ssssecno=0
+	\advance\ssecno by 1
+	\immediate\write\cntnts{\string\indent\string\indent\string\ninerm\the\chapno.\the\secno.\the\ssecno\ #1\string\dotfill\folio\string\tenrm}
+	\message{\the\chapno.\the\secno.\the\ssecno}
+	% Now write the section number onto the page:
+	\vskip 0pt plus.1\vsize\penalty-250
+	\smallskip
+	\vskip 0pt plus-0.1\vsize
+	\noindent
+	{\bf\the\chapno.\the\secno.\the\ssecno. #1}
+	\nobreak\smallskip\noindent
+}
+%
+% This is a subsubsection macro within the chapter.
+%
+\outer\def\sssec #1\par{
+	\global\ssssecno=0
+	\advance\sssecno by 1
+	\immediate\write\cntnts{\string\indent\string\indent\string\indent\string\eightrm\the\chapno.\the\secno.\the\ssecno.\the\sssecno\ #1\string\dotfill\folio\string\tenrm}
+	% Now write the section number onto the page:
+	\allowbreak\smallskip\noindent
+	{\bf\the\chapno.\the\secno.\the\ssecno.\the\sssecno. #1:}
+}
+%
+% This is a subsubsubsection macro within the chapter.
+%
+\outer\def\ssssec #1\par{
+	\advance\ssssecno by 1
+	\immediate\write\cntnts{\string\indent\string\indent\string\indent\string\indent\string\sevenrm\the\chapno.\the\secno.\the\ssecno.\the\sssecno.\the\ssssecno\ #1\string\dotfill\folio\string\tenrm}
+	% Now write the section number onto the page:
+	\allowbreak\smallskip\noindent
+	{\sl\the\chapno.\the\secno.\the\ssecno.\the\sssecno.\the\ssssecno. #1:}
+}
+%
+% The appendix starting macros follow below.
+%
+\outer\def\app #1 #2\par{
+	\vfill\supereject
+	\global\sappno=0	\global\ssappno=0
+	\advance\appno by 1
+	\xdef\appltr{#1}
+	\nonfrenchspacing % resets spacing if references run first.
+	\immediate\write\cntnts{\string\smallskip}
+	\immediate\write\cntnts{\string\noindent\string\bf\ \appltr\string\bf\ #2\string\rm\string\dotfill\folio}
+	\xdef\chapname{\llap{A}ppendix\ \char\appno. #2\unskip}
+	\message{\appltr #2}
+	% Now write the chapter onto the page:
+	\titlepage
+	\noindent
+	{
+		{\bigbf \llap{A}ppendix\ }
+		{\chapnumfont \char\appno:}
+		{\bigbf #2}
+	}
+	\bigskip\noindent
+}
+%
+% This is a section within the appendix macro.
+%
+\outer\def\sapp #1\par{
+	\global\ssappno=0
+	\advance\sappno by 1
+	\immediate\write\cntnts{\string\indent\ \appltr.\the\sappno\ #1\string\dotfill\folio}
+	\message{\appltr.\the\sappno}
+	% Now write the section number onto the page:
+	\vskip 0pt plus.2\vsize\penalty-250
+	\medskip
+	\vskip 0pt plus-0.2\vsize
+	\noindent
+	{\medbf\char\appno.\the\sappno. #1}
+	\nobreak\smallskip\noindent
+}
+%
+% This is a subsection macro within the appendix.
+%
+\outer\def\ssapp #1\par{
+	\advance\ssappno by 1
+	\immediate\write\cntnts{\string\indent\string\indent\string\ninerm\ \appltr.\the\sappno.\the\ssappno\ #1\string\dotfill\folio\string\tenrm}
+	\message{\appltr.\the\sappno.\the\ssappno}
+	% Now write the section number onto the page:
+	\vskip 0pt plus.1\vsize\penalty-250
+	\smallskip
+	\vskip 0pt plus-0.1\vsize
+	\noindent
+	{\bf\char\appno.\the\sappno.\the\ssappno. #1}
+	\nobreak\smallskip\noindent
+}
+%
+% Each time a reference is made, use the \ref macro. Calls the \references
+% macro the first time that it is called.
+%
+\newif\iffirstref
+\global\firstreftrue
+\newcount\refno		\global\refno=0
+%
+%
+% A macro to setup for references 
+%
+\def\references {
+	\vfill\supereject
+	\xdef\chapname{\llap{R}eferences}
+	\immediate\write\cntnts{\string\smallskip}
+	\immediate\write\cntnts{\string\noindent\string\bf\ References\string\tenrm\string\dotfill\folio}
+	\frenchspacing
+	\titlepage
+	\noindent
+	{\chapnumfont R}{\bigbf eferences}
+	\bigskip
+}
+%
+%
+\def\ref #1 \par{
+	\advance\refno by 1
+	\iffirstref\references\firstreffalse\fi
+	\item{[\the\refno]} #1
+}
+%
+% Included here is a simple macro for putting figures into the text.
+%
+\def\figure #1 #2 #3 {
+	\goodbreak\midinsert
+	\vskip #2 cm
+	\centerline{Figure #1.\ #3.}
+	\endinsert
+}
+%
+%
+% Macros for making flow diagrams.
+%
+\def\mapright#1{\smash{
+	\mathop{\longrightarrow}\limits^{#1}}}
+\def\mapdown#1{\Big\downarrow
+	\rlap{$\vcenter{\hbox{$\scriptstyle#1$}}$}}
+\def\mapup#1{\Big\uparrow
+	\rlap{$\vcenter{\hbox{$\scriptstyle#1$}}$}}
+%
+% This macro will copy a file EXACTLY as it is
+%
+\def\uncatcodespecials{\def\do##1{\catcode`##1=12 }\dospecials}
+%
+\def\setupverbatim{\ninett \lineno=0
+ \def\par{\leavevmode\egroup\box0\endgraf}
+ \obeylines \uncatcodespecials \obeyspaces
+ \catcode`\`=\active \catcode`\^^I=\active
+ \everypar{\advance\lineno by1
+  \llap{\sevenrm\the\lineno\ \ }\startbox}}
+{\catcode`\^^I=\active
+ \gdef^^I{\leavevmode\egroup
+  \dimen0=\wd0 % width so far, or since previous tab
+  \divide\dimen0 by\w
+  \multiply\dimen0 by\w %compute previous multiple of \w
+  \advance\dimen0 by\w  %advance to next multiple of \w
+  \wd0=\dimen0 \box0 \startbox}}
+{\obeyspaces\global\let =\ }
+\newdimen\w \setbox0=\hbox{\ninett\space} \w=8\wd0 %tab amount
+\def\startbox{\setbox0=\hbox\bgroup}
+%
+\def\listing#1 {\par\begingroup\openup-1\jot\parindent=12pt
+	\parskip=1.3pt plus 0.8pt
+	\setupverbatim\input#1 \openup1\jot\parindent=20pt
+	\parskip=2.0pt plus 1.0pt\endgroup}
+%

@@ -1,0 +1,497 @@
+/* FILE = fishNET.c */
+
+/* Author : Scott Andrew MacGIBBON.
+ *
+ * This code is written to accompany the written work:
+ *
+ *      Brain Simulation: Computation in Back-Propagation Neural Networks.
+ *
+ * It is submitted as an undergraduate thesis at the University of Sydney
+ * for the degree of Bachelor of Engineering.
+ *
+ * Copyright Scott Andrew MacGIBBON, 28th September 1988.
+ *
+ */
+
+/* This is the first production version of the functions 
+ * necessary for the brain simulation code.
+ */
+
+/* Define title and version number.
+ */
+
+char	name[]	  = "fishNET";
+char	title[]	  = "Back-propagation neural network simulator.";
+char 	version[] = "Version 1.0 AB. (Both cumulative and individual delta adds)";
+
+/* includes necessary follow: */
+
+#ifdef MSDOS
+#include <stdlib.h>
+#include <float.h>		/* This is to set up the exception handler */
+#endif				/* for the coprocessor.			   */
+
+#include <stdio.h>
+#include <string.h>
+#include <signal.h>
+
+/* Type declarations are included below.
+ */
+
+#include "net_type.h"
+
+/* External definitions of functions used.
+ */
+
+#include "show.h"
+#include "input.h"
+#include "learn.h"
+#include "error.h"
+
+int     VERBOSE 	= 0;
+int     QUIET 		= 0;
+
+int     CONFIG_FILE 	= 0;
+int     NET_FILE 	= 0;
+
+int     SAVE_NET        = 0;
+
+int     DELTA_MODE      = 0;
+
+#ifndef MSDOS
+	FILE    	*stdprn;
+#endif
+
+int
+main(argc, argv)
+int     argc;
+char    *argv[];
+{
+	char    	*s;
+
+	char    	config_file[35];
+	char		net_file[35];
+
+	LOAD_BOTH       *net_and_param;
+	QUESTION        *parameter;
+	LAYER           *network;
+	int             start_time 	= 0;
+
+	I_O     	*rundata;
+	I_O		*runcase;
+
+	int     	i;
+	char    	answer;
+
+	int     	file_name_read;
+
+	FILE            *saved;
+
+#ifndef MSDOS
+	stdprn = fopen("output", "w");
+#endif
+
+/* Process parameters passed to the program. The parameters are listed below:
+ *
+ *      Directive:
+ *      or      :
+ *      Flag    : Meaning
+ *      -----------------
+ *
+ *      SCREEN I/O.
+ *
+ *      -v      : verbose. Display all data used by the program as it is
+ *                calculated or read in from files. Prints out to stdprn
+ *                the outputs from the network from the execute file.
+ *      -q      : quiet. Display nothing (except error messages).
+ *                This flag is mutually exclusive with the verbose flag. Use
+ *                of both will generate an error.
+ *      default : displays rudimentary information about learning and network
+ *                operation.
+ *
+ *      PRELOADING CONFIGURATION FILE.
+ *
+ *      -c[name]: configuration file name. Preload the simulator with the
+ *                definitions of network size and learning parameters in the
+ *                format specified in the thesis.
+ *      default : none. (No file preloaded.)
+ *
+ *      PRELOADING TAUGHT NETWORK FILE.
+ *
+ *      -n[name]: network file name. Preload the simulator with the complete
+ *                definitions of an operating (pre-taught) network. See thesis
+ *                for format.
+ *                This directive is mutually exclusive with the configuration
+ *                file directive. Use of both will generate an error.
+ *      default : none. (No file preloaded.)
+ *
+ *      INSTRUCTIONS for NETWORK FILE.
+ *
+ *      -e      : execute. Operate the preloaded network with the data files
+ *                specified in the network file loaded by the -n[name]
+ *                directive.
+ *                This flag cannot be used unless the -n[name] directive is
+ *                used first.
+ *      -t      : train. Retrain or continue training the preloaded network
+ *                with the data files specified in the network file loaded
+ *                by the -n[name] directive.
+ *                This flag cannot be used unless the -n[name] directive is
+ *                used first.
+ *                This flag is mutually exclusive with the execute directive.
+ *      default : If neither of the above flags is specified and the -n[name]
+ *                directive is used, an error occurs.
+ *
+ *      SAVING of NETWORK FILE.
+ *
+ *      -s      : store. Store the network file to the file specified in the
+ *                configuration file or read from the keyboard. This occurs
+ *                after the network is trained or the maximum number of I/O
+ *                case sweeps has been completed.
+ *                This flag can't be used with the -e (execute preloaded
+ *                network) flag, but may be used with the -t flag.
+ *      -d      : don't store. Don't store the network to the file specified
+ *                in the configuration file or read from the keyboard.
+ *                This flag is mutually exclusive to the -s store flag.
+ *	-x	: store only learning information. This flag is usefull when
+ *		  running large numbers of simulations to find out how many
+ *		  sweeps are needed to learn. In this mode, the program
+ *		  will save only the comment, the number of layers and the
+ *		  number of neurons in those layers. It will also save the 
+ *		  parameters alpha and epsilon and the number of sweeps (time
+ *		  units) which elapsed while the network was being fully 
+ *		  trained. This flag is mutually exclusive to the -s and -d
+ *		  flags.
+ *      default : If neither of the flags is specified, the user is quiried
+ *                via the screen and keyboard.
+ *
+ *      MODE of adding dE/dw values calculated during learning.
+ *
+ *      -1      : each. Calculate delta_w for each I/O case.
+ *      -a      : all. Add the dE/dw's for all I/O cases to be presented
+ *                during learning, and calculate delta_w after all cases have
+ *                been presented.
+ *      default : If neither of the flags is specified, -a (all) is assumed,
+ *                as this is more common.
+ *
+ *      PRINTING the HELP messages.
+ *
+ *      -?,-h   : display the brief help messages. This produces an output
+ *                very similar to this display.
+ *
+ *      UNRECOGNISED command line options.
+ *
+ *      -[anything else]
+ *              : Display a message to "try fishNET -?".
+ *
+ *      DEFAULT (no flags or directives)
+ *
+ *      -[nothing!!]
+ *              : Recommended mode for beginners. This mode lets the program
+ *                ask the user for information about network size and I/O
+ *                files as required.
+ *
+ */
+
+	while ( --argc > 0 && (*++argv)[0] == '-' )
+	{
+		file_name_read = 0;
+		for
+		(
+			s = argv[0] + 1;
+			*s != '\0' && ! file_name_read;
+			s++
+		)
+		switch( s[0] ) 
+		{
+			case 'h':
+			case '?':
+				show_help();
+				exit(1);
+				break;
+
+			case 'v':
+				if ( ! QUIET )
+					VERBOSE = 1;
+				else
+					error
+					(
+					"Can't use both verbose and quiet flags"
+					);
+				break;
+
+			case 'q':
+				if ( ! VERBOSE )
+					QUIET = 1;
+				else
+					error
+					(
+					"Can't use both quiet and verbose flags"
+					);
+				break;
+
+			case 'c':
+				if ( NET_FILE )
+					error
+					(
+					"Can't load both a network file and a config file"
+					);
+				CONFIG_FILE = 1;
+				strcpy(config_file, s+1);
+
+				file_name_read = 1;
+				break;
+
+			case 'n':
+				if ( CONFIG_FILE )
+					error
+					(
+					"Can't load both a config file and a network file"
+					);
+				NET_FILE = NONE;
+				strcpy(net_file, s+1);
+
+				file_name_read = 1;
+				break;
+
+			case 'e':
+				if ( NET_FILE == 0 )
+					error
+					(
+					"Must specify network file first."
+					);
+
+				if ( NET_FILE == TEACH )
+					error
+					(
+					"Can't specify both execute and teach."
+					);
+				NET_FILE = EX;
+				SAVE_NET = DO_NOT;
+				break;
+
+			case 't':
+				if ( NET_FILE == 0 )
+					error
+					(
+					"Must specify network file first."
+					);
+				if ( NET_FILE == EX )
+					error
+					(
+					"Can't specify both teach and execute."
+					);
+				NET_FILE = TEACH;
+				break;
+
+			case 's':
+				if ( NET_FILE == EX )
+					error
+					(
+					"You can't save a network file when you load one to execute."
+					);
+				if ( SAVE_NET == DO_NOT || SAVE_NET == PARTLY )
+					error("Invalid save option");
+				SAVE_NET = DO;
+				break;
+
+			case 'd':
+				if ( SAVE_NET == DO || SAVE_NET == PARTLY )
+					error("Invalid save option");
+				SAVE_NET = DO_NOT;
+				break;
+
+			case 'x':
+				if ( SAVE_NET == DO || SAVE_NET == DO_NOT )
+					error("Invalid save option");
+				SAVE_NET = PARTLY;
+				break;
+
+			case '1':
+				if ( DELTA_MODE == ALL )
+					error
+					(
+					"Can't specify both all and each delta mode."
+					);
+				DELTA_MODE = EACH;
+				break;
+
+			case 'a':
+				if ( DELTA_MODE == EACH )
+					error
+					(
+					"Can't specify both each and all delta mode."
+					);
+				DELTA_MODE = ALL;
+				break;
+
+			default:
+				fprintf
+				(
+					stderr,
+					"\nUnrecognized flag or directive %c.\n\n",
+					s[0]
+				);
+				error("try typing fishNET -? for help");
+				break;
+
+			}
+	}
+
+	printf("%s %s\n", name, version);
+	if ( VERBOSE )
+		printf("%s\n", title);
+
+	/* For MSDOS systems, setup the 8087/80287 with the default
+	 * exception handler.
+	 */
+
+#ifdef MSDOS
+	_control87(CW_DEFAULT, 0xffff);
+#endif
+
+	/* setup in case of floating point error. */
+	if ( signal(SIGFPE, fpe_handler) == SIG_ERR )
+	{
+		fprintf(stderr, "Can't setup floating point exception handler!");
+		exit(0);
+	}
+
+	/* set calculation mode.*/
+	if ( DELTA_MODE == 0)
+		DELTA_MODE = ALL;
+
+	if ( DELTA_MODE == ALL && ! QUIET )
+		printf("Accumulating dE/dw over all cases.\n");
+	else if ( DELTA_MODE == EACH && ! QUIET )
+		printf("Applying delta_w each I/O case.\n");
+
+	if ( ! NET_FILE )
+	{       /* need to teach a network from start. */
+
+		if ( ! CONFIG_FILE )
+			/* get data from keyboard */
+			parameter = input_parameters();
+		else
+		{
+			if ( ! QUIET )
+				printf 
+				( 
+					"Reading configuration parameters from %s.\n",
+					config_file 
+				);
+			/* get data from config_file */
+			parameter = finput_parameters(config_file);
+		}
+
+		/* Setup ctrl+c interrupt handler to save network during
+		 * learning if required.
+		 */
+
+		if ( signal(SIGINT, interrupt_handler) == SIG_ERR )
+		{
+			fprintf(stderr, "Can't setup interrupt handler!");
+			exit(0);
+		}
+
+		/* Teach the network by back_propagation. */
+
+		network = allocate(parameter);
+		if ( learn(network, parameter, 0) != 1 )
+			error("Didn't learn - something has gone wrong");
+
+		if ( VERBOSE )
+			printf("Finished learning.\n");
+	}
+	else
+	{       /* Get pre-trained network */
+
+		if ( ! QUIET )
+			printf("Reading network from %s.\n", net_file);
+
+		net_and_param 	= load_network_and_parameters(net_file);
+
+		parameter 	= net_and_param->parameter;
+		network 	= net_and_param->network;
+		start_time 	= net_and_param->start_time;
+
+		if ( VERBOSE )
+			printf("Loaded network.\n");
+
+		if ( NET_FILE == TEACH )
+		{
+			/* Setup ctrl+c interrupt handler to save network
+			 * during learning if required.
+			 */
+
+			if ( signal(SIGINT, interrupt_handler) == SIG_ERR )
+				error("Can't setup interrupt handler");
+
+			if ( learn(network, parameter, start_time) != 1 )
+				error("Something has gone wrong.. didn't learn");
+		}
+	}
+
+	if ( SAVE_NET == 0 )
+	{
+		/* If no flag input from command line for storage: */
+		printf("Do you want to save network : [y, n] ");
+		scanf(" %c", &answer);
+		if ( answer == 'Y' || answer == 'y' )
+		{
+			store_network(network, parameter);
+			if ( VERBOSE )
+				printf("Stored network.\n");
+		}
+	}
+	else if ( SAVE_NET == DO )
+	{
+		store_network(network, parameter);
+		if ( VERBOSE )
+			printf("Stored network.\n");
+	}
+	else if ( SAVE_NET == PARTLY )
+	{
+		store_learnt_parameters(parameter);
+		if ( VERBOSE )
+			printf("Stored learning parameters.\n");
+	}
+
+	if ( SAVE_NET == PARTLY ) /* quit without operating. */
+		exit(1);
+
+	if ( ! QUIET )
+		printf("Executing.\n");
+
+	/* Get the input data. */
+
+	rundata = get_data(parameter->data_in);
+
+	/* Open file for output data.*/
+	if ( (saved = fopen(parameter->data_out.name, "w")) == NULL )
+		error("Can't open file for output");
+
+	for
+	(
+		i = 0, runcase = rundata;
+		i < parameter->data_in.i_o_cases;
+		i++, runcase++
+	){
+		/* run */
+		operate(network, runcase->item, parameter);
+
+		if ( VERBOSE )
+		{
+			print_case(runcase->item, parameter->data_in.neurons);
+			fprintf(stdprn, "\n\t");
+
+			print_top_layer(network, parameter);
+			fprintf(stdprn, "\n\n");
+		}
+		/* and store in file opened above */
+		save_top_layer(network, parameter, saved);
+	}
+
+	fclose(saved);
+
+	return (1);
+}

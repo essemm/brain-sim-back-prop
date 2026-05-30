@@ -1,0 +1,586 @@
+\part Software {{\bf Allen's Law:} Everything is more complicated
+than it appears.}
+
+\chap Software Specification
+
+This chapter outlines the user interface and the functions to be performed
+by the software model of a back-propagation \nn.
+In the following specification, a {\sl message\/} will convey some
+information on program operation to the user, a {\sl warning\/} is a
+non-catastrophic signalling to the user, while an {\sl error\/} will
+cause a termination of the program after an error message is printed.
+
+The specification as it is presented here has been fully implemented in
+the software package, called fishNET.
+The design used to implement this specification is described in
+Chapter~4: Construction, and its behaviour is examined in Chapter~5:
+Performance.
+
+\sec The User Interface
+
+Operation of the program requires a number of parameters and fishNET
+offers a number of different ways of saving and viewing the
+data about network functions and the results of learning.
+The program accepts command line inputs of names of files which
+contain network data, or can accept input from the keyboard if a
+data file is absent.
+Both methods of input (file and keyboard) will be described below.
+
+\ssec Selecting the Parameters -- Configuring the Network
+
+The user is able to select the size and shape of the network, as
+well as the parameters for use during learning.
+Entry is via an input file specified on the command line, or by
+answering questions about the individual data items if no command
+line file name is given.
+
+The information needed to run the program is:
+\smallskip
+\item{$\bullet$} A comment or description of the problem for saving
+with the network.
+\item{$\bullet$} The number of layers in the network, and the number
+of \neus\ in those layers.
+\item{$\bullet$} The names of the files containing teaching input
+data and expected data.
+\item{$\bullet$} The name of the file containing data for use in
+execution and the name of the output file.
+\item{$\bullet$} The name of the file where the network is to be
+saved.
+\item{$\bullet$} The learning parameters~$\alpha$ and~$\varepsilon$.
+\item{$\bullet$} The nominal output width of the output layer of
+\neus\ for output formatting.
+\item{$\bullet$} The maximum number of input/output pair learning
+sweeps required, if a limit is desired.
+\smallskip
+If no command line file name is specified, the program will query
+the user via the keyboard.
+This is the default operation.
+
+\sssec Keyboard Input Format
+
+A question is asked via the screen for every parameter listed above,
+and the answers are accepted through the keyboard.
+The user enters a return after typing the parameter being
+considered.
+
+\sssec Configuration File Format
+
+The format of a configuration file is described below.
+The symbols~$\langle\rangle$ are used to delimit user required data.
+All information in double quotes ``'' are tokens and must be
+inserted {\sl exactly} as they appear otherwise an error will occur.
+(The error message is `appropriate token not found'.)
+All tokens and data must also appear in the order shown below.
+The exception is any piece of data which is surrounded
+by~$\{\}$ brackets.
+These data items are optional.
+If they are used, however, please note the quoted and bracketed
+tokens and data items necessary.
+$$\vbox{
+\halign{#\hfil&&\ \hfil#\hfil\cr
+	\noalign{\noindent$\{\langle \ldots$ user comment $\ldots \rangle\}$}
+	\noalign{\smallskip}
+	``[start]''\cr
+	\noalign{\smallskip}
+	``layers''&$\langle n\rangle$\cr
+	``neurons''&$\langle a_0$&$a_1$&$a_2$&$\ldots$&$a_{n-1}\rangle$\cr
+	\noalign{\smallskip}
+	``output width''&$\langle m\rangle$\cr
+	\noalign{\smallskip}
+	``alpha''&$\langle\alpha\rangle$\cr
+	``epsilon''&$\langle\varepsilon\rangle$\cr
+}}
+$$
+$$\vbox{
+\halign{#\hfil&\ #\hfil\cr
+	\noalign{$\quad$}
+	``sample in''&$\{$path$\}\langle$teaching input file name$\rangle$\cr
+	``sample out''&$\{$path$\}\langle$expected output file name$\rangle$\cr
+	\noalign{\smallskip}
+	``execute in''&$\{$path$\}\langle$test data file name$\rangle$\cr
+	``execute out''&$\{$path$\}\langle$test output file name$\rangle$\cr
+	\noalign{\smallskip}
+	``network save''&$\{$path$\}\langle$network save file name$\rangle$\cr
+	\noalign{\smallskip}
+	$\{$``max sweeps''&$\langle q\rangle\}$\cr
+}}
+$$
+
+Simply place the desired value next to the appropriate token.
+Tokens must be in order.
+For the ``neurons'' token, the order of the numbers~$a_0\to a_{n-1}$ is 
+taken as the number of \neus\ in the layers~$0\to n-1$.
+Hence the example
+$$\vbox{
+\halign{#\hfil&&\ \hfil#\hfil\cr
+	\noalign{$\quad\vdots$}
+	layers&$3$\cr
+	\neus &$13$&$20$&$5$\cr
+}}
+$$
+means that there are 13 neurons on the input (layer~$0$),~$20$ in
+the intermediate layer (layer~$1$), and~$5$ in the output layer
+(layer~$2$).
+
+The tokens ``alpha'' and ``epsilon'' refer to the learning
+parameters $\alpha$ and $\varepsilon$.
+
+The file name following the ``sample in'' token is the file used as
+training input for the network, and the file name following the
+``sample out'' token is the expected output file, used for
+comparison and calculating the error.
+
+The ``execute in'' and ``execute out'' tokens precede the file names
+for use in operating the network once it is taught and the
+final destination of the output.
+
+The token ``network save'' comes before the name of the file where
+the network is to finally be saved once it has been taught, or the
+program terminated.
+
+Finally, ``max sweeps'' is the maximum number of training sweeps
+that will occur.
+Once this number is reached, (and it will not be reached if the
+network is completely taught,) the network is saved and
+execution begins.
+
+Formats of data files are shown below.
+
+Command line options used to specify a configuration file instead of
+keyboard entry are found in section~3.1.5.\ Command line options.
+
+\ssec Using a Pre-Made Network
+
+The user is able to load a network file which contains all the data
+necessary (especially weights) for operation of
+the network, or continued teaching, or both.
+The code is designed so that if it is halted (a Ctrl-c in MSDOS, or a
+BREAK or DEL in Unix) the network's present status and elapsed~$t$ are
+stored into a network file.
+The network is also saved when it has been fully taught, or the
+maximum time has elapsed (depending upon flags set, so see~3.1.5.\
+Command line options).
+
+\sssec Network File Format
+
+The format of a network file is described below.
+The symbol format is the same as the previously described
+configuration file format (3.1.1.2).
+$$\vbox{
+\halign{#\hfil&&\ \hfil#\hfil\cr
+	\noalign{\noindent$\{\langle \ldots$ user comment $\ldots \rangle\}$}
+	\noalign{\smallskip}
+	``[start]''\cr
+	\noalign{\smallskip}
+	``layers''&$\langle n\rangle$\cr
+	``neurons''&$\langle a_0$&$a_1$&$a_2$&$\ldots$&$a_{n-1}\rangle$\cr
+	``weights''&$\langle b_0$&$b_1$&$b_2$&$\ldots$&$b_{m-1}\rangle$\cr
+	\noalign{\smallskip}
+	``output width''&$\langle m\rangle$\cr
+	\noalign{\smallskip}
+	``alpha''&$\langle\alpha\rangle$\cr
+	``epsilon''&$\langle\varepsilon\rangle$\cr
+}}
+$$
+$$\vbox{
+\halign{#\hfil&\ #\hfill\cr
+	\noalign{$\quad$}
+	``sample in''&$\{$path$\}\langle$teaching input file name$\rangle$\cr
+	``sample out''&$\{$path$\}\langle$expected output file name$\rangle$\cr
+	\noalign{\smallskip}
+	``execute in''&$\{$path$\}\langle$test data file name$\rangle$\cr
+	``execute out''&$\{$path$\}\langle$test output file name$\rangle$\cr
+	\noalign{\smallskip}
+	``start time''&$\langle q\rangle$\cr
+	``learn time''&$\langle r\rangle$\cr
+}}
+$$
+
+Place the desired value next to the appropriate token.
+Tokens must be in order.
+For the ``\neus'' token, the order of the numbers $a_0\to a_{n-1}$ is
+taken as the same as the number of \neus\ in the layers~$0\to n-1$.
+Data following the ``weights'' token behaves identically: if there
+are~$a_0$ \neus\ in layer~$0$, and~$a_1$ in layer~$1$, then there
+will be $a_0 \times a_1$ weights between layer~$0$ and layer~$1$.
+The first $a_1$ weights are the strengths of connections between
+the first \neu\ in layer~$0$ and the \neus\ in the layer above.
+The second $a_1$ weights apply to the second \neu's connections to
+the layer above, etc., until the $a_0$th $a_1$ weights apply to the
+last \neu\ in layer~$0$.
+The pattern is repeated for all layers (note that there are no weights
+associated with the output $n-1$th layer).
+
+For example, consider the following fragment of a network file:
+$$\vbox{
+\halign{#\hfil&&\ \hfil#\hfil\cr
+	\noalign{$\vdots$}
+	``layers''&$3$\cr
+	``neurons''&$1$&$2$&$3$\cr
+	``weights''&$w_{1,1}$&$w_{1,2}$&$w_{2,1}$&$w_{2,2}$&
+		$w_{2,3}$&$w_{2,4}$&$w_{2,5}$&$w_{2,6}$\cr
+	\noalign{$\vdots$}
+}}
+$$
+Here there are~$3$ layers; the input layer contains~$1$ \neu, the
+middle layer contains~$2$ \neus, and the top layer~$3$ \neus.
+The weights $w_{1,1}$ and $w_{1,2}$ connect the single input \neu\ to the
+first and second of the~$2$ second layer \neus\ respectively.
+The weights $w_{2,1}\to w_{2,3}$ connect the first \neu\ in the
+second layer with the \neus~$1\to 3$ in the top layer, etc.
+
+The token ``start time'' marks the value of $t$ that the network
+will start learning from, if the user desires continued teaching of
+the network.
+In other words, it is a measure of how long the network had been
+taught for if it was generated by a Ctrl-c or BREAK, or saved when
+it had finished learning or reached the ``max sweeps'' value of
+$t$.
+
+The token ``learn time'' is equivalent to the ``max sweeps'' token
+and indicates to the software what value of $t$ to stop 
+training the network at if the user desires continued teaching of
+the network.
+
+Command line options used to specify a network file and what is to
+be done with it (that is continued teaching or execution) are found
+in section 3.1.5.~Command line options.
+
+\ssec Teaching Data
+
+The specifications for configuration and network files, and
+keyboard input contain references to ``sample in'' and
+``sample out'' files.
+These refer to the teaching data, used by the program to teach the
+network.
+
+The ``sample in'' file contains the data patterns or values desired
+for learning, and the ``sample out'' file contains the expected
+output for the sample input.
+Input/output pairs are matched; the first data items in the input
+file will produce the first data items in the output file after
+learning.
+The second set of input data will match the second set
+of output data after learning, and so on.
+Each input output pair is called a {\sl case}.
+
+\sssec Teaching Data File Format
+
+The start of an input case is signalled by a ``[start]'' token.
+There may be a user comment before the first token.
+Input data is matched to the input \neus\ one at a time, and in the
+order that they appear in the file.
+If there are more data items than there are \neus, the excess ones
+are thrown away up until the next ``[start]'' token occurs, and a
+warning is issued.
+The next case is then parsed.
+If for any case there are more input \neus\ than there is data, an
+error occurs.
+
+The format for the file is as shown below:
+$$\vbox{
+\halign{\hfil#\hfil&&\ \hfil#\hfil\cr
+	\noalign{\noindent$\{\langle\ldots$ user comment $\ldots\rangle\}$}
+	\noalign{\noindent``[start]''}
+	$\alpha_0$&$\beta_0$&$\gamma_0$&$\delta_0$&$\ldots$\cr
+	\noalign{\noindent``[start]''}
+	$\alpha_1$&$\beta_1$&$\gamma_1$&$\delta_1$&$\ldots$\cr
+	\noalign{\noindent``[start]''}
+	$\alpha_2$&$\beta_2$&$\gamma_2$&$\delta_2$&$\ldots$\cr
+	\noalign{\quad$\vdots$}
+}}
+$$
+
+\sssec Expected Data File Format
+
+Expected data files have the same format as teaching data files.
+The values in the expected data file are matched to output \neus\ in
+the same way as input data is matched to the input layer \neus.
+If for any case there are more data items than there are \neus, the excess ones
+are thrown away up until the next ``[start]'' token occurs, and a
+warning is issued.
+If for any case there are more output \neus\ than there is output
+data, an error occurs.
+If there is not an identical number of input and output cases, an
+error occurs.
+
+\ssec Test Data
+
+Configuration and network files, and keyboard input, contain the
+tokens ``execute in'' and ``execute out''.
+The file names after these tokens refers to the files used as input
+and output for the network after it is trained.
+The ``execute in'' file contains data for the inputs of the bottom
+(layer~$0$) \neus, and the ``execute out'' file is used to store
+the output from the top (layer~$n-1$) \neus\ for each case presented to
+the bottom layer.
+Any previous contents of the ``execute out'' file are overwritten by
+the new input cases' outputs.
+
+\sssec Test Data File Format
+
+Format is identical to 3.1.3.1.~Teaching data file format.
+Once again, if there is too much data the excess for each input
+cases is ignored (and a warning is issued), and if there is too
+little data an error occurs.
+
+\sssec Output Data File Format
+
+The ``execute out'' file output format is similar to 3.1.3.2.~Expected
+data file format.
+The only difference is that the length of the stored output line is
+modulated by the parameter following the token ``output width'',
+which is entered from the keyboard, or network or configuration
+files.
+
+\ssec Command Line Options
+
+To reduce keyboard input and increase the facility for repeated
+(automated) testing of program behaviour, all directives and flags
+used by the program can be set from the command line.
+Each flag or directive is selected by typing
+$$
+{\rm fishNET\ } \{-flag_0\}\{-\}\{flag_1\}\ldots\quad.
+$$
+For example, to specify the flags $-x$ and $-v$ (the meaning of
+these two flags will be explained in detail below,) you could type
+${\rm fishNET\ } -x {\rm \thinspace} -v$ or ${\rm fishNET\ } -xv$.
+The exception to this method are the $-c$ and $-n$ flags, which can
+only appear at the end of a ``$-$'' list or by themselves.
+This is because they refer to file names.
+For example,
+$$
+\hbox{fishNET\ $-n\langle{\rm netfile}\rangle$\ $-q$.}
+$$
+
+A full explanation of each flag and directive appears below
+categorised by function.
+
+\sssec Screen Input/Output Control
+
+\ssssec $-v$ (verbose) flag
+
+The $-v$ flag causes the program to produce verbose runtime
+information about the present status of the network.
+It displays the expected output from the network alongside the
+actual output, a running measure of errors, and the elapsed time,
+$t$.
+This process slows down execution speed by the amount of time taken
+for screen output.
+
+This flag cannot be used with the $-q$ flag.
+
+\ssssec $-q$ (quiet) flag
+
+The $-q$ flag causes suppression of all runtime messages.
+This flag is good for batch mode processing, and of course gives the
+fastest execution speed by virtue of minimal screen output.
+
+This flag cannot be used with the $-v$ flag.
+
+\ssssec Default
+
+If neither the $-q$ or $-v$ flags are set, the default mode is used.
+This mode causes fishNET to print rudimentary information 
+about loading status, and
+displays the elapsed time and total error while the program is
+running.
+
+\sssec Loading Configuration and Network Files from Disk
+
+\ssssec $-c$ (load configuration file) directive
+
+The $-c\{{\rm path}\}\langle{\rm file name}\rangle$ directive lets
+the user load a configuration file of parameters into the simulator.
+The format of the file is described in an earlier section entitled
+3.1.1.2.~Configuration file format.
+
+This directive can't be used with the $-n$ directive.
+
+\ssssec $-n$ (load network file) directive
+
+The $-n\{{\rm path}\}\langle{\rm file name}\rangle$ directive enables
+the user to load a pre-taught or manually created network file into the
+simulator.
+The format of the file is described in an earlier section, 
+3.1.2.1.~Network file format.
+
+This directive can't be used with the $-c$ directive.
+
+\ssssec Default
+
+There is no default file loaded.
+If neither $-c$ or $-n$ is specified, the user is queried via the
+screen and keyboard for the appropriate parameter values.
+
+\sssec Using the Network File
+
+\ssssec $-e$ (execute) flag
+
+The $-e$ flag is used after the $-n\langle{\rm name}\rangle$
+directive to tell the simulator to execute the network with the data
+files whose names are included in the network file.
+The network will {\sl not} continue to be trained.
+
+The $-e$ flag can't be used with the $-t$ flag.
+
+\ssssec $-t$ (teach) flag
+
+The $-t$ flag is used after the $-n\langle{\rm name}\rangle$
+directive to tell the simulator to continue teaching the network
+with the sample input and output files whose names are included in
+the network file.
+When the network is ``taught'', execution with the data file (the
+name of which is also in the network file,) will occur.
+
+The $-t$ flag can't be used with the $-e$ flag.
+
+\ssssec Default
+
+If neither the $-e$ or $-t$ flags are used with the $-n$ directive,
+an error occurs.
+In other words, you must tell the program what you want to do with a
+network file!
+
+\sssec Saving the Network File
+
+\ssssec $-s$ (store ``taught'' network) flag
+
+The $-s$ flag tells the program to store the network after it is
+taught.
+If this flag is set, once the errors drop below the threshold, the
+network is automatically stored in the file named through the
+keyboard, network, or configuration files.
+The format of the saved file is specified in an earlier section,
+3.1.2.1.~Network file format.
+
+This flag can't be used with the $-e$ (execute) flag, or the $-d$ or
+$-x$ flags (see below).
+
+\ssssec $-d$ (don't store network) flag
+
+The $-d$ flag indicates that once the network is taught, it will not
+be stored.
+If this flag is set, execution begins immediately after the network
+is taught, and although the network is not saved to disk, the output
+from the execution is.
+
+This flag can't be used with the $-s$ or $-x$ save flags. If it is
+used with the $-e$ flag it is ignored.
+
+\ssssec $-x$ (store learning information and time) flag
+
+The $-x$ flag is intended primarily for experimental use of the
+program.
+When this flag is set, the program will teach or continue to teach
+the network but when it is ``taught'' only the necessary parameters
+are saved to disk.
+These parameters are the weight modification factors~$\alpha$
+and~$\varepsilon$, the number of layers and \neus\ in those layers,
+I/O files and time required to teach the network.
+This saves time and disk space for users of fishNET who are
+experimenting with the parameters' and data's effects on
+learning speed.
+
+This flag can't be used with the $-s$ or $-d$ save flags, or the
+$-e$ execute flag.
+
+\ssssec Default
+
+If none of the save flags is specified, the user is queried via the
+screen and keboard. The choices available are akin to the $-s$ and
+$-d$ flags (there is no equivalent $-x$ option).
+
+\sssec Calculation of $\Delta w(t)$
+
+The package fishNET offers two ways to calculate $\partial E \over
+\partial w$ and $\Delta w(t)$, both enumerated in algorithmic form
+in the previous chapter.
+
+\ssssec $-1$ (each) mode
+
+When the $-1$ flag is set, the program will calculate and apply
+$\Delta w(t)$ for each I/O case.
+This mode is only included for experimental purposes (for a
+description of the algorithm used, see the second algorithm in the
+previous chapter).
+
+The $-1$ flag can't be used with the $-a$ flag.
+
+\ssssec $-a$ (all) mode
+
+If the $-a$ flag is specified, the calculation of $\Delta w(t)$ is
+once per sweep (presentation) of all I/O cases.
+$\partial E \over \partial w$ values are calculated for each I/O
+case and added together.
+$\Delta w(t)$ is calculated at the end of each sweep from the
+accumulated $\partial E \over \partial w$ value.
+This is the most commonly used mode.
+
+The $-a$ flag can't be used with the $-1$ flag.
+
+\ssssec Default
+
+If neither the $-1$ or $-a$ flags are specified, the $-a$ mode is
+assumed.
+Unless $-q$ (quiet) has been set, a message is issued to this
+effect.
+
+\sssec Printing the Help Message
+
+\ssssec $-?$, $-h$ (help) flags
+
+If the $-?$ or $-h$ flags are specified, the program doesn't run and
+a help message is displayed.
+The help message contains information on every flag and is located
+in the file {\tt help.hlp} under all implementations of the program.
+
+\sssec Unrecognised Options
+
+If any other option is specified, the program displays the message 
+$$
+\hbox{``try typing `fishNET $-?$' for help''.}
+$$
+
+\sssec Default (no options set)
+
+If no options are set, the program asks for all information about
+file names and parameters, the same way it does if neither $-c$ or
+$-n$ is specified.
+
+This is the recommended mode for ``beginners''.
+
+\sec Operations Performed
+
+FishNET implements the back-propagation model of a
+\nn, as described in the previous chapter ``The Back-Propagation
+Model''.
+The shape of the network is flexible and specifiable by the user,
+and as many parameters as possible are easily modifiable.
+
+The most important parameters are the network shape and size,
+and the initial values of~$\alpha$ and~$\varepsilon$.
+These values are user specifiable, and used during learning.
+
+Input and sample output files are user specifiable and used for
+input/output pairs.
+
+Final network operation output file is user specifiable.
+
+Efficiency of operation is important, however the operations required
+are undertaken in such a way that flexibility of network size and
+portability of code are maintained.
+
+\sec Network Size
+
+Any user specified network can have up to $8$ layers.
+It can have any number of \neus\ in these layers, depending solely upon
+available memory of the particular hardware implementation.
+
+Allocation of space for the network is completely dynamic.
+
+\sec File Input/Output Format
+
+All files used by and created by the program are ASCII files.
+As a direct result, data files can be generated by hand with an
+editor, as can network and configuration files.

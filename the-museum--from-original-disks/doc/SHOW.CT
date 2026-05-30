@@ -1,0 +1,521 @@
+/*  FILE = show.c */
+
+/* This file contains display procedures to be used during debugging and
+ * normal operation to display various pieces of data.
+ */
+
+#ifdef MSDOS
+#include <stdlib.h>
+#endif
+
+#include <stdio.h>
+
+/* Type declarations follow.
+ */
+
+#include "net_type.h"
+
+/* To use external routines and variables:
+ */
+
+#include "error.h"
+#include "fishNET.h"
+
+/* Displays the whole network on stdout.
+ */
+
+void
+show_network(network, parameter)
+LAYER           *network;
+QUESTION        *parameter;
+{
+ 	LAYER   *present_net;
+ 	NEURON  *neuron;
+ 	WEIGHT  *weight;
+
+ 	int     i;
+ 	int	j;
+ 	int	k;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdout;
+
+ 	for
+ 	(
+ 		i = 0, present_net = network;
+ 		i < parameter->layers;
+ 		i++, present_net++
+ 	){
+
+ 		fprintf(PORT, "Layer = %d.\n", i);
+
+ 		for
+ 		(
+ 			j = 0, neuron = present_net->layer;
+ 			j < parameter->per_layer[i];
+ 			j++, neuron++
+ 		){
+
+ 			fprintf(PORT, "\t n %d, out = %lf.\n", j, neuron->y);
+
+ 			for
+ 			(
+ 				k = 0, weight = neuron->weight;
+ 				k < parameter->per_layer[i+1];
+ 				k++, weight++
+ 			)
+
+ 				fprintf
+ 				(
+ 					PORT,
+ 					"\t\t%d, %lf, %lf, %lf.\n",
+ 					k, weight->w, weight->dE_dw,
+ 						weight->old_delta_w
+ 				);
+
+ 		fprintf(PORT, "\n");
+ 		}
+ 	}
+}
+
+/* Prints the whole network on stdprn.
+ */
+
+void
+print_network(network, parameter)
+LAYER           *network;
+QUESTION        *parameter;
+{
+ 	LAYER   *present_net;
+ 	NEURON  *neuron;
+ 	WEIGHT  *weight;
+
+ 	int     i;
+ 	int	j;
+ 	int	k;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdprn;
+
+ 	for
+ 	(
+ 		i = 0, present_net = network;
+ 		i < parameter->layers;
+ 		i++, present_net++
+ 	){
+
+ 		fprintf(PORT, "Layer = %d.\n", i);
+
+ 		for
+ 		(
+ 			j = 0, neuron = present_net->layer;
+ 			j < parameter->per_layer[i];
+ 			j++, neuron++
+ 		){
+
+ 			fprintf(PORT, "\t n %d, out = %lf.\n", j, neuron->y);
+
+ 			for
+ 			(
+ 				k = 0, weight = neuron->weight;
+ 				k < parameter->per_layer[i+1];
+ 				k++, weight++
+ 			){
+ 				fprintf
+ 				(
+ 					PORT,
+ 					"\t\t%d, %lf, %lf, %lf.\n",
+ 					k, weight->w, weight->dE_dw,
+ 					weight->old_delta_w
+ 				);
+ 			}
+ 		fprintf(PORT, "\n");
+ 		}
+ 	}
+}
+
+/* This routine displays all the data from the file relating to file_data.
+ */
+
+void
+show_data(data, file_data)
+I_O             *data;
+DATA_FILE       file_data;
+{
+ 	int     i;
+ 	int	j;
+
+ 	I_O     *work;
+ 	OP_DATA *xptr;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdout;
+
+ 	for
+ 	(
+ 		i = 0, work = data;
+ 		i < file_data.i_o_cases;
+ 		i++, work++
+ 	){
+
+ 		fprintf(PORT, "Case = %d.\n\t", i);
+
+ 		for
+ 		(
+ 			j = 0, xptr = work->item;
+ 			j < file_data.neurons;
+ 			j++, xptr++
+ 		)
+
+ 			fprintf(PORT, " %lf", xptr->x);
+
+ 		fprintf ( PORT, "\n" );
+ 	}
+}
+
+/* This routine prints all the data from the file relating to file_data.
+ */
+
+void
+print_data(data, file_data)
+I_O             *data;
+DATA_FILE       file_data;
+{
+ 	int     i;
+ 	int	j;
+
+ 	I_O     *work;
+ 	OP_DATA *xptr;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdprn;
+
+ 	for
+ 	(
+ 		i = 0, work = data;
+ 		i < file_data.i_o_cases;
+ 		i++, work++
+ 	){
+
+ 		fprintf(PORT, "Case = %d.\n\t", i);
+
+ 		for
+ 		(
+ 			j = 0, xptr = work->item;
+ 			j < file_data.neurons;
+ 			j++, xptr++
+ 		)
+
+ 			fprintf(PORT, " %lf", xptr->x);
+
+ 		fprintf(PORT, "\n");
+ 	}
+}
+
+/* Displays the required i/o case on stdout.
+ */
+
+void
+show_case(data, neurons, width)
+OP_DATA *data;
+int     neurons;
+int	width;
+{
+
+ 	int     i;
+ 	OP_DATA *work;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdout;
+
+ 	fprintf(PORT, "Data =\t");
+
+ 	for (i = 0, work = data; i < neurons; i++, work++)
+ 	{
+ 		fprintf(PORT, "%lf ", work->x);
+ 		if ( (i + 1) % width == 0 )
+ 			fprintf(PORT, "\n\t");
+ 	}
+
+}
+
+/* Prints the required i/o case on stdprn.
+ */
+
+void
+print_case(data, neurons)
+OP_DATA *data;
+int     neurons;
+{
+
+ 	int     i;
+ 	OP_DATA *work;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdprn;
+
+ 	fprintf(PORT, "Data =\t");
+
+ 	for (i = 0, work = data; i < neurons; i++, work++)
+ 	{
+ 		fprintf(PORT, "%lf ", work->x);
+ 		if ( (i+1) % 10 == 0 )
+ 			fprintf(PORT, "\n\t");
+ 	}
+}
+
+/* Displays the top (output) layer of neurons' output.
+ */
+
+void
+show_top_layer(network, parameter)
+LAYER           *network;
+QUESTION        *parameter;
+{
+
+ 	NEURON  *neuron;
+ 	int     i;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdout;
+
+ 	fprintf(PORT, "\nOutput =");
+
+ 	for
+ 	(
+ 		i = 0, neuron = (network + parameter->layers - 1)->layer;
+ 		i < parameter->per_layer[parameter->layers - 1];
+ 		i++, neuron++
+ 	){
+ 		fprintf(PORT, "%lf ", neuron->y);
+ 		if ( (i+1) % parameter->out_width == 0 )
+ 			fprintf(PORT, "\n\t");
+ 	}
+}
+
+/* Prints the top (output) layer of neurons' output.
+ */
+
+void
+print_top_layer(network, parameter)
+LAYER           *network;
+QUESTION        *parameter;
+{
+ 	NEURON  *neuron;
+ 	int     i;
+
+ 	FILE    *PORT;
+
+ 	PORT = stdprn;
+
+ 	fprintf(PORT, "\nOutput =");
+
+ 	for
+ 	(
+ 		i = 0, neuron = (network + parameter->layers - 1)->layer;
+ 		i < parameter->per_layer[parameter->layers - 1];
+ 		i++, neuron++
+ 	){
+ 		fprintf(PORT, "%lf ", neuron->y);
+ 		if ( (i+1) % parameter->out_width == 0 )
+ 			fprintf(PORT, "\n\t");
+ 	}
+
+}
+
+/* Saves the top (output) layer of neurons' output.
+ */
+
+void
+save_top_layer(network, parameter, port)
+LAYER           *network;
+QUESTION        *parameter;
+FILE            *port;
+{
+
+ 	NEURON  *neuron;
+ 	int     i;
+ 	int	j;
+
+ 	fprintf(port, "[start]\n\t");
+
+ 	for
+ 	(
+ 		i = 0, neuron = (network + parameter->layers - 1)->layer;
+ 		i < parameter->per_layer[parameter->layers - 1];
+ 		i++, neuron++
+ 	){
+ 		fprintf(port, "%lf ", neuron->y);
+ 		if ( ((i+1) % parameter->out_width) == 0 )
+ 			fprintf(port, "\n");
+ 	}
+ 	fprintf(port, "\n");
+}
+
+
+/* Saves a network to disk. For format see thesis.
+ */
+
+void
+store_network(network, parameter)
+LAYER           *network;
+QUESTION        *parameter;
+{
+
+ 	LAYER   *present_layer;
+ 	NEURON  *neuron;
+ 	WEIGHT  *weight;
+
+ 	int     i;
+ 	int	j;
+ 	int	k;
+
+ 	FILE    *saved;
+
+ 	if ( (saved = fopen(parameter->save_name, "w")) == NULL )
+ 		error_f
+ 		(
+ 			"Can't open file for saving network",
+ 			parameter->save_name
+ 		);
+
+ 	fprintf(saved, "%s\n", parameter->save_comment);
+
+ 	fprintf(saved, "[start]\n");
+
+ 	fprintf(saved, "layers\t%d\n", parameter->layers);
+
+ 	fprintf(saved, "neurons");
+
+ 	for (i = 0; i < parameter->layers; i++)
+ 		fprintf(saved, "\t%d", parameter->per_layer[i]);
+
+ 	fprintf(saved, "\nweights");
+
+ 	for
+ 	(
+ 		i = 0, present_layer = network;
+ 		i < parameter->layers;
+ 		i++, present_layer++
+ 	){
+ 		for
+ 		(
+ 			j = 0, neuron = present_layer->layer;
+ 			j < parameter->per_layer[i];
+ 			j++, neuron++
+ 		){
+ 			for
+ 			(
+ 				k = 0, weight = neuron->weight;
+ 				k < parameter->per_layer[i + 1];
+ 				k++, weight++
+ 			){
+ 				fprintf(saved, "\t%lf", weight->w);
+ 				if ( (k+1) % 10 == 0 )
+ 					fprintf(saved, "\n");
+ 			}
+
+ 			fprintf(saved, "\n");
+ 		}
+ 	}
+
+ 	fprintf(saved, "output width\t%d\n", parameter->out_width);
+
+ 	fprintf(saved, "\n");
+
+ 	fprintf(saved, "alpha\t%lf\n", parameter->alpha);
+
+ 	fprintf(saved, "epsilon\t%lf\n", parameter->epsilon);
+
+ 	fprintf(saved, "\n");
+
+ 	fprintf(saved, "sample in\t%s\n", parameter->sample_in.name);
+
+ 	fprintf(saved, "sample out\t%s\n", parameter->sample_out.name);
+
+ 	fprintf(saved, "\n");
+
+ 	fprintf(saved, "execute in\t%s\n", parameter->data_in.name);
+
+ 	fprintf(saved, "execute out\t%s\n", parameter->data_out.name);
+
+ 	fprintf(saved, "\n");
+
+ 	fprintf(saved, "start time\t%d\n", parameter->max_sweeps);
+
+ 	fprintf(saved, "learn time\t%d\n", parameter->max_sweeps);
+
+ 	fclose(saved);
+}
+
+/* Saves learning parameters and length of teaching time to disk.
+ */
+
+void
+store_learnt_parameters(parameter)
+QUESTION        *parameter;
+{
+
+ 	int     i;
+
+ 	FILE    *saved;
+
+ 	if ( (saved = fopen(parameter->save_name, "w")) == NULL )
+ 		error_f
+ 		(
+ 			"Can't open file for saving network",
+ 			parameter->save_name
+ 		);
+
+ 	fprintf(saved, "%s\n", parameter->save_comment);
+
+ 	fprintf(saved, "layers\t%d\n", parameter->layers);
+
+ 	fprintf(saved, "neurons");
+
+ 	for (i = 0; i < parameter->layers; i++)
+ 		fprintf(saved, "\t%d", parameter->per_layer[i]);
+
+ 	fprintf(saved, "\n\n");
+
+ 	fprintf(saved, "alpha\t%lf\n", parameter->alpha);
+
+ 	fprintf(saved, "epsilon\t%lf\n", parameter->epsilon);
+
+ 	fprintf(saved, "\n");
+
+ 	fprintf(saved, "sample in\t%s\n", parameter->sample_in.name);
+
+ 	fprintf(saved, "sample out\t%s\n", parameter->sample_out.name);
+
+ 	fprintf(saved, "\n");
+
+ 	fprintf(saved, "learn time\t%d\n", parameter->max_sweeps);
+
+ 	fclose(saved);
+}
+
+/* The routine below displays a permutation of the main comment block from
+ * the file fishNET.c.
+ */
+
+void
+show_help ()
+{
+ 	FILE    *help;
+
+ 	char    line[81];
+
+ 	if ( (help = fopen("help.hlp", "r")) == NULL )
+ 		error_f("Can't open help file", "help.hlp");
+
+ 	while ( fgets(line, 81, help) != NULL )
+ 		printf("%s", line);
+}

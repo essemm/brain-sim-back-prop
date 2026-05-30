@@ -1,0 +1,491 @@
+\part Introduction {The shortest distance between any two points is
+always blocked. {\bf Warren Monks, 1988}}
+
+\chap Introduction
+
+The aim of this project is to implement a \nn\ of an unspecified type.
+I have chosen to implement the back-propagation model, due to Rumelhart
+et al.
+The work is intended to make qualitative statements on
+several facets of the model.
+These are: the model's ability to learn and its dependence upon
+parameters, the model's accuracy of operation and its dependence upon
+parameters, and finally the model's behaviour upon introduction of
+casualties of varying severity into the network.
+
+In this chapter I intend to answer some fundamental questions about
+\nns, namely: what their biological relevance is, why and how
+they solve problems, different models that have been suggested by other
+authors, and how these networks can be simulated in hardware and
+software.
+
+In the next chapter I will discuss the back-propagation algorithm in
+detail, and the chapter following will contain a detailed implementation
+independent software specification for a software model.
+
+\sec Definition of Terms
+
+Before I begin this discussion of \nns, definition of a few
+terms will aid clarity~[1].
+
+A {\sl connection\/} is a signal pathway between processing elements (or
+\neus), that correspond to the axons and synapses of biological
+\neus.
+Many connections form a \nn.
+
+A {\sl processing element\/} is a simple artificially simulated \neu\ %
+that has a graded (analog) response.
+(From this point forward, I will draw a biological analogy and refer to
+processing elements as \neus.)
+It consists of a memory for its present state, and a transfer function
+that maps some function of the inputs to the output.
+The output is connected to many other processing elements' (or \neus')
+inputs.
+
+A {\sl weight\/} is a dynamic value (at least during learning) that
+determines the intensity of connections between \neus.
+Weights can be positive or negative (or zero,) indicating an excitatory or
+inhibitory (or no) connection.
+A weight is associated with a single input connection to a \neu.
+
+\sec So, What Is a \NN?
+
+A \nn\ is a collection of graded response \neus\ (processing elements),
+representing an approximation to biological \neus, in some kind of
+feedforward/feedback network.
+
+There are many different kinds of \nns\ (Hecht-Nielsen~[1] suggests 
+that there are 13
+main types), with the most common (or important) being the Hopfield,
+back-propagation (Rumelhart et al.), ``improved'' neocognitron (Fukushima), and
+adaptive resonance theorem or ART (Carpenter and Grossberg).
+Each is particularly good at a number of tasks, and some have weak
+points.
+They vary considerably in complexity and power.
+
+\Nn s are often described as a network of ``collective decision''~[2]
+circuits.
+They gain their power the same way the human brain does: many (many
+many) simple analog devices computing at the same time, while connected
+in parallel and continuously communicating with each other.
+The human brain has, by most estimates, $10^{11}$ \neus\ %
+($100$~billion!) with up to~$10\,000$ interconnections per \neu.
+Imitating the performance of a human ``biological \nn'' with an
+artificial one is not and may never be feasible.
+However, some of the characteristics of the brain, such as the ability
+to learn or be taught (there is a difference here, as some networks
+teach themselves and some require a teacher) can be achieved.
+The brain often returns several possible solutions to a problem, with
+varying degrees of certainty.
+Artificial \nns\ can do this.
+And both man and \nns\ can infer the original from an image that is
+noisy, or showing only parts of the whole.
+\goodbreak\midinsert\vskip 6cm
+Figure 1. Classic neural circuit.\hfill Figure 2. I/O response of simulated
+\neus.
+\endinsert
+Figure~1 shows the classic feedforward and feedback neural circuit, and
+figure~2 demonstrates the sigmoid output response of a simulated \neu.
+These diagrams are referred to in a later section, ``Why and how do
+\nns\ solve problems?''
+
+Simulations of \nns\ involve several important simplifications to the
+behaviour of the individual \neus.
+It has been shown that analog \neus\ perform better than earlier 
+two-state (binary \neu) attempts~[2,17], but many features evident in 
+biological \neus\ %
+(much chemistry is discussed in~[3])
+are simply ignored in the most commonly used models of \neus, and analogies
+are made to voltages and currents.
+The model I will use for \neus\ is simple also, with the transfer
+function shown in figure~2 being the output from the inputs times the
+weights and summed.
+The relationship of the simple model to biology is shown in~[4].
+
+\sec Neurological Relevance
+
+Neurons themselves, in most models, are extremely simplified versions of
+the real biological article.
+So, it is the overall structure of a \nn\ that makes it relevant to
+neurology, not its individual components.
+This has been proven by many people; examples will be described
+below.
+Techniques for using \nns\ in neurology take two approaches: the structure of the
+brain is discovered by experiment, and a network is built to verify this
+(there is suprisingly good correlation between the results of
+experiments such as this and the network), or a network of the
+appropriate model is built and taught and then the parts of the brain
+corresponding to the model are easily identified.
+Both methods, by dealing with small parts of the brain at a time, have
+yielded very good results.
+
+Parts of the brain, specifically area~7a of the posterior parietal
+cortex in monkeys, have been successfully modelled by Zipser and
+Andersen~[5] using
+back-propagation [20] learning in a feed-forward \nn, similar in form to the
+one intended for this project.
+The neurons respond to the location of the stimulus with respect to the
+eye and the position of the eyes to calculate the location of external
+objects.
+Even though the authors admit that there is no way
+that the back-propagation method is the only method used in the brain,
+it is very likely that a combination of Hebb-like~[6,18] learning and
+the feeding back of errors would generate similar results. (Hebb was the
+first to suggest a biologically plausible method of learning. 
+It is described in a later section.)
+They note also that all cortical connections in the brain have
+reciprocal feedback pathways, presumably for the feeding back of error
+signals.
+
+Bear, Cooper and Ebner~[3] have used \nns\ in the reverse direction to
+study the primary visual cortex area 17 in adult cats.
+They used a \nn, determined theoretically how the \neus\ could behave,
+and compared this with the actual data.
+The theoretical model, then, enabled the researchers to sort out which
+of the possible hypotheses of brain function was most correct by experiment.
+
+Frohn, Geiger and Singer~[7] have used a model based not on rigorous
+maths, but, rather, neurological data, to account for the features in a
+mammal's visual system.
+They arrived at a~5 layer model, trained by a Hebb-like rule~[6,18] that
+teaches itself.
+This allowed the authors to conclude that ``the internal representation
+of a stimulus is the spatial activity pattern of a reciprocally coupled
+population of \neus,'' i.e.\ the knowledge of patterns in the visual system
+is distributed.
+Sun, Chen and Lee [19] also give a mathematical description of Hebbian
+learning of stereopsis in a \nn.
+
+The importance of motion to the perception of structure in mammals has
+been simulated~[8] with a three-layer back-propagation \nn, and the
+performance of the model was almost identical to that of man and monkey.
+The first and third layers of the model are designed to simulate 
+\neus\ in a particular area of the brain, while it has not been accurately
+determined where the middle layer could lie. 
+
+Some models of \nns, such as ART (due largely to Grossberg), are strongly 
+based on structures found in certain parts of the brain. 
+In fact, experiments with ART networks have led to a number of important
+predictions~[9] of human brain structures that have been proven correct.
+Needless to say ART is an extremely complex form of network.
+
+Other authors such as Lyon and Mead [21] have taken an entirely different
+approach.
+They argue that to build machines that operate like humans then the
+machines will need to ``perceive'' like humans.
+Hence they have built an electronic cochlea based around analog
+neuron-like components which operate like the human ear.
+This approach appears very fruitful, and I suspect we will see more
+machines designed about human form (cybernetics) in the future.
+
+\sec Why and How do \NN s Solve Problems?
+
+As mentioned earlier, \nns\ gain their power from the connection of
+simple analog devices in parallel.
+The human brain has roughly~$10^{11}$ \neus, and each \neu\ %
+can have up to~$10\,000$ interconnections.
+Each connection can be an excitatory or inhibitory input or feedback, or
+an output connection to other \neus.
+
+At present, it seems the largest neurocomputer\footnote*{Dedicated
+machines built to run models of neural networks appear to have acquired
+the jargonistic term ``neurocomputers''.} built to date has~$10^6$
+\neus\ and interconnections totalling~$1.5\times10^6$ in total~[1].
+This is, of course, far from the complexity of the human brain, but as
+we shall see it still offers a great deal of power in solving problems.
+
+There are lots of common problems which cannot, as yet, be solved  by
+standard serial algorithmic means (some suggest they can never be).
+For instance, recognizing the difference between friendly and enemy
+aircraft, a spoken language translator, or a system recognizing speech
+no matter who is speaking.
+
+Human beings perform these tasks without any apparent difficulty, once
+they have learned to do so.
+Often, for many of these actions, there is no need to be explicitly taught.
+For all of these problems, we as man or woman can generate many examples 
+of what the
+output should be for a given input, even though we cannot write down a
+fixed algorithm on how to do it.
+
+But \nns, without being programmed with an algorithm but taught instead,
+can already perform many of these tasks with~$95\%$ accuracy. For
+example, Kohonen~[10] has built a phonetic typewriter, Fukushima~[11]
+has used his ``improved''\footnote*{In the latest writings I possess~[11],
+Fukushima refers to the model he is working on as an improved version of
+his slightly older neocognitron model (circa 1984). Hence I have dubbed it an
+``improved'' neocognitron, as no other official term was used in
+[11].} 
+neocognitron model to recognise Chinese characters, and many
+authors have shown the ability of \nns\ to remove noise and recognize
+patterns~[7,11,12,23,24,25].
+Many other implementations of this new non-algorithmic \nn\ programming are
+being carried out.
+A very good example is using \nns\ as a signal analyser to detect
+subtle patterns in neuroelectric signals from brian data with ``highly
+dimensioned noise'' [26].
+
+To understand how \nns\ solve problems, we'll first try to get an
+intuitive feel for how they work, compared to a digital or Von~Neuman
+machine that we are all, no doubt, familiar with already.
+
+A digital machine takes an input, such as programs and data, and goes
+through a rigidly defined set of steps (instructions), branching if
+necessary, and producing an output of some kind, based upon program and
+data.
+On the other hand, \nns\ or collective decision circuits, take 
+inputs and move to minimize
+some function of the ``computational energy'' of the inputs, based upon
+the dynamic weights of the connections between the \neus. 
+Some authors, notably Hopfield and Tank~[2]\footnote{**}{and recognized 
+in~[13] as relating to other physical systems as well, notably spin glasses},
+see \nns\ as an energy
+reducing machine: imagine an $n$-dimensional surface of hills and
+valleys, with the computation beginning
+at some high point on the surface.
+As the computation procedes it will move to a valley, downhill (i.e.\ %
+minimizing ``computational energy''), until it is stable.
+The final answer then appears at the output \neus.
+
+Consider figure~1 again.
+It contains several types of \neus, namely what we can call
+``principal'' and ``inhibitory'' \neus\ (labelled by `P' and `IN'
+respectively).
+Looking at figure~2, imagine the response of the `P' \neus\ follows the
+solid line, and the response of the `IN' \neus\ follows the dotted line.
+Then, the response of the circuit to an input will depend upon the
+weights on the connections between \neus.
+As you can see, the deviation from zero of an input to any 
+\neu\ (and the input is
+the sum of the outputs of the previous \neus\ times their connection
+weights) will tend to drive it strongly towards a positive or negative
+output.
+All the \neus\ ``calculate'' at the same time, so the behaviour of a
+neural system (especially a very large one) is not trivial, and can't be
+written as a serial algorithm.
+
+\sec Types of \NN s
+
+There are many different types of \nns.
+Some are particularly suited to some types of problem, some are suitable
+for many types of problem.
+Some can ``learn'' without supervision, others require a teacher.
+Most of these neural models are grounded upon Donald
+Hebb's~[6] theory of synapse modification.
+He indicated that a plausible explanation for learning would be for
+connections between \neus\ to strengthen if the activity of both ends of
+the connection increased (ie., reinforce the connection) and weaken the
+connection if the ends weaken in activity (ie., inhibit the connection).
+To various extents, all these models aim to implement ``Hebbian''
+learning by one method or another.
+(Hebb never mathematically quantified his thinking.
+A good approach to doing just this is given by Linsker [18].)
+Examples of several types of \nns\ appear below.
+
+\ssec The Hopfield Network
+
+The Hopfield network shown in figure~3 is the simplest type of network,
+yet it is suprisingly powerful.
+\figure {3} {5} {Hopfield network}
+It has a feedback structure, and it cannot learn (although a technique
+for teaching feedback networks has been suggested by Atiya~[14]).
+The selection of weights depends upon the problem at hand, for example
+classic computer science problems such as the Travelling Salesman
+Problem (TSP), the book stacking problem, and a symmetry detector.
+All these problems can be computed after the appropriate weights are set
+up in the feedback structure.
+
+Consider the Travelling Salesman Problem, or TSP.
+A salesman is required to visit a number of cities, by the shortest
+possible route.
+Imagine that there are 30 cities on the tour.
+Comparing the \nn\ solution to the serial solution shows some staggering
+results!
+
+Let's see the difference between a brute force approach, a good serial
+algorithm, and a Hopfield \nn\ solution.
+Based upon estimates from~[15],
+probably~$10^{30}$ comparisons would be needed for a brute force
+approach.
+This is obviously not computable.
+An excellent serial algorithmic estimation approach would 
+require roughly~$1\,500$
+comparisons in the best case (but probably many more).
+But a Hopfield \nn, it has been found, will select one of the
+best~$10^7$ solutions (and this is as good as or better than the algorithmic
+approach described above) in a single convergence of the network, or
+several time-constants of the ciruit of figure 3.
+Quite a difference.
+
+\ssec The Back-Propagation Network
+
+This is another ``classic'' \nn, along with the one described above
+(they appear to be the most commonly implemented in neurological
+experiments).
+The inventors and main developers~[1] are considered to be Werbos,
+Parker and Rumelhart.
+It has a feedforward structure, as shown in figure 4.
+\figure {4} {5} {A typical back-propagtion network}
+This network can be taught [20], ie strengths of connections may be varied
+within a rigidly defined set of rules called a ``learning algorithm'',
+rather than being set by hand.
+The next chapter explains the back-propagation algorithm in detail.
+
+The network learns by comparing the network output with the desired
+output, for a fixed input.
+The error is used to change the weights, then another input/output pair
+is presented.
+The process continues through the samples as many times as necessary
+until the error falls below a certain threshold.
+How many times each input/output pair needs to be presented is a matter
+of conjecture, and one of the things I'm going to investigate later in
+the project.
+
+By itself, back-propagation networks are not neurologically plausible.
+However, the propagation of errors back through the network by feedback
+is known to occur in the cerebal cortex.
+
+Like all other \nns, this one is redundant (ie knowledge is distributed)
+and so behaves sanely when
+casualties in processing elements occur.
+Once again, exactly how robust a network is is for me to investigate later
+in the project.
+
+Back-propagation networks are good for solving problems such as speech
+synthesis and adaptive control.
+
+\ssec The ``Improved'' Neocognitron
+
+The ``improved'' neocognitron, along with the next model discussed, falls 
+into that category of \nns\ that are more neurologically sound in their
+design.
+They both contain more complex \neus, with complex feedforward and
+feedback connections.
+
+Fukushima~[11] has used his model to recognise Chinese characters, a
+task that is readily performed by over~1~billion Chinese every day but
+was yet to be done reliably by machine.
+It is largely immune to those bugbears of artificial \nns, namely
+rotation, translation, and changes in scale.
+One of the most astounding properties of this model is its ability to
+shift ``attention'', just like a human, from one pattern to another for
+an input that contains several recognisable patterns at the same time.
+(See~[11], which has examples.)
+\figure {5} {6} {An example of an ``improved'' neocognitron}
+
+Figure 5 shows us the nature of the network: feedback and feedforward
+paths, with dynamic gain and threshold controls forming part.
+There are fixed and dynamic connections between \neus.
+
+The model functions as follows: As patterns are recognized by the
+network (by itself ie., without a teacher), the top or ``recognition''
+layer of \neus\ becomes active.
+The output of this layer is fed back down to the lower stages, which, by
+varying the gain, enforce the forward flow of the recognized pattern.
+After the network has learnt to recognize the presented patterns, by
+simply breaking the feedback path for an instant the ``attention'' is
+switched to another recognizable pattern, and a new pattern will be
+recognized at the output.
+Needless to say, this network is too complex to implement in the short
+time available, so this is as thoroughly as it will be discussed.
+
+\ssec The Adaptive Resonance Theory Model
+
+The Adaptive Resonance Theory (or ART) model is the most complex one
+discussed here~[9].
+
+ART systems belong to a group of \nns\ which fall into a category of
+``competitive learning'' models.
+It has been used for visual pattern recognition, speech perception, and
+radar classification.
+
+Even though it is the most complex model examined here, it can be
+simply described as a two layer network with gain control.
+There is a distinction between ``short'' and ``long'' term memory, with
+memory decaying slowly over time (like a human brain, if some things are not
+used all the time they are gradually forgotten\dots)
+There is extra circuitry as well for resetting the second layer (ie
+disabling its reinforcing action) when there are sufficiently large
+mismatches between the two levels.
+
+\sec Simulating \NN s in Hardware
+
+As explained earlier, \neus\ have a graded response.
+Hence it is possible to simulate a \neu\ with a transfer function like
+that of figure~2 as an amplifier with a similar response.
+It would be possible, if one stretched one's imagination a little, to
+build a huge multi-million \neu\ ``brain'' from op-amps and resistors,
+similar in structure to the network shown in figure 1.
+However, this is not a particularly sensible aim, for instance how do
+the weights change automatically? (Who twiddles the knobs on the
+variable resistor as the network learns?)
+For {\sl small\/} problems, this technique could be used.
+\figure {6} {5} {A special machine for the TSP}
+For example Hopfield and Tank~[2] devised such a contraption shown in
+figure~6 using a Hopfield network that could solve the TSP for however
+many cities it was wired for (I don't think they actually built it).
+The output is indicated by a globe lit for the appropriate city (column)
+in the appropriate order (row) of the salesman's trip.
+The device's weights are set so that only one globe can light fully in
+any row or column.
+Needless to say after that example the discrete approach to \nns\ is not
+particularly popular.
+
+There have been some attempts at analog ICs with variable internal
+weights (one such is described in~[2]).
+The ones built have functioned successfully as associative memorys.
+However the density and accuracy of VLSI analog ICs is low, so
+this approach has not been terribly fruitful.
+
+A novel approach to hardware simulation has been described by Murray and
+Smith [16], whereby they use digital ICs which use pulse stream
+arithmetic.
+Streams of pulses of varying frequency are gated within the connections.
+This gives a situation near to biology, where a \neu\ that is {\sl ``on''\/}
+produces a regular train of digital pulses (the frequency dependent upon
+its {\sl ``on''}ness), while a \neu\ that is {\sl ``off''\/} produces nothing.
+This technique is still in the experimental stage at the date of
+publication, but it could prove possible to efficiently perform
+significant calculations in this way in hardware.
+
+Another novel approach is described by Vidal~[22].
+He proposes a \nn\ implemented in programmable logic, using purely
+digital techniques, and argues that possibly digital (Boolean)
+techniques offer a good solution to network problems.
+This is an example of how varied the models for both hardware and
+software are, and how much there is that is still undiscovered and
+undecided in this field.
+
+The perfect hardware for the parallel operation of a \nn\ is not planar
+silicon.
+Most authors suggest that three dimensional biological materials are
+infinitely better suited to parallel processing than a two dimensional
+substance.
+However optical computers, which are parallel by their very nature, could
+offer processing solutions in the long term.
+
+It is now easy to understand why most \nns\ are simulated in software.
+Most of the references given refer to software models as they are more
+flexible, though slower.
+The next section deals briefly with this.
+
+\sec Simulating \NN s in Software
+
+As I stated at the start of this chapter, this project is intended to
+produce a working neural network of the back-propagation model~[20].
+Simulation of the parallel activity of the \neus\ is possible by 
+imagining the operations
+occuring in discrete time steps, and calculating one row of \neus\ at a
+time.
+Of course, this technique works best when signals flow in only one direction,
+such as in back-propagation models, because then one can calculate the
+first layer, then the values from the first give the second, etc.
+
+The simulation of other networks such as the ``improved'' neocognitron
+will not be considered here, but I suspect it would not be much more
+difficult: possibly requiring calculations of layers with smaller time
+steps due to the more complex interactions between layers.
+
+The next chapter describes the mathematics behind the back-propagation
+algorithm to be implemented, based largely on~[20] by Rumelhart, Hinton
+and Williams.

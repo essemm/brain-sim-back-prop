@@ -1,0 +1,139 @@
+\part {Using FishNET} {}
+
+\chap Introductory Experiments
+
+The back-propagation algorithm described in an earlier section was
+applied to several problems using the software package fishNET.
+Various input data was used, and the number of middle (intermediate)
+layer \neus\ was varied.
+The learning parameters $\alpha$ and $\varepsilon$ were also
+modified.
+
+Due to most of the work being carried out on a PC, there was an
+upper limit to the number of \neus\ used in simulations.
+The case dealt with in detail was extensively tested with parameter
+variations.
+The other examples here will be examined briefly to show how
+versatile a \nn\ is.
+
+The intent of this chapter is to illustrate
+the initial experiments that were performed with fishNET to
+prove that it worked as desired.
+It is possible to use fishNET to do many different tasks simply by creating
+the appropriate input and output data.
+The software will then generate a generalised network, with no other
+human input.
+It is a remarkable tool.
+
+Later chapters investigate further the effects of parameters on
+network behaviour, and the effect of casualties within the network.
+
+\sec The First Test --- O and X Recogniser
+
+The first piece of test data that was created and run on the network
+was a simple O and X recogniser.
+There were~$9$ \neus\ (bits) on the input, $6 \to 9$ \neus\ in the middle
+layer, and~$2$ output \neus\ (bits), each one of which signalled either a O
+or a X.
+The network converged to a solution in about~$100$ learning
+iterations for~$7$ intermediate layer \neus; the speed of learning
+versus number of intermediate \neus\ will be discussed later.
+
+The input and output data is shown below
+\def\tablerule{\noalign{\hrule}}
+$$
+\eqalign{\vbox{\tabskip=0pt \offinterlineskip
+\halign{\strut#& \vrule#\tabskip=1em plus2em& \hfil#& \vrule#&
+ \hfil#\hfil& \vrule#& \hfil#& \vrule#\tabskip=0pt\cr\noalign{\hrule}
+&&\multispan5\hfil Input 1\hfil&\cr\noalign{\hrule height1.5pt}
+&&1&&0&&1&\cr\noalign{\hrule}
+&&0&&1&&0&\cr\noalign{\hrule}
+&&1&&0&&1&\cr\noalign{\hrule}
+}}}
+\quad\eqalign{\vbox{\tabskip=0pt \offinterlineskip
+\halign{\strut#& \vrule#\tabskip=1em plus2em& \hfil#& \vrule#&
+ \hfil#\hfil& \vrule#& \hfil#& \vrule#\tabskip=0pt\cr\noalign{\hrule}
+&&\multispan5\hfil Input 2\hfil&\cr\noalign{\hrule height1.5pt}
+&&1&&1&&1&\cr\noalign{\hrule}
+&&1&&0&&1&\cr\noalign{\hrule}
+&&1&&1&&1&\cr\noalign{\hrule}
+}}}
+\qquad\eqalign{\vbox{\tabskip=0pt \offinterlineskip
+\halign{\strut#& \vrule#\tabskip=1em plus2em& \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#\tabskip=0pt\cr\noalign{\hrule}
+&&\multispan3\hfil Output 1\hfil&\cr\noalign{\hrule height1.5pt}
+&&0&&1&\cr\noalign{\hrule}
+}}}
+\quad\eqalign{\vbox{\tabskip=0pt \offinterlineskip
+\halign{\strut#& \vrule#\tabskip=1em plus2em& \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#\tabskip=0pt\cr\noalign{\hrule}
+&&\multispan3\hfil Output 2\hfil&\cr\noalign{\hrule height1.5pt}
+&&1&&0&\cr\noalign{\hrule}
+}}}
+$$
+\centerline{Figure 8. Two simple input/output case pairs.}
+
+To test if the network generalised, even for such a simple
+case, input data not used for training was input (such as~$0.5$s
+being used to replace some of the~$1$s in the shapes).
+The network produced the correct results.
+
+\sec A More Ambitious Test --- Shadow Encoding
+
+Burr [25] discusses the use of a~$13$ segment shadow encoder as a
+means of describing hand written data for input to a \nn.
+He aimed to be able to recognise the alphabet as written by a
+particular writer.
+He took~$8$ samples of the alphabet written over a period of time,
+and then trained the network on~4 of the samples, using the other~4
+as test data to see if the network could successfully recognise
+them.
+His approach was remarkably fruitful, with a recognition rate of up
+to~99\%.
+The example given here was not that large.
+
+Shadow encoding can be illustrated by figure 9,
+from Burr [25].
+\figure {9} {5} {Shadow encoding of the letter `S'}
+
+Several attempts were made at using this shadow encoded alphabet
+with fishNET.
+Initially, 5 letters were encoded and the network was trained to
+recognise them within a hundred or so learning iterations.
+However, when the~5 letters were replaced by the full alphabet, the
+computational time per learning iteration of the network rose by a factor
+of more than~7 (since~5 times as many input/output cases, plus more
+neurons in the middle layer).
+Hence this network was never fully allowed to converge to a
+solution.
+Possible methods of speeding convergence are dealt with in a later
+chapter.
+
+\sec Dot Matrix Letter Encoding
+
+This was the other major initial test experiment.
+Shadow encoding, although partly removing some of the inherent problems of
+\nn\ character recognition such as rotation, can't be easily
+visualised.
+The aim of this thesis is to provide qualitative judgements on
+network behaviour, so for this reason a more easily visualised
+encoding technique was sought.
+Dot matrix encoding of several letters of the alphabet was chosen.
+
+Various sizes (geometries) of the input layer were tried, and to make symmetric
+letters easier to encode an odd number of \neus\ was always used in
+both dimensions.
+The number of \neus\ in the bottom layer was increased as the
+processing speed increased due to the addition of the floating
+point processor (8087).
+First attempts were for a~$5\times 7$ grid of input \neus, but this
+was too small for reasonable test data to be generated.
+$9\times 11$ was also tried, before finally selecting~$13\times 15$.
+This rather large number of \neus, (195 in the bottom layer,) gives
+a dot matrix encoded letter that is of reasonable quality, while
+still being easily computable in a network on a PC with
+an~8087.
+
+This example is extensively discussed in the next chapter, and is
+used throughout the thesis for experimental purposes.
+

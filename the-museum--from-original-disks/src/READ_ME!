@@ -1,0 +1,55 @@
+							4 November, 1988.
+
+Hi,
+
+	This is the readme file for the source code diskette.
+
+	On this diskette, you will find all the C source and include files
+necessary to make fishNET go.
+
+	To compile it in MSDOS systems with Microsoft compilers, just
+type
+
+			make fishNET
+
+which will use the program maintenance utility to make the code.
+
+	If your system doesn't have an 80(1/2/3)87, you will need to edit
+the makefile, called fishNET, and remove the ``-FPi87'' directive. Also,
+you will need to replace the ``qcl'' compiler name with ``cl'' if you want
+to use the full Microsoft compiler instead of the default QuickC.
+
+	For Unix systems, enter the Makefile as shown in the thesis document
+in Appendix A.
+
+	For MSDOS systems with an 80(1/2/3)87, object (*.obj) and executable
+(*.exe) files are given. NOTE again that you MUST recompile them without the
+``-FPi87'' directive if you don't have a coprocessor.
+
+	Good luck with fishNET.
+
+Scott MacGibbon.
+
+P.S. I couldn't find any, but if YOU find any bugs, I would be very keen to 
+hear about them, so please call me on (02) 523-2545 any time with reports.
+Thanks.
+
+P.P.S. I have also included 2 extra files on this diskette. One is a program
+called ``mtbf'' which will give you the mean time between failure for a system.
+See the thesis, chapter 8, and reference [28] for more information.
+
+	The other is a program called ``erate'' which is a very crude program
+for calculating the total error as used in the thesis for chapters 7 and 8.
+It compares the entered data file with dat\huge.out, or so I think from
+memory. Anyway, I just bashed it out in a hurry, and it is ripe for
+enhancement (especially with regard to the file used for comparison). 
+Note that its calculation of total error is twice that calculated
+in chapter 2, because I didn't worry about multiply it by 1/2 for comparison
+purposes in the experimental chapters. Also, you will need to link to some
+of the object modules of fishNET for the file parsing routines. The modules
+that you will have to link to have are the same ones whose ``.h'' files are
+included at the start of the file. Don't worry about the link errors, as those
+routines aren't called by ``erate''.
+
+	Once again, they are compiled for 80(1/2/3)87 systems.
+

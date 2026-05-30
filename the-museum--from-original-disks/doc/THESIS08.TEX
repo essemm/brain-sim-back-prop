@@ -1,0 +1,270 @@
+\chap Effects of casualties
+
+One feature that separates \nns\ from other computational 
+techniques is the fact that knowledge is distributed amongst the
+weights in the network.
+Hence, any network is redundant, and can sustain a certain amount of
+injury without being overly affected.
+Once again, just how much damage a \nn\ can take is something that
+has not yet been widely investigated, but the simple experiments
+detailed here, even though possibly not statistically sound, (only
+one network was used,) provide an important insight into general
+network behaviour.
+
+The approach taken involved selection of a network, then damaging
+the network and examining its behaviour for the same data set used
+in the last chapter.
+The network selected had the largest~$\varepsilon$ used,
+$\varepsilon = 1.0$, and the smallest number of middle layer \neus,
+$n_{\rm layer\ 1} = 15$.
+This combination was chosen because it had the lowest error rate out
+of any of the networks examined previously, and because it was
+easiest to edit, with only a small number of middle layer \neus.
+
+Casualties in the network took two forms.
+First, random weights were damaged (set to zero) to
+simulate the destruction of connections between \neus.
+Various percentages of total connections were removed, namely~2.5\%,
+5\%, 10\%, 20\%, 30\%, and finally~40\%.
+The total error, (as before, $E$, the sum of the square of the
+difference between actual and expected outputs,) and actual error
+(the number of cases where the output layer \neus\ chose the wrong
+pattern,) were calculated.
+
+Second, individual \neus\ in the middle layer were ``damaged,'' that
+is all the connections between their outputs and the top (output)
+layer were set to zero.
+The effect of the removal of between~1 and~7 out of~15 possible
+\neus\ was examined, with total and actual error again being used.
+
+We examine below these two types of casualties.
+A summary of results is given at the end of this chapter.
+
+\sec Casualties in Connections
+
+FishNET, the \nn\ simulator package used in this thesis, stores
+networks as ASCII files.
+Hence, generating casualties in the network is a simple matter of
+randomly picking a weight and setting it to zero.
+This procedure was followed several hundred times, to produce
+weight casualty rates of~0\%, 2.5\%, 5\%, 10\%, 20\%, 30\%, and~40\%.
+The results of this damage appear in the table below.
+Actual and total error are given for each percentage group.
+$$
+\vbox{\tabskip=0pt \offinterlineskip
+\def\tablerule{\noalign{\hrule}}
+\halign{\strut#& \vrule#\tabskip=1em plus2em&
+ #\hfil& \vrule width1.5pt#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#\tabskip=0pt\cr
+\tablerule
+&&&&\multispan{13}\hfil Casualty Rate (weights)\hfil&\cr
+\tablerule
+&&{\ninerm Error}&&0\%&&2.5\%&&5\%&&10\%&&20\%&&30\%&&40\%&\cr
+\noalign{\hrule height1.5pt}
+&&{\ninerm Total}&&4.97&&5.11&&6.09&&6.60&&6.82&&7.97&&16.23&\cr
+\tablerule
+&&{\ninerm Actual}&&3&&3&&4&&4&&3&&4&&15&\cr
+\tablerule
+}}
+$$
+\centerline{Figure 15. Table of total and actual errors.}
+
+These figures are graphed in figure 16.
+
+\figure{16} {8} {Total and actual error versus \% weight casualties}
+
+Some very interesting features emerge from this data.
+With~2.5\% casualties, there is no appreciable difference in actual
+or total error.
+Once the number of casualties is doubled to~5\%, the total error
+increases by~20\% and the actual error rate by~25\% (but as we shall see,
+this is not an overly relevant figure).
+However, for a further doubling of casualties to~10\%, there is only
+an~8\% increase in total error, and doubling the damage
+again causes a {\sl decrease\/} in actual error,
+indicating that there is some random variation in actual error
+results (so the previous increasing figure can be neglected).
+From~0\% to~20\%, there is only a~37\% increase in total error,
+and {\sl no\/} increase in actual error.
+So it appears that network behaviour is not greatly modified at
+casualty rates of up to~20\%.
+By the time casualties reach~30\%, total and actual error are rapidly
+on the increase.
+
+Looking at the graph, we see that the error starts to increase
+rapidly beyond casualty rates around~30\%.
+Error rates of both kinds become exponentially worse, and the
+network can be said to be no longer able to recognize patterns
+meaningfully.
+(Actual error has risen from~$3\over20$ or~$4\over20$ cases
+at~$20\to30$\% casualties, to~$15\over20$ by~40\% casualties.)
+
+From this data, we draw the conclusion that our $\varepsilon = 1.0$
+and $n_{\rm layer\ 1} = 15$ network can sustain random injuries in up to
+between~20\% and~30\% of weights, and still function satisfactorily.
+This is quite incredible.
+
+Larger networks (with larger intermediate layers) probably behave in
+much the same way.
+Of course, for the same {\sl number\/} of weight casualties the
+effects will be less, but for the same {\sl percentage\/} of the
+total weight population the behaviour will probably be the same.
+
+\sec Casualties in Middle Layer Neurons
+
+In this experiment, various numbers of middle layer \neus\ were
+disabled, by setting the connecting weights between these \neus\ and
+the output layer to zero.
+This simulates the destruction of the individual processing
+elements.
+Here the effect of the removal of between~0 and~7 out of~15 middle
+layer \neus\ is examined.
+
+A table containing total and actual error data for a varying number
+of \neus\ removed is shown in figure~17.
+$$
+\vbox{\tabskip=0pt \offinterlineskip
+\def\tablerule{\noalign{\hrule}}
+\halign{\strut#& \vrule#\tabskip=1em plus2em&
+ #\hfil& \vrule width1.5pt#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#\tabskip=0pt\cr
+\tablerule
+&&&&\multispan{15}\hfil Number of Casualties (\neus)\hfil&\cr
+\tablerule
+&&{\ninerm Error}&&0&&1&&2&&3&&4&&5&&6&&7&\cr
+\noalign{\hrule height1.5pt}
+&&{\ninerm Total}&&4.97&&4.97&&5.27&&7.47&&8.39&&9.76&&10.44&&11.21&\cr
+\tablerule
+&&{\ninerm Actual}&&3&&3&&3&&6&&6&&9&&10&&7&\cr
+\tablerule
+}}
+$$
+\centerline{Figure 17. Table of total and actual errors.}
+
+These figures are graphed in figure~18.
+
+\figure {18} {5} {Total and actual errors versus number of layer 1
+\neu\ casualties}
+
+Another lot of interesting results comes from the table and graph.
+With up to~2 \neus\ removed, there is no appreciable increase in
+actual or total error.
+With more than~2 removed, the actual error doubles and continues to
+increase as more \neus\ are removed.
+As the graph shows, the network rapidly decreases in usefulness as
+the number of damaged \neus\ increases.
+
+The data, then, shows us that the removal of a \neu\ has a more
+dramatic effect as a straight percentage of \neus\ in the middle
+layer than weight damage has.
+If more than about~13\% $({2\over15})$ are damaged the network can't
+really be used.
+It is possible as well to look at the removal of \neus\ as a form of
+weight damage.
+By looking at it in this way, some remarkable conclusions can be
+drawn about the representation of knowledge in the network, 
+without even having to examine the distribution of weight
+patterns in the network.
+
+If one \neu\ out of~15 is damaged, then this is equivalent to the
+systematic (instead of random) removal of~$1\over15$th of the total
+\neus\ in the network.
+Once the number of systematically removed weights
+reaches more than~13\%, the performance degrades rapidly.
+This fact reveals some important aspects of network behaviour.
+Even though the percentage of weights damaged systematically is
+lower, the effect is much greater than random weight damage.
+
+Behaviour such as this indicates that although the knowledge of any
+pattern is widely distributed among the weights in the network, the
+selection of features is centralised into groups of \neus\ in the
+middle layer.
+Hence the injuring of intermediate layer \neus\ %
+removes almost entirely, instead of
+partially as for weights, a network's ability to recognise features
+of a pattern, which in turn affects the output of pattern
+recognition by the top layer.
+
+For illustrative purposes, a mean time between failure analysis is
+undertaken below to show just how reliable a \nn\ is with regard to failure
+in intermediate layer \neus.
+
+\sec Mean Time Between Failure Analysis
+
+Angus [28] gives a simple calculation for mean time between 
+failure (MTBF), which we use below for illustrative purposes.
+From [28],
+$$
+{\displaystyle\theta_{\rm sys}} = 
+	{\displaystyle{\sum_{i=0}^{n-k} {n\choose i} (\lambda/\mu)^i}\over
+		\displaystyle{k\lambda {n\choose k} (\lambda/\mu)^{(n-k)}}},
+$$
+where the notation is explained as
+$$
+\halign{#\hfil&$\qquad$#\hfil\cr
+$n$&number of nominally identical units\cr
+$k$&minimum number of operating units for system to operate successfully\cr
+$\theta_{\rm sys}$&mean (successful operating) time between system failures\cr
+$\tau$&mean time to repair an individual unit\cr
+$\theta$&mean time to failure for an individual unit\cr
+$\lambda$&failure rate for an individual unit, $\lambda\equiv 1/\theta$\cr
+$\mu$&repair rate for an individual unit, $\mu\equiv 1/\tau$\cr
+}
+$$
+and
+$$
+{n\choose i} = { n! \over i!\,(n-i)!}.
+$$
+
+Imagine that a \nn\ is made up of individual, replaceable elements in
+a hardware simulation, with a structure identical to the one 
+used in this and the
+previous chapter (3 layers, 195, 15, and~5 \neus).
+So~2 out of the~15 \neus\ in the middle layer can be damaged and have
+almost no effect on network behaviour.
+Assume that we have some method of knowing that any
+individual \neu\ (op-amp) has malfunctioned and can replace it
+within~1 hour.
+Also assume that the mean time to failure for each op-amp is
+$10\,000$ hours of continuous operation.
+Then, MTBF ($\theta_{\rm sys}$) for this network
+is~$7.337004\times10^8$ hours, or~$83\,756$ years.
+Quite a long time.
+(These figures come from~$n=15$, $k=13$, $\lambda = {1\over10\,000}$,
+and~$\mu={1\over1}$.)
+
+\sec Summary
+
+This chapter's results reveal some important facts about the
+representation of knowledge in back-propagation \nn s, as well as
+showing just how fault tolerant \nn s are.
+
+Random removal of weights has shown that the network is quite immune
+to failures of this kind.
+In fact, between~20\% and~30\% of weights can be set to zero, with very
+little effect upon the operation of the network.
+This implies that the knowledge of all patterns learnt is spread
+over all the weights in the network.
+
+Removal of middle layer \neus\ (or systematic removal of weights)
+reveals a more astounding fact.
+It is widely recognised that \neus\ in the middle layer act as
+feature extractors, reacting to particular parts of an input to
+produce recognition of the appropriate pattern.
+These results have shown that this same conclusion can be drawn by
+removing intermediate layer \neus, and observing the increased
+errors.
+

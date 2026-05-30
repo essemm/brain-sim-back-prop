@@ -1,0 +1,365 @@
+% Some local defs...
+\def\struct{{\tt struct}}
+\def\LAYER{{\tt LAYER}}
+\def\NEURON{{\tt NEURON}}
+\def\WEIGHT{{\tt WEIGHT}}
+
+\chap Software Construction
+
+In this chapter I will outline the construction of the code and the
+data structures used to implement the back-propagation algorithm.
+The package has been written entirely in C and all references to C
+``objects'' such as keywords or variable names
+will be in {\tt typewriter} style type.
+All developmental work was carried out on an IBM PC, using Microsoft
+QuickC$^{\rm TM}$.
+The software has been sucessfully ported without modification to a
+Pyramid super-mini running Unix Version V.
+Execution speeds will be discussed in a later chapter, entitled
+``Performance''.
+
+This chapter is divided into two parts.
+The first part contains a description of the most important design
+decision, namely the data structures used for the dynamically
+allocated network.
+The second section details a rough outline of the flow of control of
+the software, especially as an aid to someone wishing to enhance the
+code.
+This section also details some important features of the code.
+
+A printout of the C source code appears in toto in Appendix
+A.
+The source, include, object and executable files (as well as the
+\TeX\ source for this document) are also on a diskette inside the
+back cover of this work.
+
+\sec Data Structure Design
+
+As stated in the software specification, the code is to
+operate with networks of variable size and configuration, restricted
+only by available memory of the particular implementation.
+Because of this constraint, all allocation of space for the network
+(\neus\ and connections) is completely dynamic.
+The final result is a dynamically allocated structure that has no
+limits of size except that it must have fewer than~$8$ layers.
+This is not an unreasonable constraint, as even during testing
+no more than~$4$ layer networks were ever used, and some authors suggest
+that there need
+never be more than~$4$ layers for {\sl any} problem.
+
+In all sections following, the makeup of the individual C structures
+will be discussed, with field meanings, names and types given.
+The format followed will be --- structure type name: field$_0$
+description, type, name; field$_1$ description, type, name; etc.
+First I will describe the most important structure, namely that used
+for the network, then the other structures used for different
+purposes within the network.
+
+\ssec Network Structure
+
+A back-propagation network can be divided into~$3$ parts.
+A network is made up of layers.
+Each layer contains \neus.
+And each \neu\ has connections (weights) to the layer above.
+The most important constraint to the problem of a data structure for
+a network is the fact that it must be variable in size for each run
+(this also allows the software to deal with networks as large as
+available memory in any given system).
+Because of this the structure is made up of dynamically allocated
+arrays of pointers to pointers to structures.
+
+\sssec Weights
+
+Weights are stored in a \struct\ of type \WEIGHT.
+Contained in \WEIGHT\ are fields for: weight or connection
+strength, {\tt double w}; $\partial E \over \partial w$, {\tt double
+dE\_dw}; and $\Delta w(t-1)$, {\tt double old\_delta\_w}.
+
+\sssec Neurons
+
+Neurons are stored in a \struct\ of type \NEURON.
+\NEURON\ contains fields for: output of the neuron, {\tt double
+y}; a pointer to an array of weights for this neuron's connection 
+to the layer above, {\tt WEIGHT *w}.
+
+\sssec Layer
+
+Layers are stored in a \struct\ of type \LAYER.
+A \LAYER\ is made up of fields for: a pointer to an array of \neus\
+for that level, {\tt NEURON *neuron}.
+
+\sssec Network
+
+A network is stored as a pointer to an array of type \LAYER\ (that
+is, {\tt LAYER *}).
+Throughout the code, this is how references to the network are
+passed.
+
+\ssec Structures Used in Back-Propagation Calculations
+
+Large numbers of intermediate variables are necessary during
+calculations using the back-propagation method.
+All are stored as dynamic arrays.
+
+\sssec Temporary Values of $\partial E \over \partial x$
+
+Temporary values of $\partial E \over \partial x$ are stored in an
+array of type {\tt double}.
+
+\sssec Temporary Values of $\partial E \over \partial y$
+
+Temporary values of $\partial E \over \partial y$ are stored in an
+array of type {\tt double}.
+
+\ssec Input/Output Data Structures
+
+To minimize relatively slow disk input/output for such a repetitive
+action as learning, all input/output data for learning and all input
+data for operation is read in at once when it is needed.
+
+\sssec Neuron's Input/Output Value
+
+Every \neu's input value for layer~$0$ \neus\ and every \neu's
+expected
+output for top layer \neus\ is stored in \struct s of type {\tt
+OP\_DATA}.
+Contained in {\tt OP\_DATA} is a field {\tt double x}, which is the
+value of input or output for the \neu\ in question.
+For each I/O case there is an array of {\tt OP\_DATA}.
+
+\sssec Input/Output Cases
+
+Input and output cases are stored in a \struct\ called {\tt I\_O}.
+This structure contains a pointer to a particular case, {\tt
+OP\_DATA *item}.
+All I/O data is stored in arrays of {\tt I\_O}, each element of
+which contains a pointer to a particular case.
+
+\ssec General Data Structures
+
+\sssec Data File Information
+
+Every data file used by fishNET has its information stored in a
+\struct\ of type {\tt DATA\_FILE}.
+Contained in {\tt DATA\_FILE} are: the file name, {\tt char name[35]};
+a single letter abbreviation of the file's type, {\tt char type};
+the number of input or output cases for this file, {\tt int
+i\_o\_cases}; and the number of \neus\ in the layer this file is
+associated with, {\tt int \neus}.
+
+\sssec Most Commonly Used Parameters
+
+During the operation of fishNET, all constantly used data is stored
+in one \struct, called {\tt QUESTION}.
+Throughout the program, pointers to {\tt QUESTION} ({\tt QUESTION *}) 
+are used to pass important data.
+{\tt QUESTION} contains: the number of layers in the network,
+{\tt int layers}; the number of \neus\ in every layer, {\tt int
+per\_layer[7]}; the nominal output width, {\tt int out\_width};
+the maximum number of learning sweeps, {\tt int max\_sweeps};
+the learning parameter $\alpha$, {\tt double alpha};
+the learning parameter $\varepsilon$, {\tt double epsilon};
+the name of the file where the network is to be saved, {\tt char
+save\_name[35]};
+a comment for the saved file, {\tt char save\_comment[79]};
+a chunk of information about network teaching and execution files,
+{\tt DATA\_FILE sample\_in};
+{\tt DATA\_FILE sample\_out};
+{\tt DATA\_FILE data\_in};
+{\tt DATA\_FILE data\_out}.
+
+\sssec Structure for Network Files
+
+When a network file is loaded, it contains the complete network
+(including weights), plus all the parameters necessary for
+operation.
+The function which reads in the network files returns a pointer to a
+struct called {\tt LOAD\_BOTH}.
+Contained in {\tt LOAD\_BOTH} are: 
+a pointer to a network, {\tt LAYER *network};
+a pointer to a structure containing all run time information, {\tt
+QUESTION *parameter};
+and the value of $t$ at which the network will start teaching, {\tt
+int start\_time}.
+
+\sec Program Design
+
+There are two important functions which the program performs, and
+they are: training artificial \nn s, and running \nn s.
+The code is written so that both these functions are easily and
+possibly separately performed.
+Once the program has been given the necessary dimensions and
+parameters for the network, it will teach it. 
+Given the network
+that you want executed, it will apply the required data to the
+input, calculate, then save the output.
+Hence, the program looks like:
+$$
+\matrix{{\rm expected\ data,}&&&&{\rm neural}\cr
+	{\rm configuration\ data}&\mapright{}&{\rm teacher}
+		&\mapright{}&{\rm `operator'}&\mapright{}
+		&{\rm output}\cr
+	&&\mapdown{}&&\mapup{}\cr
+	&&{\rm network\ file}&&{\rm run\ data}\cr}
+$$
+
+The items configuration and expected data, network file, 
+run data, and output have been discussed in the previous chapter.
+Each of the other parts, the teacher and the neural `engine' will be
+discussed below.
+
+\ssec The Teacher
+
+Teaching a network is broken into several phases.
+For each phase, the appropriate subroutine and its functions will be
+examined.
+
+\sssec Reading the Parameters of Network Operation
+
+The action taken here depends upon the command line options set.
+If there are no options set, the program calls
+$$
+	{\tt parameter = input\_parameters();}
+$$
+which returns a pointer to a structure containing the important
+parameters of network operation, read from the keyboard.
+
+If the $-c$ option was used, the program instead calls
+$$
+	{\tt parameter = finput\_parameters(config\_file);}
+$$
+which returns a pointer to a structure, containing the important
+parameters of network operation, read from the file whose name is
+held in the variable {\tt char *config\_file}.
+
+If the $-n$ option was used, fishNET loads the network at the same
+time as the operational parameters, so please see the next section
+on allocating space for the network.
+
+\sssec Allocating Space for The Network
+
+If the network is to be trained from the start (that is, no network
+is pre-loaded), the program allocates space for it by
+$$
+	{\tt network = allocate(parameter);}
+$$
+This function allocates space (from the heap) and sets up random
+weights for a network of the desired size, and returns a pointer to
+it ({\tt LAYER *}).
+
+If the network is to be loaded from disk (the $-n$ command line
+directive was used), fishNET reads the parameters and allocates
+space for the network by
+$$
+	{\tt net\_and\_param = load\_network\_and\_parameters(netfile);}
+$$
+
+The function takes as its arguments the name of the network file,
+and returns a pointer to a structure which contains: a pointer to a
+structure which holds the parameters; a pointer to a network, with
+the values read from the file as the weights; and an integer value
+of the time~$t$ the network is to start learning at.
+For more information about the data structures used see 4.1.~Data 
+structure design.
+
+\sssec Loading the Expected Data
+
+Once the network has been allocated, the data is read in and stored
+in the structure previously described in 4.1.3.~Input/Output data
+structures.
+The function call returns a pointer to an array of type {\tt I\_O},
+that is {\tt I\_O *}.
+The call is
+$$
+\eqalign{{\tt input} &{\tt = get\_data(parameter->sample\_in);}\cr
+	{\tt output} &{\tt = get\_data(parameter->sample\_out);}\cr
+}$$
+
+\sssec Teaching the Network
+
+The network is taught by the function
+$$
+	{\tt learn(network,\ parameter,\ start\_time);}
+$$
+This function uses the information in the variable {\tt parameter},
+which is actually a pointer to a structure of type {\tt QUESTION},
+to modify the network, which is pointed to by {\tt LAYER *network}.
+The initial value of~$t$ used by the routine is {\tt int
+start\_time}.
+The algorithms are explained in Chapter 2, and are implemented exactly
+as documented there.
+
+If the first algorithm is being used, ($-a$ specified, or the command
+line default,) {\tt learn} calls the routines
+{\tt operate}, {\tt back\_propagate}, and {\tt apply\_delta\_w} to
+implement the algorithm.
+Actually, {\tt apply\_delta\_w} is executed first, because a {\tt do
+\dots while} loop is used to test the number of errors, which is not
+known until the routine {\tt back\_propagate} is called.
+Hence to make sure that {\tt apply\_delta\_w} is not called once too
+often, (ie when the error is actually zero,) it is run first.
+This works because as the network is allocated by fishNET, it is 
+initialised and so the first running of {\tt apply\_delta\_w} does
+nothing.
+
+The routine {\tt operate} is detailed in the next part, The neural
+`engine'.
+
+{\tt Back\_propagate} calculates the error $\partial E \over
+\partial w$ for each case and adds it to the total kept in memory
+for every weight.
+The error is calculated by comparing the output with the expected
+output, and is described earlier.
+
+{\tt Apply\_delta\_w} is used to calculate and then add $\Delta
+w(t)$ for every weight in the network.
+
+If the second algorithm is used (the $-1$ flag was used), the functions 
+called are slightly different.
+First, {\tt learn} calls {\tt operate}, then a function called
+{\tt back\-\_propagate\-\_apply\-\_delta\-\_w}.
+This routine is a combination of the two like--named routines
+described above, {\tt back\-\_propagate} and {\tt apply\-\_delta\-\_w}.
+It operates by calculating $\partial E \over \partial w$ for every
+case and using this to calculate $\Delta w(t)$ and apply it for
+every case.
+This appears to make the network converge much more slowly, but is
+included for experimental purposes.
+
+\sssec Saving the Network
+
+Once the network is fully `taught', or the maximum value of~$t$ is
+reached, the action depends upon the setting of the command line
+options $-d$, $-s$, and $-x$.
+
+If $-d$ was specified, execution occurs immediately and the network
+is discarded.
+
+If $-s$ was selected, the network is saved to disk by a call to the
+function
+$$
+	{\tt store\_network(network,\ parameter);}
+$$
+and execution occurs immediately.
+
+If $-x$ was specified, the learning parameters are saved by
+$$
+	{\tt store\_learnt\_parameters(parameter);}
+$$
+and the program exits without execution.
+
+\ssec The Neural `Engine'
+
+\sssec Operating With a Network
+
+The network passed to the function has the input applied to the
+bottom layer and the output is stored in the top (output) layer of
+the network.
+The input of every \neu\ is the sum of the outputs of all the
+\neus\ below times their interconnecting weights.
+The output of every \neu\ is its input times the transfer function.
+The call that performs these functions is
+$$
+	{\tt operate(network,\ input\_case->item,\ parameter);}
+$$
+

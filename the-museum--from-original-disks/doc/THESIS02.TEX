@@ -1,0 +1,187 @@
+\chap The Back-Propagation Model
+
+This short chapter aims to describe, in a step-by-step way,
+the mathematical steps behind an implementation of the
+back-propagation model.
+The maths in the first sections is based upon Rumelhart et al., [20].
+My interpretation of the maths, the proposed method of implementation,
+appears in the last section of this chapter.
+As in the last chapter, a biological analogy is drawn and processing
+elements are referred to as \neus.
+
+\sec The Maths Behind the Model
+
+Based upon figure~7, which shows a feedforward \nn, the following 
+mathematics holds:
+\figure {7} {5} {A feedforward \nn}
+
+Consider two neurons,~$i$ and~$j$, with \neu~$i$ being a lower layer
+(that is closer to the input) than \neu~$j$.
+Let the inputs to a \neu\ $j$ be $x_j$, and the outputs of a \neu~$i$ 
+be $y_i$.
+Let the weight of the connection between $i$ and $j$ be $w_{ji}$.
+Then the total input $x_j$ into a \neu\ $j$ is a linear function of the
+outputs $y_i$ of the units connected to $j$ and of the weights $w_{ji}$:
+$$ x_j = \sum_i y_i w_{ji}.\eqno(1) $$
+\noindent
+Extra input or ``bias'' can be added to a \neu, say~$j$, equivalent to a
+threshold of the opposite sign of its weight, assuming the input is~1.
+The bias is treated just like any other $y$, ie $y_{\hbox{bias}} = 1,$
+but $w_{j,\hbox{bias}}$ gives the negative threshold for $j$.
+
+Each \neu\ $j$ has a non-integral output $y_j,$ which is a non-linear
+function of its input $x_j:$
+$$ y_j = {1 \over 1 + \hbox{e}^{-x_j}}.\eqno(2) $$
+\noindent
+The input/output function doesn't need to be the sigmoid response, any
+non-linear function with a bounded derivative will do.
+
+Let $c$ be an index of cases, $j$ be an index of output \neus, 
+$y$ be the actual state of
+an output \neu, and let $d$ be the desired state (or expected answer).
+The total error, $E,$ is defined as
+$$
+E = {1 \over 2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2. \eqno(3)
+$$
+
+The whole aim of this technique is to minimize the error, ie.\ make the
+expected and actual outputs more similar.
+To minimize $E$ by gradient descent, we need the partial derivative of
+$E$ with respect to each weight in the network.
+So from (3),
+$$
+{\partial E \over \partial y_j} = y_j - d_j. \eqno(4)
+$$
+And
+$$
+{\partial E \over \partial x_j} = {\partial E \over \partial y_j}
+	{\partial y_j \over \partial x_j}. \eqno(5)
+$$
+From (2),
+$$
+{\partial y_j \over \partial x_j} = y_j(1-y_j).\eqno(6)
+$$
+Hence
+$$
+{\partial E \over \partial x_j} = {\partial E \over \partial y_j}
+	y_j(1-y_j).\eqno(7)
+$$
+So we can calculate how a change in input $x$ to an output \neu\ will
+affect the error.
+However, the input to an output layer \neu\ is a linear combination of
+the outputs from the lower layers and their weights.
+So we can compute what the effect on the error would be for changes in
+lower states and weights:
+$$
+{\partial E \over \partial w_{ji}} = {\partial E \over \partial x_j}
+	{\partial x_j \over \partial w_{ji}} = {\partial E \over
+		\partial x_j} y_i.\eqno(8)
+$$
+Then
+$$
+{\partial E \over \partial x_j} {\partial x_j \over \partial y_i}
+	= {\partial E \over \partial x_j} w_{ji},\eqno(9)
+$$
+and taking into account all connections from $i,$
+$$
+{\partial E \over \partial y_i} = \sum_j {\partial E \over \partial x_j}
+w_{ji}.\eqno(10)
+$$
+The procedure outlined above can be repeated for every layer below the
+output layer, computing
+$ \partial E \over \partial w$ as we go.
+
+This brings us to the philosophies that can be employed to modify the
+weights.
+
+\sec Modification of Weights
+
+The simplest scheme of weight modification is to modify them as we go
+for every input/output pair. (To change~$w$, modify by~$\Delta w =
+{\partial E \over \partial w}.$)
+This method doesn't require $\partial E \over \partial w$ to be stored
+for each pass.
+
+Another method, used by Rumelhart et al.\ [20] is to accumulate
+$\partial E \over \partial w$ over all the input/output pairs before
+changing the weights.
+The simplest version of this method is to make
+$$
+\Delta w = - \varepsilon {\partial E \over \partial w}, \eqno(11)
+$$
+where~$\varepsilon$ is a constant of proportionality and~$\partial E \over
+\partial w$ has been accumulated over all cases.
+An alternative version which apparently offers speed improvements is to
+use a proportion of the previous~$\Delta w$,
+$$
+\Delta w(t) = -\varepsilon {\partial E \over \partial w(t)} + \alpha
+			\Delta w(t-1), \eqno(12)
+$$
+\noindent
+where~$t$ is a count of the number of times all input/output pairs have
+been presented and~$\alpha$ is an exponential decay factor.
+This is the method that I will use in the software model of the
+back-propagation network.
+
+\sec An Algorithm for The Back-Propagation Model
+
+From all this mathematics, we can now explain the back-propagation model
+algorithmically.
+Two algorithms are presented.
+I have found the first to cause networks to converge faster, but the
+second may prove useful in some circumstances.
+In the first algorithm~$\partial E \over \partial w$ is 
+accumulated over all cases, and~$\Delta w(t)$ is calculated after
+all input/output cases have been presented.
+In the second algorithm,~$\partial E \over \partial w$ is
+used to calculate~$\Delta w(t)$ after every input/output case.
+\bigskip\noindent
+The first algorithm is:
+\smallskip
+\item {1.} Set up random weights between \neus.
+\item {2.} Set~$\sum {\partial E \over \partial w}$ to zero, and
+set $E_{\rm TOTAL}$ to zero.
+\item {3.} Input data sample and compare output with expected answer.
+For all output \neus, if output differs from the expected value by
+more than~$0.2$, increment $E_{\rm TOTAL}$.
+\item {4.} If dealing with the weights for the top layer,
+calculate~$\partial E \over \partial y$ from~$(4)$. Otherwise,
+calculate~$\partial E \over \partial y$ from~$(10)$.
+\item {5.} Calculate~$\partial E \over \partial x$ from~$(7)$.
+\item {6.} Calculate~$\partial E \over \partial w$ from~$(8)$ and
+add to~$\sum {\partial E \over \partial w}$.
+\item {7.} If there are more input/output data pairs, go to~$3.$
+again.
+\item {8.} Calculate~$\Delta w(t)$ from~$(12)$, and save~$\Delta
+w(t)$ as~$\Delta w(t-1)$ for next pass.
+\item {9.} Apply~$\Delta w(t)$ to change weights,~$w$.
+\item {10.} If~$E_{\rm TOTAL} = 0$, we are finished and the network
+has ``learnt''.
+Otherwise, go back to~$2.$ and repeat the procedure for the full set
+of data pairs.
+\bigskip\noindent
+The second (alternative) algorithm is:
+\smallskip
+\item {1.} Set up random weights between \neus.
+\item {2.} Set~$E_{\rm TOTAL}$ to zero.
+\item {3.} Input data sample and compare output with expected answer.
+For all output \neus, if output differs from the expected value by
+more than~$0.2$, increment~$E_{\rm TOTAL}$.
+\item {4.} If dealing with the weights for the top layer,
+calculate~$\partial E \over \partial y$ from~$(4)$. Otherwise,
+calculate~$\partial E \over \partial y$ from~$(10)$.
+\item {5.} Calculate~$\partial E \over \partial x$ from~$(7)$.
+\item {6.} Calculate~$\partial E \over \partial w$ from~$(8)$.
+\item {7.} Calculate~$\Delta w(t)$ from~$(12)$, and save~$\Delta
+w(t)$ as~$\Delta w(t-1)$ for next pass.
+\item {8.} Apply~$\Delta w(t)$ to change weights,~$w$.
+\item {9.} If there are more input/output data pairs, go to~$3.$
+again.
+\item {10.} If~$E_{\rm TOTAL} = 0$, we are finished and the network
+has ``learnt''.
+Otherwise, go back to~$2.$ and repeat the procedure for the full set
+of data pairs.
+\smallskip
+The next part, Software, deals with the implemented software for the
+back-propagation algorithm, where both the algorithms above have
+been implemented.

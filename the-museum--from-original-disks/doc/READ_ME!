@@ -1,0 +1,38 @@
+							4 Nov. 1988.
+
+Hi,
+
+	This is the read me file for the document diskette.
+
+	Contained on this diskette are the complete files for the TeX
+source. All TeX files used are called *.tex. All Modified C source code
+is called *.?t. I say modified because the is a bug (YES!!) in my TeX
+verbatim listing macro, and if a line has a TAB as the first character,
+it is thrown away. Hence, all lines that start with a TAB have got a space
+inserted at the front of the line.
+
+	A more serious reason that these *.?t files can't be used with the
+compiler is that there have been carriage returns inserted at the 80th column
+to stop overfull hbox errors with the \obeylines verbatim listings. So if
+you want files for compiling, see the other diskette.
+
+	To typeset the thesis, type at the operating system prompt:
+
+			tex thesis
+
+and this will do all the work and include all the files. To print
+out the typeset version, see your system administrator, as this varies widly
+from system to system.
+
+	Thanks. And good luck with printing!
+
+Scott MacGibbon.
+
+P.S. This is the very latest version. Hence it includes A.2.6 net_type.h in
+the correct spot, not as an after-thought as in the original.
+
+P.P.S. Some implementations have different names for fonts. If the ones in
+theader.tex are not right for your system, (and TeX will tell you very swiftly
+if they are not) change them for the right ones. The usual problem is with
+am* fonts instead of cm* fonts.
+
