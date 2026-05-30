@@ -1,0 +1,300 @@
+\chap Experiments on learning
+
+In this chapter, the dot matrix encoding of English language
+characters will be considered in detail.
+There are two important facets to consider in these experiments:
+learning time, and error rate.
+Learning time is the length of time in machine (or algorithm) time
+units~$t$ which is required for the network to produce results which
+are sufficiently accurate.
+Error rate is calculated as the total error, or~$E$, which is the
+sum of the square of the difference between the expected output and
+actual output of the network.
+
+Two variables tend to govern both the learning time and the error
+rate.
+These variables are the learning calculation parameter~$\varepsilon$ and
+the number of \neus\ in the middle layer.
+Both are analysed in detail below.
+
+For the rest of this thesis, we will consider only~3 layer networks.
+In \nn\ problems, the fourth layer is usually used to remove
+rotational and translational problems with pattern recognition: as
+the behaviour of this 3 layer network will be examined for behaviour
+with rotated and other data, no fourth layer will be considered.
+As well, the error threshold level was fixed at~$0.2$.
+That is, a \neu\ which is supposed to have an output of~1 or~0 is
+not flagged as being in error if its output is greater than or equal
+to~$0.8$, or less than or equal to~$0.2$, respectively.
+Some authors drive their networks to~$0.9$ and~$0.1$, but the extra
+computational effort for a PC implementation would be considerable
+(in many cases, most \neus\ were within~$0.1$ of their desired
+value, with only a few being as far as~$0.2$ away).
+The final invariant used here is the spread of the initial weights.
+They were each randomly set to a value between~$+0.3$ and~$-0.3$.
+
+The two learning calculation variables,~$\alpha$ and~$\varepsilon$,
+can have a wide range of values.
+Just {\sl how} wide appears to depend largely upon the problem.
+For all experiments examined here, $\alpha$ was set to~$0.9$.
+This doesn't pose a problem, because beyond values of a few tens of~$t$ the 
+equation $\alpha e^{-t} \Delta w(t-1)$ drops to almost zero.
+Hence~$\alpha$ is not really a significant factor in the
+calculations beyond the very beginning, and most authors set~$\alpha = 0.9$.
+
+So all learning equation parameter variations refer
+to~$\varepsilon$.
+The number of \neus\ in the second layer (referred to as layer~1, since
+counting starts at~0,) was also widely varied
+during experimentation.
+We examine below the effects of these parameters' variations 
+on learning time~$t$ and error rate~$E$.
+A summary is included at the end of this chapter.
+
+\sec Variation of Learning Time with Parameters
+
+This experiment dealt with the length of time taken to fully train
+the network with the error criteria set above.
+However, there is a subtle difference to most authors approach to
+this problem.
+
+As initial weights varied randomly from~$+0.3$ to~$-0.3$, most experiments 
+here were run~4 times in order to get more statistical accuracy.
+Just under~80 simulations were performed, and the averages and standard
+deviations calculated.
+Both parameters of interest, $\varepsilon$ and \neus\ in the middle
+layer, were varied.
+$\varepsilon$ values were set at~$0.3$, $0.5$, $0.9$, and~$1.0$.
+Configurations of layer~1 \neus\ that were used 
+are~$15$, $20$, $35$, $50$, and~$70$.
+Up to~4 tests were carried out with each one.
+
+The results are tabulated and graphed below.
+Where possible, (and it as in all but one case due to a lack of
+data,) means and standard deviations (SD) are shown.
+$$
+\vbox{\tabskip=0pt \offinterlineskip
+\def\tablerule{\noalign{\hrule}}
+\halign{\strut#& \vrule#\tabskip=1em plus2em&
+ \hfil#& \vrule width1.5pt#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#\tabskip=0pt\cr
+\tablerule
+&&{\ninerm neurons}&&\multispan{15}\hfil$\varepsilon$\hfil&\cr
+\tablerule
+&&{\ninerm in}&&\multispan3\hfil 0.3\hfil&&\multispan3\hfil 0.5\hfil&&
+ \multispan3\hfil 0.9\hfil&&\multispan3\hfil 1.0\hfil&\cr
+\tablerule
+&&{\ninerm layer 1}&&{\ninerm Mean}&&{\ninerm SD}
+ &&{\ninerm Mean}&&{\ninerm SD}
+ &&{\ninerm Mean}&&{\ninerm SD}&&{\ninerm Mean}&&{\ninerm SD}&\cr
+\noalign{\hrule height1.5pt}
+&&15&&416&&33&&204&&25&&217&&50&&226&&--&\cr
+\tablerule
+&&20&&348&&24&&170&&3&&214&&62&&202&&32&\cr
+\tablerule
+&&35&&278&&12&&160&&8&&195&&23&&254&&60&\cr
+\tablerule
+&&50&&235&&10&&158&&2&&288&&46&&435&&172&\cr
+\tablerule
+&&70&&220&&15&&190&&14&&337&&46&&654&&210&\cr
+\tablerule
+}}
+$$
+\centerline{Figure 10. Table of mean learning times and standard deviations.}
+
+\figure {11} {8} {Mean learning time versus number of \neus}
+
+From the graph and table in figures~10 and~11, some trends become
+clear: an increase in~$\varepsilon$ does not necessarily make the
+network converge to a solution any faster.
+In fact, as~$\varepsilon$ increases beyond about~$0.5$, the network
+begins to become unstable during learning.
+
+This phenomenon can be observed with the $-v$ option set in
+fishNET.
+With large~$\varepsilon$, some output \neus\ converge quickly
+towards the desired result.
+However, the others tend to move in the opposite direction to the
+one desired.
+After several tens of~$t$, the outputs suddenly begin to ``swap'',
+and the \neus\ that had an output very close to the desired output
+(some will be less than~$0.05$ away) begin to move away from the
+desired result, and the outputs which were the opposite tend to
+moves towards the correct output.
+This see-saw effect can continue for several hundred~$t$, until
+usually it will decrease in oscillation size, and all outputs will move 
+slowly toward the desired result.
+
+Before the final set of experiments quoted here were run, a previous
+set of~$\varepsilon$ values was tried.
+In this group were the values~$1.2$, $1.5$, and~$2.0$.
+None of these values converged systematically in less than~$t =
+5000$, which is the default limiting value.
+This fact, and the standard deviations of the learning times examined
+below, tends to indicate that~$\varepsilon = 1.0$ is near the boundary
+of stable learning for this particular problem.
+
+The oscillatory effect also seems to get worse with more \neus.
+The network appears to have trouble learning for both a
+large~$\varepsilon$ and a large number of intermediate layer \neus,
+and the huge standard deviations in these cases point this out.
+In fact, for the case where~$\varepsilon = 1.0$, and middle layer
+\neus\ numbered~70, the learning time varied from 
+between~$t=361$ and~$t=838$.
+This is a very different result to the~$\varepsilon = 0.3$ 
+or~$\varepsilon = 0.5$ standard deviations.
+A graph of standard deviation versus \neus\ in layer~1 for
+all~$\varepsilon$ values is shown in figure~12.
+In general, for~$\varepsilon > 0.5$, the standard deviation of
+learning time (and hence the instability during learning) increases
+as a function of both~$\varepsilon$ and \neus\ in the middle layer.
+\figure {12} {6} {Standard deviation versus number of \neus}
+
+The effect of $\varepsilon$ and \neus\ in layer~1 on error rate will
+be examined in the next section.
+
+\sec Variation of Error Rate with Parameters
+
+The experiment detailed here entailed taking a random sample of each
+of the~$\varepsilon$ and middle layer values used in the previous
+experiment and calculating the total error for a constant set of
+input data.
+Hence there are~20 values of total error.
+
+The input data used is shown in the appendices.
+It involves~4 sets of data for each of the~5 letters, including
+noisy and distorted shapes.
+None of the data used for testing had been used to train the network,
+so the experiment was a good one to test the network's level of
+generalisation.
+Due to the large number of computations necessary, and the disk
+space needed to store the networks, (training was done on the
+Pyramid~9810, but all analysis, that is execution, was done on the
+PC$_{8087}$,) only one of each category was tested.
+This means that the shape of the graph of total error versus \neus\
+should be viewed only for trends and may not itself be overly
+statistically accurate.
+The data appears below:
+$$
+\vbox{\tabskip=0pt \offinterlineskip
+\def\tablerule{\noalign{\hrule}}
+\halign{\strut#& \vrule#\tabskip=1em plus2em&
+ \hfil#& \vrule width1.5pt#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#&
+ \hfil#\hfil& \vrule#\tabskip=0pt\cr
+\tablerule
+&&{\ninerm neurons}&&\multispan{7}\hfil$\varepsilon$\hfil&\cr
+\tablerule
+&&{\ninerm (layer 1)}&&\hfil 0.3\hfil&&\hfil 0.5\hfil&&
+ \hfil 0.9\hfil&&\hfil 1.0\hfil&\cr
+\noalign{\hrule height1.5pt}
+&&15&&6.15&&6.17&&5.61&&4.97&\cr
+\tablerule
+&&20&&6.03&&6.01&&5.57&&5.83&\cr
+\tablerule
+&&35&&6.17&&6.30&&5.46&&5.54&\cr
+\tablerule
+&&50&&6.11&&6.05&&5.80&&5.34&\cr
+\tablerule
+&&70&&6.25&&6.41&&5.81&&6.10&\cr
+\tablerule
+}}
+$$
+\centerline{Figure 13. Table of total errors.}
+
+\figure{14} {6} {Total error versus \neus}
+
+Figure~14 shows a graph of the data.
+Interesting details can be drawn from it.
+Firstly, the total error doesn't decrease as the number of \neus\ in
+the intermediate layer grows larger.
+Some authors suggest that the network fails to generalise when the
+number of \neus\ grows too large.
+The data sample here is too small to confirm or deny this, but there
+seems to be a slight decrease, then increase in total error,
+from left to right.
+
+More interesting still is the effect of~$\varepsilon$ upon the
+network.
+Due to computational constraints, only a reasonably small data
+sample was used, but it still appears that the error is a maximum
+for some value of~$\varepsilon$ between about~$0.3$ and~$0.5$, and probably
+gets smaller as~$\varepsilon$ gets smaller than~$0.5$ and also
+smaller as~$\varepsilon$ gets larger than~$0.5$. 
+(Note again that the
+network would not reliably converge for values of~$\varepsilon$
+above~$1.0$.)
+
+Comparing the graphs in figures~11 and~14 yields even more important
+results.
+Networks that take longer to teach (converge) produce a smaller
+error than those which converge quickly to a solution.
+An explanation for this follows.
+Faster converging solutions from the back-propagation algorithm are
+more likely to settle in non-optimal minima in the solution space.
+This is because the network will be ``coarser'' due to the obviously
+larger values of~$\Delta w(t)$ that were added during
+back-propagation calculations.
+Because these values were larger, the network would probably not be
+as finely tuned as one which took longer to converge from
+smaller~$\Delta w(t)$s.
+(Another way of thinking of this is to try to imagine that the
+required solution is some symmetrical pattern of weights.
+If the values of $\Delta w(t)$ are bigger, the network may satisfy
+the error criteria but still not be particularly symmetric.)
+Hence slower trained networks are more likely to accurately
+generalise the problem, and produce fewer errors.
+
+One final point to explain is why total error was used in this
+experiment instead of actual error.
+Even though none of the test data had been seen by the network, the
+number of actual errors (that is incorrectly recognised letters)
+{\sl was always the same for all cases above\/}, and was a very
+small portion of the data.
+(One can tell the selected pattern, even though the output for the
+selected pattern's appropriate \neu\ is much less than the
+desired~$0.8$, by looking for the most active \neu\ of the~5 output
+\neus.)
+In fact only the most distorted ``letters'' generated actual errors
+(see the appendices), so total error was used to get some spread
+between the various cases.
+
+The next experiments examine the effect of casualties in the network
+upon its performance.
+
+\sec Summary
+
+The results presented in this chapter highlight some features of
+learning with this problem.
+There can be large variations in the learning time for a particular
+problem, depending upon the values of~$\varepsilon$ and the number
+of middle layer \neus.
+In general, learning time is shortest for values of~$\varepsilon$ of
+between~$0.3$ and~$0.5$.
+$\varepsilon$ values within this range cause networks to learn
+faster as the number of \neus\ in the middle layer increases.
+However, for larger values of~$\varepsilon$ (of between~$0.9$
+and~$1.0$), the learning time {\sl increases\/} as the number of
+\neus\ gets bigger.
+A very large variance in learning times was observed for these
+values.
+This was especially true for~$\varepsilon = 1.0$, which to be on the
+outer limits of convergence for large numbers of layer~1 \neus.
+
+From looking at the error rate, we can make statements on the effect
+of learning time on errors.
+The error is slightly smaller for networks that take longer to
+teach, and an explanation for this has been proposed.
+There is not a dramatic difference in error rate between the
+different~$\varepsilon$ and \neu\ values (about~20\% variation
+at most).
+

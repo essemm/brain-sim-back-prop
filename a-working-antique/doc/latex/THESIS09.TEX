@@ -1,0 +1,146 @@
+\part {Conclusions} {This is not the end. It is not even the beginning
+of the end. But it is, perhaps, the end of the beginning. {\bf
+Winston Churchill, 1942}}
+
+\chap Conclusions
+
+The result of this thesis has been the production of a portable
+\nn\ simulator called fishNET that will operate with networks of any
+size, limited only by available memory and processing speed.
+
+Here, we examine some of the factors important in using the program,
+namely performance and flexibility.
+Also, we recap some uses for fishNET, and the results of parameters
+and casualties on network behaviour.
+Lastly, some avenues for possible further work are suggested.
+
+\sec Software -- Design and Performance
+
+A large part of the work for this thesis involved writing and
+testing a software package called fishNET.
+FishNET was written to be a portable, flexible, network simulator,
+and was ported to several installations without change.
+
+The design decisions and their end result, the performance of the
+product, have been examined in detail.
+The large number of floating point calculations required during
+learning tends to be the limiting factor involved with using
+fishNET, not a lack of memory, especially in PC implementations.
+
+\sec Possible Uses of FishNET
+
+Briefly, the flexibility of \nn s in general was examined by
+testing fishNET with a wide range of problems, for which it
+successfully generated generalised networks.
+The fact that the same program can be quickly ``taught'' to perform
+almost any pattern recognition task is an important result.
+Hence, \nn s are an important tool for engineers.
+
+\sec Behaviour of \NN s
+
+The behaviour of \nn s with respect to parameter variations and
+casualties was investigated.
+The problem of dot-matrix encoded English characters was studied in
+considerable detail.
+
+The results of these investigations showed that there can be large
+variations in learning times, depending upon the learning
+parameter~$\varepsilon$ and the number of \neus\ in the middle
+layer.
+In summary, learning time is shortest for values of~$\varepsilon$ of
+between~$0.3$ and~$0.5$.
+Also, for these~$\varepsilon$ values, the learning time decreases
+slightly as the number of middle layer \neus\ increases.
+However, for larger values of~$\varepsilon$ (of between~$0.9$ and $1.0$), the
+learning time {\sl increases\/} as the number of \neus\ in the
+intermediate layer gets larger, and a very wide range of learning
+times was experienced between runs for these values.
+This was especially true for~$\varepsilon = 1.0$, which appears to
+be on the boundary of convergence for large numbers of middle layer
+\neus.
+
+Error rate was also found to be partly dependent upon~$\varepsilon$
+and \neus\ in the middle layer, although not as strongly as learning
+time.
+In fact, for all the experiments with parameter variation, variance
+in error rate was only about~20\%.
+However, larger values of~$\varepsilon$ showed lower error rates,
+and this seems to be a function of the learning time being longer in
+these cases.
+Longer learning times logically should return smaller errors, and
+this was indeed shown to be the case.
+
+Other important discoveries of network behaviour came from
+introducing casualties of two types and varying severity into the
+network.
+First, random damage to connections (weights) had almost no
+appreciable impact for casualty rates up to between~20\% and~30\% 
+of the total weight population.
+Errors increased exponentially beyond~30\% casualties.
+This shows that the knowledge of any pattern is distributed amongst
+weights in the network.
+
+Second, random removal of middle layer \neus, or the systematic
+removal of weights, had more dramatic effects.
+When~2 out of~15 middle layer \neus\ were disabled, performance was
+still very good.
+However, once another \neu\ was removed, performance degraded
+rapidly.
+Since the number of weights systematically removed in this way was
+still much smaller than with random removal, but the effect was
+greater, an important conclusion can be drawn.
+The knowledge of features of patterns in a \nn\ is localised or
+partly localised into certain \neus\ in the middle layer.
+Or, expressing this is another way, certain \neus\ in the middle
+layer act as feature extraction devices.
+This was widely known, but to this author's knowledge had only been
+deduced by looking at the structure of weights.
+Here it has been done without examining the distribution and
+strength of connections, instead by viewing performance with
+casualties in the network.
+
+\sec Further Work
+
+As a large part of the time involved with this thesis was required
+to write fishNET, there is still a lot of work that could be done
+using the developed software tool.
+Some ideas for potential enhancements, and further work, are listed
+below.
+
+With fishNET itself, a faster processor such as an~80286/7 or~ 80386/7 
+with still a reasonably small memory (say under~2~Mbytes)
+would make much larger simulations possible.
+To save space, all variables of type {\tt double} could be changed
+to {\tt float}, to save almost~50\% from memory usage.
+This wasn't done because there was no point for this first version, 
+where for reasonably small simulations, speed, not space, was the
+limiting factor.
+
+Another improvement to fishNET would be a graphical interface, that
+could display outputs during learning (although this would slow
+things up even more), and connection strengths both during learning
+and execution.
+This should be reasonably easy, and would probably involve just
+changing the output routines used at present to display graphical
+instead of numeric data.
+(That was the intention of this first version of fishNET.)
+
+More experiments, especially with regard to error rate, are
+desirable.
+A wider range of parameters and several simulations for each
+set of parameters would remove the statistical ``hiccups'' from the
+data, similar to the results for learning rate, which are much
+better due to averages being used.
+
+Removing \neus\ in the middle layer offers promise as a mechanism
+for discovering the structure of feature selection in a
+back-propagation \nn.
+More work here could lead to insights into which features are extracted,
+by examining behaviour with the individual patterns.
+
+Finally, and most difficult, would be a truly parallel processing
+version of the back-propagation algorithm, aimed at operation in
+an $n$-transputer environment.
+
+\centerline{---{\eightrm THE END} ---}
+

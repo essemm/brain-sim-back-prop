@@ -1,0 +1,358 @@
+\chap Performance
+
+The performance of software models of \nns\ is probably their biggest
+drawback ---
+it is a classic tradeoff between flexibility and speed.
+A hardware model is extremely inflexible, limited in size, and very 
+cumbersome, yet it
+offers performance that doesn't degrade as the network gets bigger.
+Software models, on the other hand, are extremely flexible but
+horrendously slow in {\sl all} implementations.
+Here we examine just how slow a software simulation is.
+
+An analysis of both execution and learning time, and the amount of
+memory required for any network is given in the following brief
+chapter.
+The aim is to give the reader some simple rules of thumb for
+calculating: how long a simulation using fishNET will take in any
+particular implementation, and how big that simulation can be.
+
+Problems with performance of fishNET tend to take the form of
+execution speed, not lack of memory.
+Long before available memory with a PC runs short, patience
+inevitably does.
+Lack of memory has actually only happened once, and this was a
+deliberate experiment to see how large a network could be.
+In reality, the time taken to learn (in physical seconds, not
+internal learning time~$t$) becomes so large that it is nearly
+pointless continuing.
+Just how large is feasible?
+Hopefully with the help of this chapter the reader can calculate how
+long it will take and maybe rethink network size and shape.
+Thus it is execution speed, not memory size, which is the most
+important constraint in PC implementations.
+
+\sec Hardware
+
+A description of all the hardware configurations that fishNET was
+tested with follows:
+
+\ssec The (almost) Standard IBM-PC
+
+As mentioned above, fishNET's development was undertaken entirely on
+a 1985 vintage true-blue IBM-PC.
+The~$4.77 {\rm MHz}$ int\lower.5ex\hbox{e}l~$8088$ has been replaced by a
+National~${\rm V}20$ workalike processor, which is marginally faster
+with screen and disk I/O and up to~$5$ times faster for some
+processor operations.
+The speed improvement, however, is only about~$20\%$ in general.
+The machine has~$640{\rm k}$ of RAM.
+
+\ssec The Turbo-Charging 8087
+
+After finding that learning times for small networks was several
+hours, the IBM-PC above was
+fitted with a genuine int\lower.5ex\hbox{e}l~$8087$.
+The speed improvement was in the order of a factor of~$12$.
+
+\ssec The Pyramid Super-Mini
+
+This machine literally turned days into minutes.
+It is a Pyramid model~9810, which has~$16$~Mbytes of 
+actual and~$200$~Mbytes of virtual
+memory with a RISC architecture, so fishNET simulations 
+of painful size for the PC were not much of a burden. 
+Really.
+
+\sec Learning and Execution Speed
+
+To calculate learning and execution speed is easy on a machine as
+slow as a PC, since it is possible to simply use a stop-watch and
+observe the appropriate screen output.
+On larger multi-tasking systems with buffered screen output this is
+not possible.
+Hence the timings shown for the Pyramid err on the high side
+(the machine actually runs faster).
+This is because it was necessary to use operating system information
+on execution time which involved the complete running of the
+program from invocation to termination, not just the different
+phases such as learing and execution.
+However, the case chosen for calculations had a reasonably large
+number of learning iterations, so the result is accurate to within a
+factor of~$1.5$.
+
+\ssec Learning Speed
+
+For simplicity's sake, consider the application of the
+back-propagation algorithm to a weight as a single operation.
+Then, it is possible to calculate the learning speed by measuring
+the length of time taken for a single application of the
+back-propagation algorithm and the application of $\Delta w(t)$,
+then dividing by the number of I/O cases and dividing by the number
+of weights.
+(For more accuracy, several dozen sweeps were timed and the result
+divided by the number of sweeps.)
+
+This technique gave the following results:
+$$
+\vbox{\offinterlineskip
+\hrule
+\halign{&\vrule#&\strut\quad#\hfil\quad\cr
+height2pt&\omit&&\omit&\cr
+&Implementation&&
+	Length of time for a `single' b.p. weight calculation&\cr
+height2pt&\omit&&\omit&\cr
+\noalign{\hrule}
+height2pt&\omit&&\omit&\cr
+&PC$_{\rm V20\ (8088)}$&&$9.17$\ msec&\cr
+&PC$_{\rm 8087}$&&$733$\ $\mu$sec\ $(=0.733{\rm \ msec})$&\cr
+&Pyramid&&$20$\ $\mu$sec\ $(=0.02{\rm \ msec})$&\cr
+height2pt&\omit&&\omit&\cr}
+\hrule}
+$$
+%$$\halign{#\hfil&\qquad#\hfil\cr
+%Implementation&Length of time for `single' b.p. calculation\cr
+%\noalign{\hrule}
+%PC--V20		&$9.17 {\rm msec}$\cr
+%PC--8087	&$733 \mu{\rm sec} (= 0.733 {\rm msec})$\cr
+%Pyramid		&$20 \mu{\rm sec} (= 0.02 {\rm msec})$\cr
+%}$$
+
+A good approximation of speeds in general then is
+$$
+{\rm PC}_{\rm V20\ (8088)} = {{\rm PC}_{\rm 8087} \over 12.5} 
+			= {{\rm Pyramid} \over 459}
+$$
+
+\ssec Execution Speed
+
+Calculation of execution speed is a more difficult task.
+Firstly, as after each execution there is a lot of disk output, the
+stop-watch time for the PC will be grossly distorted (floppy disk
+systems are even worse).
+Hence the major mathematical operations involved will be analysed,
+with their timings based upon reference [27].
+Secondly, disk output time will be an order of magnitude slower than
+processing speed in most implementations.
+No attempt to analyse this time is made here, as it is too
+application dependent.
+
+For the simulator to operate upon a network (that is, use the
+runtime data), there are a number of mathematical operations
+involved. A summary is
+\item{1.} $1\times$ transfer function calculation per \neu, which is
+\itemitem{a)} $1 \times$ negate,
+\itemitem{b)} $1\times$ {\tt exp} calculation,
+\itemitem{c)} $1\times$ {\tt double} add, and
+\itemitem{d)} $1\times$ {\tt double} divide.
+\item{2.} $1\times$ {\tt double} multiplication per weight, and
+\item{3.} $1\times$ {\tt double} addition per weight.
+
+\noindent
+Hence, using [27], we find that the approximate execution speed for
+a single input case is of the order of
+$$
+\eqalign{
+{\rm PC}_{\rm V20\ (8088)} &= (n_{\rm \neus} \times 41.61 \times 10^{-3})\cr
+	&\qquad{}+ (n_{\rm weights} \times (0.753\times 10^{-3} + 
+				2.71\times 10^{-3}))
+				{\rm\ sec}\cr
+		   &= (n_{\rm \neus} \times 41.61) + 
+	(n_{\rm weights} \times 3.463) {\rm \ msec}\cr
+{\rm PC}_{\rm 8087} &= (n_{\rm \neus} \times 1.08\times 10^{-3})\cr
+	&\qquad{}+ (n_{\rm weights} \times (0.186\times 10^{-3} + 0.187\times
+		10^{-3})) {\rm\ sec}\cr
+	      &= (n_{\rm \neus} \times 1.08) +
+	(n_{\rm weights} \times 0.373) {\rm \ msec}\cr
+}$$
+These values are very approximate.
+However, they still show an interesting trend.
+Assuming that the Pyramid is at least~$37$ times 
+faster than the PC$_{\rm 8087}$, we find
+$$
+\eqalign{
+{\rm Pyramid} &= (n_{\rm \neus} \times 29.2) +
+		(n_{\rm weights} \times 10.1){\rm\ }\mu{\rm sec}\cr
+}
+$$
+So for a typical problem with~$3$ layers, ($195$ \neus\ in the input
+layer, $30$ in the middle layer, and $5$ in the output layer, or
+$6000$ weights in total,) the expected execution times are
+$$
+\eqalign{
+{\rm PC}_{\rm V20\ (8088)} &= 30.35 {\rm\ sec}\cr
+{\rm PC}_{\rm 8087}	    &= 2.49  {\rm\ sec}\cr
+{\rm Pyramid}	    &= 67    {\rm\ msec}\cr
+}
+$$
+These are close to the roughly measured times.
+
+As you can see, the fact that there are so many more weights than
+\neus\ means that calculations involving weights consume the most
+significant part of the time, even though the execution speed of a
+\neu\ is typically~$3 \to 12$ times slower.
+In these calculations, memory addressing time has been ignored, as
+it is~$100 \to 1000$ times faster than floating point operations.
+
+\sec Memory Used
+
+Once again, we are only searching for a rule of thumb: on single
+processor systems such as PCs, memory resident device drivers and
+RAM disks can make it difficult to accurately guage free memory
+(the MS--DOS utility {\tt chkdsk} gives this information, as well as
+disk free data), and on
+multi-tasking systems, reasonably sized simulations aren't going to
+pose much of a problem.
+
+A quick calculation follows.
+Memory used is broken into four categories:
+\item{1.} a structure of type {\tt QUESTION},
+\item{2.} the network itself,
+\item{3.} a variable amount of space for teaching and execute data, and
+\item{4.} a variable amount of space for calculation purposes.
+
+The space taken up by the structure of type {\tt QUESTION} is
+intentionally always the same.
+The actual number of bytes varies slightly from implementation to
+implementation (as the size of an {\tt int} varies).
+For a PC application
+$$
+\eqalign{
+{\tt QUESTION}_{\rm space} &= 4 \times ( 36 \times {\tt char} +
+	2 \times {\tt int}) + (10 \times {\tt int}) \cr
+		&\qquad + (2 \times {\tt double}) +
+			(114 \times {\tt char})\cr
+		&= (258 \times {\tt char}) + (2 \times {\tt double}) +
+			(18 \times {\tt int})\cr
+		&= (258 \times 1) + (2 \times 8) + (18 \times 2)\cr
+		&= 310 {\rm\  bytes}.
+}
+$$
+It will become obvious that this is hardly significant.
+
+The network requires space for
+\item{1.} {\tt LAYER} structures,
+\item{2.} {\tt NEURON} structures, and
+\item{3.} {\tt WEIGHT} structures.
+
+Hence the amount of space required is
+$$
+\eqalign{
+{\tt LAYER}_{\rm space} &= ({\tt NEURON *}) = 4 {\rm\ bytes},\cr
+{\tt NEURON}_{\rm space}&= ({\tt WEIGHT *}) + {\tt double} 
+			= 12 {\rm \ bytes}, \cr
+{\tt WEIGHT}_{\rm space}&= 3 \times {\tt double} = 24 {\rm \ bytes}.\cr
+}
+$$
+So the equation for memory usage by a network becomes
+$$
+{\tt NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
+	(n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
+$$
+where~$n_{\rm layer}$ is the number or layers, etc.
+
+Memory required for teaching and execution data depends upon
+the number of \neus\ in the input and output layers, and the
+number of I/O cases.
+Every \neu\ on the input has a piece of data for learning and execution
+for each case.
+Every \neu\ on the output has a piece of data for comparison during learning
+for each I/O case.
+So
+$$
+\eqalign{
+{\rm data}_{\rm space} &= (n_{\rm layer\ 0\ \neus} \times 
+	({\rm learning\ cases} + {\rm execution\ cases}) \times 
+	{\tt double})\cr
+		&\qquad{}+ (n_{\rm output\ layer\ \neus} \times
+		{\rm learning\ cases}\times {\tt double})\cr
+		       &= (n_{\rm layer\ 0\ \neus} \times 
+		({\rm learning\ cases} + {\rm execution\ cases}) \times 8)\cr
+			&\qquad{}+ (n_{\rm output\ layer\ \neus}\times
+				{\rm learning\ cases} \times 8).\cr
+}
+$$
+
+The next facet to consider is space used during calculations.
+Arrays of type {\tt double} are used during back-propagation
+calculations (in the functions {\tt back\-\_propagate} and {\tt
+back\-\_propagate\-\_apply\-\_delta\-\_w} as described in the
+previous chapter) to store values of $\partial E \over \partial x$
+and $\partial E \over \partial y$.
+The arrays refer to different layers of \neus\ at a time, but for
+the rule of thumb we will invent a worst case.
+The worst case is where we have two big layers of the same size
+next to each other, so
+$$
+{\rm calculation}_{\rm space} = (n_{\rm \neus\ in\ biggest\ layer}\times 16)
+$$
+
+Putting all these parts together, 
+$$
+\eqalign{
+{\rm Memory\ required} &= {\tt QUESTION}_{\rm space} + 
+		{\tt NETWORK}_{\rm space} + {\rm data}_{\rm space}
+		+ {\rm calculation}_{\rm space}\cr
+&= 310 + (n_{\rm layer} \times 4) +
+	(n_{\rm \neu} \times 12) + (n_{\rm weight} \times 24)\cr
+	&\qquad{}+(n_{\rm layer\ 0\ \neus} \times ({\rm learning\ cases}
+		+{\rm execution\ cases}) \times 8)\cr
+	&\qquad{}+(n_{\rm output\ layer\ \neus} \times 
+		{\rm learning\ cases} \times 8)\cr
+	&\qquad{}+(n_{\rm \neus\ in\ biggest\ layer} \times 16) {\rm\ bytes}.\cr
+}
+$$
+Using again the example of a 3 layer (195, 30, 5) network, (with 5 learning
+cases and 20 execution cases,) we
+get
+$$
+\eqalign{
+{\rm Memory\ required} &= 310 + (3 \times 4) + (230 \times 12) + 
+			(6000 \times 24)\cr
+			&\qquad{}+ (195 \times 25 \times 8) +
+			(5 \times 20 \times 8) + (195 \times 16)\cr
+		      &= 190\,002 {\rm\ bytes}\cr
+		      &= 185.5 {\rm\ kbytes}.
+}
+$$
+
+\sec An Interesting Comparison --- Software versus Wetware
+
+The human brain has been dubbed `wetware' by some authors.
+How does wetware compare with a single processor software simulation
+of the brain?
+Consider a very, very simple example.
+
+According to Feldman et.\ al.\ [12], the ``execution'' time for a
+human \neu\ to produce an output from its inputs is in the order
+of~$5$ milliseconds.
+However, {\sl all} \neus\ work at the same time (within a layer,
+say) so a~$3$ layer network should produce an output in~$15$
+milliseconds.
+Considering the gross simplifications here, let us increase this
+estimate by an order of magnitude, and say that for a simple
+perceptual problem, wetware produces an answer in~$200$
+milliseconds.
+Assume we used a tiny fraction of the brain, say~$300\,000$ \neus.
+Assume again that we have only~$5\,000$ connections per \neu.
+Then if the~$300\,000$ are equally divided in 3 layers, we
+have~$1\times 10^9$ weights.
+And it can produce an answer in~$200$ milliseconds.
+
+A Pyramid would require $\sim 7.7 \times 10^3$ seconds $=$ $2$ hours
+$9$ minutes to do the same calculation, and a plain PC would take
+$\sim 41$ days $4$ hours.
+This also involves {\sl no} consideration for how long it would take
+to teach the software models by back-propagation.
+
+Software artificial \nns\ will never be able to perform a 
+meaningful portion
+of the human brain's functions, no matter how fast the machine, if
+the only available technology is a few planar silicon processors.
+True multidimensional parallel processing such as optical or
+biological processors offer the only possible path.
+Or we will be stuck with simulations of the same order as the ones
+investigated in this thesis.
+Simulations of this size are however remarkably useful, as the next
+part of this thesis shows.
+

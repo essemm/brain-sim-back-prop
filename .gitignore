@@ -15,3 +15,5 @@ obj/
 scans/
 CLAUDE.md
 *.tmp
+
+__pycache__/
