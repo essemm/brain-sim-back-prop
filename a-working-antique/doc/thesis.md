@@ -1,13 +1,22 @@
-# Brain Simulation: Computation in Back-Propagation Neural Networks
-
-**Author:** Scott MacGibbon
-**Supervisor:** Dr Peter Nickolls
-**Date:** 4 November 1988
-**Degree:** Bachelor of Engineering, University of Sydney
+*Thesis*
 
 ---
 
-# Synopsis
+**Brain Simulation: Computation in Back Propagation Neural Networks**
+
+---
+
+by **Scott MacGIBBON**
+
+Supervisor: Dr Peter Nickolls
+
+4 November, 1988
+
+---
+
+# Part 0: Synopsis
+
+# Chapter 0: Synopsis
 
 This thesis is concerned with the implementation of, and experimentation
 with, back-propagation neural networks.
@@ -31,7 +40,12 @@ localised in neurons, which act as feature extractors.
 Finally, a complete printout of fishNET is included in the appendices,
 along with the dot-matrix encoded character data.
 
-# Introduction
+# Part 1: Introduction
+
+> *The shortest distance between any two points is always blocked.
+> **Warren Monks, 1988***
+
+# Chapter 1: Introduction
 
 The aim of this project is to implement a neural network of an
 unspecified type. I have chosen to implement the back-propagation model,
@@ -52,7 +66,7 @@ In the next chapter I will discuss the back-propagation algorithm in
 detail, and the chapter following will contain a detailed implementation
 independent software specification for a software model.
 
-## Definition of Terms
+## 1.1. Definition of Terms
 
 Before I begin this discussion of neural networks, definition of a few
 terms will aid clarity \[1\].
@@ -74,7 +88,7 @@ negative (or zero,) indicating an excitatory or inhibitory (or no)
 connection. A weight is associated with a single input connection to a
 neuron.
 
-## So, What Is a Neural Network?
+## 1.2. So, What Is a Neural Network?
 
 A neural network is a collection of graded response neurons (processing
 elements), representing an approximation to biological neurons, in some
@@ -119,7 +133,7 @@ function shown in figure 2 being the output from the inputs times the
 weights and summed. The relationship of the simple model to biology is
 shown in \[4\].
 
-## Neurological Relevance
+## 1.3. Neurological Relevance
 
 Neurons themselves, in most models, are extremely simplified versions of
 the real biological article. So, it is the overall structure of a neural
@@ -187,7 +201,7 @@ components which operate like the human ear. This approach appears very
 fruitful, and I suspect we will see more machines designed about human
 form (cybernetics) in the future.
 
-## Why and How do Neural Networks Solve Problems?
+## 1.4. Why and How do Neural Networks Solve Problems?
 
 As mentioned earlier, neural networks gain their power from the
 connection of simple analog devices in parallel. The human brain has
@@ -258,7 +272,7 @@ negative output. All the neurons "calculate" at the same time, so the
 behaviour of a neural system (especially a very large one) is not
 trivial, and can't be written as a serial algorithm.
 
-## Types of Neural Networks
+## 1.5. Types of Neural Networks
 
 There are many different types of neural networks. Some are particularly
 suited to some types of problem, some are suitable for many types of
@@ -274,7 +288,7 @@ mathematically quantified his thinking. A good approach to doing just
 this is given by Linsker \[18\].) Examples of several types of neural
 networks appear below.
 
-### The Hopfield Network
+### 1.5.1. The Hopfield Network
 
 The Hopfield network shown in figure 3 is the simplest type of network,
 yet it is suprisingly powerful.
@@ -303,7 +317,7 @@ solutions (and this is as good as or better than the algorithmic
 approach described above) in a single convergence of the network, or
 several time-constants of the ciruit of figure 3. Quite a difference.
 
-### The Back-Propagation Network
+### 1.5.2. The Back-Propagation Network
 
 This is another "classic" neural network, along with the one described
 above (they appear to be the most commonly implemented in neurological
@@ -337,7 +351,7 @@ investigate later in the project.
 Back-propagation networks are good for solving problems such as speech
 synthesis and adaptive control.
 
-### The "Improved" Neocognitron
+### 1.5.3. The "Improved" Neocognitron
 
 The "improved" neocognitron, along with the next model discussed, falls
 into that category of neural networks that are more neurologically sound
@@ -370,7 +384,7 @@ pattern, and a new pattern will be recognized at the output. Needless to
 say, this network is too complex to implement in the short time
 available, so this is as thoroughly as it will be discussed.
 
-### The Adaptive Resonance Theory Model
+### 1.5.4. The Adaptive Resonance Theory Model
 
 The Adaptive Resonance Theory (or ART) model is the most complex one
 discussed here \[9\].
@@ -388,7 +402,7 @@ well for resetting the second layer (ie disabling its reinforcing
 action) when there are sufficiently large mismatches between the two
 levels.
 
-## Simulating Neural Networks in Hardware
+## 1.6. Simulating Neural Networks in Hardware
 
 As explained earlier, neurons have a graded response. Hence it is
 possible to simulate a neuron with a transfer function like that of
@@ -444,7 +458,7 @@ software. Most of the references given refer to software models as they
 are more flexible, though slower. The next section deals briefly with
 this.
 
-## Simulating Neural Networks in Software
+## 1.7. Simulating Neural Networks in Software
 
 As I stated at the start of this chapter, this project is intended to
 produce a working neural network of the back-propagation model \[20\].
@@ -464,7 +478,7 @@ The next chapter describes the mathematics behind the back-propagation
 algorithm to be implemented, based largely on \[20\] by Rumelhart,
 Hinton and Williams.
 
-# The Back-Propagation Model
+# Chapter 2: The Back-Propagation Model
 
 This short chapter aims to describe, in a step-by-step way, the
 mathematical steps behind an implementation of the back-propagation
@@ -474,7 +488,7 @@ implementation, appears in the last section of this chapter. As in the
 last chapter, a biological analogy is drawn and processing elements are
 referred to as neurons.
 
-## The Maths Behind the Model
+## 2.1. The Maths Behind the Model
 
 Based upon figure 7, which shows a feedforward neural network, the
 following mathematics holds:
@@ -488,9 +502,7 @@ weight of the connection between $i$ and $j$ be $w_{ji}$. Then the total
 input $x_j$ into a neuron $j$ is a linear function of the outputs $y_i$
 of the units connected to $j$ and of the weights $w_{ji}$:
 $$
-
-x_j = \sum_i y_i w_{ji}.\tag{1}
-
+x_j = \sum_i y_i w_{ji}.\qquad\text{(1)}
 $$
 
 Extra input or "bias" can be added to a neuron, say $j$, equivalent to a
@@ -501,9 +513,7 @@ but $w_{j,\text{bias}}$ gives the negative threshold for $j$.
 Each neuron $j$ has a non-integral output $y_j,$ which is a non-linear
 function of its input $x_j:$
 $$
-
-y_j = {1 \over 1 + \text{e}^{-x_j}}.\tag{2}
-
+y_j = {1 \over 1 + \text{e}^{-x_j}}.\qquad\text{(2)}
 $$
 
 The input/output function doesn't need to be the sigmoid response, any
@@ -513,9 +523,7 @@ Let $c$ be an index of cases, $j$ be an index of output neurons, $y$ be
 the actual state of an output neuron, and let $d$ be the desired state
 (or expected answer). The total error, $E,$ is defined as
 $$
-
-E = {1 \over 2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2. \tag{3}
-
+E = {1 \over 2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2. \qquad\text{(3)}
 $$
 
 The whole aim of this technique is to minimize the error, ie. make the
@@ -523,72 +531,57 @@ expected and actual outputs more similar. To minimize $E$ by gradient
 descent, we need the partial derivative of $E$ with respect to each
 weight in the network. So from (3),
 $$
-
-{\partial E \over \partial y_j} = y_j - d_j. \tag{4}
-
+{\partial E \over \partial y_j} = y_j - d_j. \qquad\text{(4)}
 $$
 
 And
 $$
-
 {\partial E \over \partial x_j} = {\partial E \over \partial y_j}
-    {\partial y_j \over \partial x_j}. \tag{5}
-
+    {\partial y_j \over \partial x_j}. \qquad\text{(5)}
 $$
 
 From (2),
 $$
-
-{\partial y_j \over \partial x_j} = y_j(1-y_j).\tag{6}
-
+{\partial y_j \over \partial x_j} = y_j(1-y_j).\qquad\text{(6)}
 $$
-
 Hence
 $$
-
 {\partial E \over \partial x_j} = {\partial E \over \partial y_j}
-    y_j(1-y_j).\tag{7}
-
+    y_j(1-y_j).\qquad\text{(7)}
 $$
 
-So we can calculate how a change in input $x$
-to an output neuron will affect the error. However, the input to an
-output layer neuron is a linear combination of the outputs from the
-lower layers and their weights. So we can compute what the effect on the
-error would be for changes in lower states and weights:
+So we can calculate how a change in
+input $x$ to an output neuron will affect the error. However, the input
+to an output layer neuron is a linear combination of the outputs from
+the lower layers and their weights. So we can compute what the effect on
+the error would be for changes in lower states and weights:
 $$
-
 {\partial E \over \partial w_{ji}} = {\partial E \over \partial x_j}
     {\partial x_j \over \partial w_{ji}} = {\partial E \over
-        \partial x_j} y_i.\tag{8}
-
+        \partial x_j} y_i.\qquad\text{(8)}
 $$
 
 Then
 $$
-
 {\partial E \over \partial x_j} {\partial x_j \over \partial y_i}
-    = {\partial E \over \partial x_j} w_{ji},\tag{9}
-
+    = {\partial E \over \partial x_j} w_{ji},\qquad\text{(9)}
 $$
 
-and taking into
-account all connections from $i,$
+and
+taking into account all connections from $i,$
 $$
-
 {\partial E \over \partial y_i} = \sum_j {\partial E \over \partial x_j}
-w_{ji}.\tag{10}
-
+w_{ji}.\qquad\text{(10)}
 $$
 
-The procedure outlined above can be repeated for every
-layer below the output layer, computing $\partial E \over \partial w$ as
-we go.
+The procedure outlined above can be repeated
+for every layer below the output layer, computing
+$\partial E \over \partial w$ as we go.
 
 This brings us to the philosophies that can be employed to modify the
 weights.
 
-## Modification of Weights
+## 2.2. Modification of Weights
 
 The simplest scheme of weight modification is to modify them as we go
 for every input/output pair. (To change $w$, modify by $\Delta w =
@@ -599,9 +592,7 @@ Another method, used by Rumelhart et al. \[20\] is to accumulate
 $\partial E \over \partial w$ over all the input/output pairs before
 changing the weights. The simplest version of this method is to make
 $$
-
-\Delta w = - \varepsilon {\partial E \over \partial w}, \tag{11}
-
+\Delta w = - \varepsilon {\partial E \over \partial w}, \qquad\text{(11)}
 $$
 where $\varepsilon$ is a constant of proportionality
 and $\partial E \over
@@ -609,10 +600,8 @@ and $\partial E \over
 which apparently offers speed improvements is to use a proportion of the
 previous $\Delta w$,
 $$
-
 \Delta w(t) = -\varepsilon {\partial E \over \partial w(t)} + \alpha
-            \Delta w(t-1), \tag{12}
-
+            \Delta w(t-1), \qquad\text{(12)}
 $$
 
 where $t$ is a count of the number of times all input/output pairs have
@@ -620,7 +609,7 @@ been presented and $\alpha$ is an exponential decay factor. This is the
 method that I will use in the software model of the back-propagation
 network.
 
-## An Algorithm for The Back-Propagation Model
+## 2.3. An Algorithm for The Back-Propagation Model
 
 From all this mathematics, we can now explain the back-propagation model
 algorithmically. Two algorithms are presented. I have found the first to
@@ -695,7 +684,11 @@ The next part, Software, deals with the implemented software for the
 back-propagation algorithm, where both the algorithms above have been
 implemented.
 
-# Software Specification
+# Part 2: Software
+
+> ***Allen's Law:** Everything is more complicated than it appears.*
+
+# Chapter 3: Software Specification
 
 This chapter outlines the user interface and the functions to be
 performed by the software model of a back-propagation neural network. In
@@ -709,7 +702,7 @@ the software package, called fishNET. The design used to implement this
 specification is described in Chapter 4: Construction, and its behaviour
 is examined in Chapter 5: Performance.
 
-## The User Interface
+## 3.1. The User Interface
 
 Operation of the program requires a number of parameters and fishNET
 offers a number of different ways of saving and viewing the data about
@@ -718,7 +711,7 @@ command line inputs of names of files which contain network data, or can
 accept input from the keyboard if a data file is absent. Both methods of
 input (file and keyboard) will be described below.
 
-### Selecting the Parameters -- Configuring the Network
+### 3.1.1. Selecting the Parameters -- Configuring the Network
 
 The user is able to select the size and shape of the network, as well as
 the parameters for use during learning. Entry is via an input file
@@ -751,13 +744,13 @@ The information needed to run the program is:
 If no command line file name is specified, the program will query the
 user via the keyboard. This is the default operation.
 
-#### Keyboard Input Format
+#### 3.1.1.1. Keyboard Input Format
 
 A question is asked via the screen for every parameter listed above, and
 the answers are accepted through the keyboard. The user enters a return
 after typing the parameter being considered.
 
-#### Configuration File Format
+#### 3.1.1.2. Configuration File Format
 
 The format of a configuration file is described below. The
 symbols $\langle\rangle$ are used to delimit user required data. All
@@ -783,48 +776,36 @@ and data items necessary.
 | "execute out" | path<test output file name> |
 | "network save" | path<network save file name> |
 | "max sweeps" | < q> |
-
 Simply place the desired value next to the appropriate token. Tokens
 must be in order. For the "neurons" token, the order of the
 numbers $a_0\to a_{n-1}$ is taken as the number of neurons in the
 layers $0\to n-1$. Hence the example
-
 | layers | 3 |  |  |
 | --- | --- | --- | --- |
 | neurons | 13 | 20 | 5 |
-
 means that there are 13 neurons on the input (layer $0$), $20$ in
 the intermediate layer (layer $1$), and $5$ in the output layer
 (layer $2$).
-
 The tokens "alpha" and "epsilon" refer to the learning parameters
 $\alpha$ and $\varepsilon$.
-
 The file name following the "sample in" token is the file used as
 training input for the network, and the file name following the "sample
 out" token is the expected output file, used for comparison and
 calculating the error.
-
 The "execute in" and "execute out" tokens precede the file names for use
 in operating the network once it is taught and the final destination of
 the output.
-
 The token "network save" comes before the name of the file where the
 network is to finally be saved once it has been taught, or the program
 terminated.
-
 Finally, "max sweeps" is the maximum number of training sweeps that will
 occur. Once this number is reached, (and it will not be reached if the
 network is completely taught,) the network is saved and execution
 begins.
-
 Formats of data files are shown below.
-
 Command line options used to specify a configuration file instead of
 keyboard entry are found in section 3.1.5. Command line options.
-
-### Using a Pre-Made Network
-
+### 3.1.2. Using a Pre-Made Network
 The user is able to load a network file which contains all the data
 necessary (especially weights) for operation of the network, or
 continued teaching, or both. The code is designed so that if it is
@@ -833,13 +814,10 @@ present status and elapsed $t$ are stored into a network file. The
 network is also saved when it has been fully taught, or the maximum time
 has elapsed (depending upon flags set, so see 3.1.5. Command line
 options).
-
-#### Network File Format
-
+#### 3.1.2.1. Network File Format
 The format of a network file is described below. The symbol format is
 the same as the previously described configuration file format
 (3.1.1.2).
-
 | "layers" | < n> |  |  |  |  |
 | --- | --- | --- | --- | --- | --- |
 | "neurons" | < a_0 | a_1 | a_2 | ... | a_n-1> |
@@ -847,7 +825,6 @@ the same as the previously described configuration file format
 | "output width" | < m> |  |  |  |  |
 | "alpha" | <α> |  |  |  |  |
 | "epsilon" | <ε> |  |  |  |  |
-
 | "sample in" | path<teaching input file name> |
 | --- | --- |
 | "sample out" | path<expected output file name> |
@@ -897,7 +874,7 @@ Command line options used to specify a network file and what is to be
 done with it (that is continued teaching or execution) are found in
 section 3.1.5. Command line options.
 
-### Teaching Data
+### 3.1.3. Teaching Data
 
 The specifications for configuration and network files, and keyboard
 input contain references to "sample in" and "sample out" files. These
@@ -911,7 +888,7 @@ after learning. The second set of input data will match the second set
 of output data after learning, and so on. Each input output pair is
 called a *case*.
 
-#### Teaching Data File Format
+#### 3.1.3.1. Teaching Data File Format
 
 The start of an input case is signalled by a "\[start\]" token. There
 may be a user comment before the first token. Input data is matched to
@@ -927,7 +904,7 @@ The format for the file is as shown below:
 | --- | --- | --- | --- | --- |
 | α_2 | β_2 | γ_2 | δ_2 | ... |
 
-#### Expected Data File Format
+#### 3.1.3.2. Expected Data File Format
 
 Expected data files have the same format as teaching data files. The
 values in the expected data file are matched to output neurons in the
@@ -938,7 +915,7 @@ warning is issued. If for any case there are more output neurons than
 there is output data, an error occurs. If there is not an identical
 number of input and output cases, an error occurs.
 
-### Test Data
+### 3.1.4. Test Data
 
 Configuration and network files, and keyboard input, contain the tokens
 "execute in" and "execute out". The file names after these tokens refers
@@ -949,14 +926,14 @@ the output from the top (layer $n-1$) neurons for each case presented to
 the bottom layer. Any previous contents of the "execute out" file are
 overwritten by the new input cases' outputs.
 
-#### Test Data File Format
+#### 3.1.4.1. Test Data File Format
 
 Format is identical to 3.1.3.1. Teaching data file format. Once again,
 if there is too much data the excess for each input cases is ignored
 (and a warning is issued), and if there is too little data an error
 occurs.
 
-#### Output Data File Format
+#### 3.1.4.2. Output Data File Format
 
 The "execute out" file output format is similar to 3.1.3.2. Expected
 data file format. The only difference is that the length of the stored
@@ -964,16 +941,14 @@ output line is modulated by the parameter following the token "output
 width", which is entered from the keyboard, or network or configuration
 files.
 
-### Command Line Options
+### 3.1.5. Command Line Options
 
 To reduce keyboard input and increase the facility for repeated
 (automated) testing of program behaviour, all directives and flags used
 by the program can be set from the command line. Each flag or directive
 is selected by typing
 $$
-
 {\rm fishNET\ } \{-flag_0\}\{-\}\{flag_1\}\ldots\quad.
-
 $$
 
 For example,
@@ -984,15 +959,13 @@ exception to this method are the $-c$ and $-n$ flags, which can only
 appear at the end of a "$-$" list or by themselves. This is because they
 refer to file names. For example,
 $$
-
 \text{fishNET\ $-n\langle{\rm netfile}\rangle$\ $-q$.}
-
 $$
 
 A full explanation of each flag and directive appears below categorised
 by function.
 
-#### Screen Input/Output Control
+#### 3.1.5.1. Screen Input/Output Control
 
 $-v$ (verbose) flag
 
@@ -1019,7 +992,7 @@ This mode causes fishNET to print rudimentary information about loading
 status, and displays the elapsed time and total error while the program
 is running.
 
-#### Loading Configuration and Network Files from Disk
+#### 3.1.5.2. Loading Configuration and Network Files from Disk
 
 $-c$ (load configuration file) directive
 
@@ -1045,7 +1018,7 @@ There is no default file loaded. If neither $-c$ or $-n$ is specified,
 the user is queried via the screen and keyboard for the appropriate
 parameter values.
 
-#### Using the Network File
+#### 3.1.5.3. Using the Network File
 
 $-e$ (execute) flag
 
@@ -1072,7 +1045,7 @@ If neither the $-e$ or $-t$ flags are used with the $-n$ directive, an
 error occurs. In other words, you must tell the program what you want to
 do with a network file!
 
-#### Saving the Network File
+#### 3.1.5.4. Saving the Network File
 
 $-s$ (store "taught" network) flag
 
@@ -1115,7 +1088,7 @@ If none of the save flags is specified, the user is queried via the
 screen and keboard. The choices available are akin to the $-s$ and $-d$
 flags (there is no equivalent $-x$ option).
 
-#### Calculation of $\Delta w(t)$
+#### 3.1.5.5. Calculation of $\Delta w(t)$
 
 The package fishNET offers two ways to calculate $\partial E \over
 \partial w$ and $\Delta w(t)$, both enumerated in algorithmic form in
@@ -1147,7 +1120,7 @@ If neither the $-1$ or $-a$ flags are specified, the $-a$ mode is
 assumed. Unless $-q$ (quiet) has been set, a message is issued to this
 effect.
 
-#### Printing the Help Message
+#### 3.1.5.6. Printing the Help Message
 
 $-?$, $-h$ (help) flags
 
@@ -1156,16 +1129,14 @@ help message is displayed. The help message contains information on
 every flag and is located in the file `help.hlp` under all
 implementations of the program.
 
-#### Unrecognised Options
+#### 3.1.5.7. Unrecognised Options
 
 If any other option is specified, the program displays the message
 $$
-
 \text{``try typing `fishNET $-?$' for help''.}
-
 $$
 
-#### Default (no options set)
+#### 3.1.5.8. Default (no options set)
 
 If no options are set, the program asks for all information about file
 names and parameters, the same way it does if neither $-c$ or $-n$ is
@@ -1173,7 +1144,7 @@ specified.
 
 This is the recommended mode for "beginners".
 
-## Operations Performed
+## 3.2. Operations Performed
 
 FishNET implements the back-propagation model of a neural network, as
 described in the previous chapter "The Back-Propagation Model". The
@@ -1193,7 +1164,7 @@ Efficiency of operation is important, however the operations required
 are undertaken in such a way that flexibility of network size and
 portability of code are maintained.
 
-## Network Size
+## 3.3. Network Size
 
 Any user specified network can have up to $8$ layers. It can have any
 number of neurons in these layers, depending solely upon available
@@ -1201,13 +1172,13 @@ memory of the particular hardware implementation.
 
 Allocation of space for the network is completely dynamic.
 
-## File Input/Output Format
+## 3.4. File Input/Output Format
 
 All files used by and created by the program are ASCII files. As a
 direct result, data files can be generated by hand with an editor, as
 can network and configuration files.
 
-# Software Construction
+# Chapter 4: Software Construction
 
 In this chapter I will outline the construction of the code and the data
 structures used to implement the back-propagation algorithm. The package
@@ -1230,7 +1201,7 @@ source, include, object and executable files (as well as the TeX source
 for this document) are also on a diskette inside the back cover of this
 work.
 
-## Data Structure Design
+## 4.1. Data Structure Design
 
 As stated in the software specification, the code is to operate with
 networks of variable size and configuration, restricted only by
@@ -1251,7 +1222,7 @@ describe the most important structure, namely that used for the network,
 then the other structures used for different purposes within the
 network.
 
-### Network Structure
+### 4.1.1. Network Structure
 
 A back-propagation network can be divided into $3$ parts. A network is
 made up of layers. Each layer contains neurons. And each neuron has
@@ -1262,54 +1233,54 @@ deal with networks as large as available memory in any given system).
 Because of this the structure is made up of dynamically allocated arrays
 of pointers to pointers to structures.
 
-#### Weights
+#### 4.1.1.1. Weights
 
 Weights are stored in a `struct` of type `WEIGHT`. Contained in `WEIGHT`
 are fields for: weight or connection strength, `double w`;
 $\partial E \over \partial w$, `double dE_dw`; and $\Delta w(t-1)$,
 `double old_delta_w`.
 
-#### Neurons
+#### 4.1.1.2. Neurons
 
 Neurons are stored in a `struct` of type `NEURON`. `NEURON` contains
 fields for: output of the neuron, `double y`; a pointer to an array of
 weights for this neuron's connection to the layer above, `WEIGHT *w`.
 
-#### Layer
+#### 4.1.1.3. Layer
 
 Layers are stored in a `struct` of type `LAYER`. A `LAYER` is made up of
 fields for: a pointer to an array of neurons for that level,
 `NEURON *neuron`.
 
-#### Network
+#### 4.1.1.4. Network
 
 A network is stored as a pointer to an array of type `LAYER` (that is,
 `LAYER *`). Throughout the code, this is how references to the network
 are passed.
 
-### Structures Used in Back-Propagation Calculations
+### 4.1.2. Structures Used in Back-Propagation Calculations
 
 Large numbers of intermediate variables are necessary during
 calculations using the back-propagation method. All are stored as
 dynamic arrays.
 
-#### Temporary Values of $\partial E \over \partial x$
+#### 4.1.2.1. Temporary Values of $\partial E \over \partial x$
 
 Temporary values of $\partial E \over \partial x$ are stored in an array
 of type `double`.
 
-#### Temporary Values of $\partial E \over \partial y$
+#### 4.1.2.2. Temporary Values of $\partial E \over \partial y$
 
 Temporary values of $\partial E \over \partial y$ are stored in an array
 of type `double`.
 
-### Input/Output Data Structures
+### 4.1.3. Input/Output Data Structures
 
 To minimize relatively slow disk input/output for such a repetitive
 action as learning, all input/output data for learning and all input
 data for operation is read in at once when it is needed.
 
-#### Neuron's Input/Output Value
+#### 4.1.3.1. Neuron's Input/Output Value
 
 Every neuron's input value for layer $0$ neurons and every neuron's
 expected output for top layer neurons is stored in `struct`s of type
@@ -1317,16 +1288,16 @@ expected output for top layer neurons is stored in `struct`s of type
 value of input or output for the neuron in question. For each I/O case
 there is an array of `OP_DATA`.
 
-#### Input/Output Cases
+#### 4.1.3.2. Input/Output Cases
 
 Input and output cases are stored in a `struct` called `I_O`. This
 structure contains a pointer to a particular case, `OP_DATA *item`. All
 I/O data is stored in arrays of `I_O`, each element of which contains a
 pointer to a particular case.
 
-### General Data Structures
+### 4.1.4. General Data Structures
 
-#### Data File Information
+#### 4.1.4.1. Data File Information
 
 Every data file used by fishNET has its information stored in a `struct`
 of type `DATA_FILE`. Contained in `DATA_FILE` are: the file name,
@@ -1335,7 +1306,7 @@ of type `DATA_FILE`. Contained in `DATA_FILE` are: the file name,
 `int i_o_cases`; and the number of neurons in the layer this file is
 associated with, `int neurons`.
 
-#### Most Commonly Used Parameters
+#### 4.1.4.2. Most Commonly Used Parameters
 
 During the operation of fishNET, all constantly used data is stored in
 one `struct`, called `QUESTION`. Throughout the program, pointers to
@@ -1350,7 +1321,7 @@ the saved file, `char save_comment[79]`; a chunk of information about
 network teaching and execution files, `DATA_FILE sample_in`;
 `DATA_FILE sample_out`; `DATA_FILE data_in`; `DATA_FILE data_out`.
 
-#### Structure for Network Files
+#### 4.1.4.3. Structure for Network Files
 
 When a network file is loaded, it contains the complete network
 (including weights), plus all the parameters necessary for operation.
@@ -1360,7 +1331,7 @@ network, `LAYER *network`; a pointer to a structure containing all run
 time information, `QUESTION *parameter`; and the value of $t$ at which
 the network will start teaching, `int start_time`.
 
-## Program Design
+## 4.2. Program Design
 
 There are two important functions which the program performs, and they
 are: training artificial neural networks, and running neural networks.
@@ -1380,19 +1351,17 @@ The items configuration and expected data, network file, run data, and
 output have been discussed in the previous chapter. Each of the other
 parts, the teacher and the neural 'engine' will be discussed below.
 
-### The Teacher
+### 4.2.1. The Teacher
 
 Teaching a network is broken into several phases. For each phase, the
 appropriate subroutine and its functions will be examined.
 
-#### Reading the Parameters of Network Operation
+#### 4.2.1.1. Reading the Parameters of Network Operation
 
 The action taken here depends upon the command line options set. If
 there are no options set, the program calls
 $$
-
 \texttt{parameter = input\_parameters();}
-
 $$
 
 which returns a pointer to
@@ -1401,9 +1370,7 @@ read from the keyboard.
 
 If the $-c$ option was used, the program instead calls
 $$
-
 \texttt{parameter = finput\_parameters(config\_file);}
-
 $$
 
 which returns
@@ -1415,14 +1382,12 @@ If the $-n$ option was used, fishNET loads the network at the same time
 as the operational parameters, so please see the next section on
 allocating space for the network.
 
-#### Allocating Space for The Network
+#### 4.2.1.2. Allocating Space for The Network
 
 If the network is to be trained from the start (that is, no network is
 pre-loaded), the program allocates space for it by
 $$
-
 \texttt{network = allocate(parameter);}
-
 $$
 
 This function allocates
@@ -1433,9 +1398,7 @@ If the network is to be loaded from disk (the $-n$ command line
 directive was used), fishNET reads the parameters and allocates space
 for the network by
 $$
-
 \texttt{net\_and\_param = load\_network\_and\_parameters(netfile);}
-
 $$
 
 The function takes as its arguments the name of the network file, and
@@ -1445,27 +1408,23 @@ values read from the file as the weights; and an integer value of the
 time $t$ the network is to start learning at. For more information about
 the data structures used see 4.1. Data structure design.
 
-#### Loading the Expected Data
+#### 4.2.1.3. Loading the Expected Data
 
 Once the network has been allocated, the data is read in and stored in
 the structure previously described in 4.1.3. Input/Output data
 structures. The function call returns a pointer to an array of type
 `I_O`, that is `I_O *`. The call is
 $$
-
 \begin{aligned}\texttt{input} &\texttt{= get\_data(parameter->sample\_in);}\\
     \texttt{output} &\texttt{= get\_data(parameter->sample\_out);}\\
 \end{aligned}
-
 $$
 
-#### Teaching the Network
+#### 4.2.1.4. Teaching the Network
 
 The network is taught by the function
 $$
-
 \texttt{learn(network,\ parameter,\ start\_time);}
-
 $$
 
 This function
@@ -1505,7 +1464,7 @@ $\Delta w(t)$ and apply it for every case. This appears to make the
 network converge much more slowly, but is included for experimental
 purposes.
 
-#### Saving the Network
+#### 4.2.1.5. Saving the Network
 
 Once the network is fully 'taught', or the maximum value of $t$ is
 reached, the action depends upon the setting of the command line options
@@ -1518,9 +1477,7 @@ If $-s$ was selected, the network is saved to disk by a call to the
 function
 
 $$
-
 \texttt{store\_network(network,\ parameter);}
-
 $$
 
 and execution
@@ -1528,17 +1485,15 @@ occurs immediately.
 
 If $-x$ was specified, the learning parameters are saved by
 $$
-
 \texttt{store\_learnt\_parameters(parameter);}
-
 $$
 
 and the program exits
 without execution.
 
-### The Neural 'Engine'
+### 4.2.2. The Neural 'Engine'
 
-#### Operating With a Network
+#### 4.2.2.1. Operating With a Network
 
 The network passed to the function has the input applied to the bottom
 layer and the output is stored in the top (output) layer of the network.
@@ -1547,12 +1502,10 @@ below times their interconnecting weights. The output of every neuron is
 its input times the transfer function. The call that performs these
 functions is
 $$
-
 \texttt{operate(network,\ input\_case->item,\ parameter);}
-
 $$
 
-# Performance
+# Chapter 5: Performance
 
 The performance of software models of neural networks is probably their
 biggest drawback --- it is a classic tradeoff between flexibility and
@@ -1580,12 +1533,12 @@ and maybe rethink network size and shape. Thus it is execution speed,
 not memory size, which is the most important constraint in PC
 implementations.
 
-## Hardware
+## 5.1. Hardware
 
 A description of all the hardware configurations that fishNET was tested
 with follows:
 
-### The (almost) Standard IBM-PC
+### 5.1.1. The (almost) Standard IBM-PC
 
 As mentioned above, fishNET's development was undertaken entirely on a
 1985 vintage true-blue IBM-PC. The $4.77 {\rm MHz}$ intel $8088$ has
@@ -1594,20 +1547,20 @@ marginally faster with screen and disk I/O and up to $5$ times faster
 for some processor operations. The speed improvement, however, is only
 about $20\%$ in general. The machine has $640{\rm k}$ of RAM.
 
-### The Turbo-Charging 8087
+### 5.1.2. The Turbo-Charging 8087
 
 After finding that learning times for small networks was several hours,
 the IBM-PC above was fitted with a genuine intel $8087$. The speed
 improvement was in the order of a factor of $12$.
 
-### The Pyramid Super-Mini
+### 5.1.3. The Pyramid Super-Mini
 
 This machine literally turned days into minutes. It is a Pyramid
 model 9810, which has $16$ Mbytes of actual and $200$ Mbytes of virtual
 memory with a RISC architecture, so fishNET simulations of painful size
 for the PC were not much of a burden. Really.
 
-## Learning and Execution Speed
+## 5.2. Learning and Execution Speed
 
 To calculate learning and execution speed is easy on a machine as slow
 as a PC, since it is possible to simply use a stop-watch and observe the
@@ -1621,7 +1574,7 @@ and execution. However, the case chosen for calculations had a
 reasonably large number of learning iterations, so the result is
 accurate to within a factor of $1.5$.
 
-### Learning Speed
+### 5.2.1. Learning Speed
 
 For simplicity's sake, consider the application of the back-propagation
 algorithm to a weight as a single operation. Then, it is possible to
@@ -1641,13 +1594,11 @@ This technique gave the following results:
 
 A good approximation of speeds in general then is
 $$
-
 {\rm PC}_{\rm V20\ (8088)} = {{\rm PC}_{\rm 8087} \over 12.5} 
             = {{\rm Pyramid} \over 459}
-
 $$
 
-### Execution Speed
+### 5.2.2. Execution Speed
 
 Calculation of execution speed is a more difficult task. Firstly, as
 after each execution there is a lot of disk output, the stop-watch time
@@ -1680,7 +1631,6 @@ Hence, using \[27\], we find that the approximate execution speed for a
 single input case is of the order of
 
 $$
-
 \begin{aligned}
 {\rm PC}_{\rm V20\ (8088)} &= (n_{\rm neurons} \times 41.61 \times 10^{-3})\\
     &\qquad{}+ (n_{\rm weights} \times (0.753\times 10^{-3} + 
@@ -1694,7 +1644,6 @@ $$
           &= (n_{\rm neurons} \times 1.08) +
     (n_{\rm weights} \times 0.373) {\rm \ msec}\\
 \end{aligned}
-
 $$
 
 These values are very approximate. However, they still
@@ -1702,25 +1651,21 @@ show an interesting trend. Assuming that the Pyramid is at least $37$
 times faster than the PC$_{\rm 8087}$, we find
 
 $$
-
 \begin{aligned}
 {\rm Pyramid} &= (n_{\rm neurons} \times 29.2) +
         (n_{\rm weights} \times 10.1){\rm\ }\mu{\rm sec}\\
 \end{aligned}
-
 $$
 
 So for a typical problem with $3$ layers, ($195$ neurons
 in the input layer, $30$ in the middle layer, and $5$ in the output
 layer, or $6000$ weights in total,) the expected execution times are
 $$
-
 \begin{aligned}
 {\rm PC}_{\rm V20\ (8088)} &= 30.35 {\rm\ sec}\\
 {\rm PC}_{\rm 8087}     &= 2.49  {\rm\ sec}\\
 {\rm Pyramid}       &= 67    {\rm\ msec}\\
 \end{aligned}
-
 $$
 
 These are close to the roughly measured times.
@@ -1732,7 +1677,7 @@ neuron is typically $3 \to 12$ times slower. In these calculations,
 memory addressing time has been ignored, as it is $100 \to 1000$ times
 faster than floating point operations.
 
-## Memory Used
+## 5.3. Memory Used
 
 Once again, we are only searching for a rule of thumb: on single
 processor systems such as PCs, memory resident device drivers and RAM
@@ -1757,7 +1702,6 @@ implementation to implementation (as the size of an `int` varies). For a
 PC application
 
 $$
-
 \begin{aligned}
 \texttt{QUESTION}_{\rm space} &= 4 \times ( 36 \times \texttt{char} +
     2 \times \texttt{int}) + (10 \times \texttt{int}) \\
@@ -1768,7 +1712,6 @@ $$
         &= (258 \times 1) + (2 \times 8) + (18 \times 2)\\
         &= 310 {\rm\  bytes}.
 \end{aligned}
-
 $$
 
 It will become obvious that this is hardly significant.
@@ -1784,22 +1727,18 @@ The network requires space for
 Hence the amount of space required is
 
 $$
-
 \begin{aligned}
 \texttt{LAYER}_{\rm space} &= (\texttt{NEURON *}) = 4 {\rm\ bytes},\\
 \texttt{NEURON}_{\rm space}&= (\texttt{WEIGHT *}) + \texttt{double} 
             = 12 {\rm \ bytes}, \\
 \texttt{WEIGHT}_{\rm space}&= 3 \times \texttt{double} = 24 {\rm \ bytes}.\\
 \end{aligned}
-
 $$
 
 So the equation for memory usage by a network becomes
 $$
-
 \texttt{NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
     (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
-
 $$
 where $n_{\rm layer}$ is the number or layers, etc.
 
@@ -1810,7 +1749,6 @@ for each case. Every neuron on the output has a piece of data for
 comparison during learning for each I/O case. So
 
 $$
-
 \begin{aligned}
 {\rm data}_{\rm space} &= (n_{\rm layer\ 0\ neurons} \times 
     ({\rm learning\ cases} + {\rm execution\ cases}) \times 
@@ -1822,7 +1760,6 @@ $$
             &\qquad{}+ (n_{\rm output\ layer\ neurons}\times
                 {\rm learning\ cases} \times 8).\\
 \end{aligned}
-
 $$
 
 The next facet to consider is space used during calculations. Arrays of
@@ -1834,15 +1771,12 @@ arrays refer to different layers of neurons at a time, but for the rule
 of thumb we will invent a worst case. The worst case is where we have
 two big layers of the same size next to each other, so
 $$
-
 {\rm calculation}_{\rm space} = (n_{\rm neurons in\ biggest\ layer}\times 16)
-
 $$
 
 Putting all these parts together,
 
 $$
-
 \begin{aligned}
 {\rm Memory\ required} &= \texttt{QUESTION}_{\rm space} + 
         \texttt{NETWORK}_{\rm space} + {\rm data}_{\rm space}
@@ -1855,13 +1789,11 @@ $$
         {\rm learning\ cases} \times 8)\\
     &\qquad{}+(n_{\rm neurons in\ biggest\ layer} \times 16) {\rm\ bytes}.\\
 \end{aligned}
-
 $$
 
 Using again the example of a 3 layer (195, 30, 5)
 network, (with 5 learning cases and 20 execution cases,) we get
 $$
-
 \begin{aligned}
 {\rm Memory\ required} &= 310 + (3 \times 4) + (230 \times 12) + 
             (6000 \times 24)\\
@@ -1870,10 +1802,9 @@ $$
               &= 190\,002 {\rm\ bytes}\\
               &= 185.5 {\rm\ kbytes}.
 \end{aligned}
-
 $$
 
-## An Interesting Comparison --- Software versus Wetware
+## 5.4. An Interesting Comparison --- Software versus Wetware
 
 The human brain has been dubbed 'wetware' by some authors. How does
 wetware compare with a single processor software simulation of the
@@ -1906,7 +1837,9 @@ with simulations of the same order as the ones investigated in this
 thesis. Simulations of this size are however remarkably useful, as the
 next part of this thesis shows.
 
-# Introductory Experiments
+# Part 3: Using FishNET
+
+# Chapter 6: Introductory Experiments
 
 The back-propagation algorithm described in an earlier section was
 applied to several problems using the software package fishNET. Various
@@ -1929,7 +1862,7 @@ generalised network, with no other human input. It is a remarkable tool.
 Later chapters investigate further the effects of parameters on network
 behaviour, and the effect of casualties within the network.
 
-## The First Test --- O and X Recogniser
+## 6.1. The First Test --- O and X Recogniser
 
 The first piece of test data that was created and run on the network was
 a simple O and X recogniser. There were $9$ neurons (bits) on the input,
@@ -1968,7 +1901,7 @@ data not used for training was input (such as $0.5$s being used to
 replace some of the $1$s in the shapes). The network produced the
 correct results.
 
-## A More Ambitious Test --- Shadow Encoding
+## 6.2. A More Ambitious Test --- Shadow Encoding
 
 Burr \[25\] discusses the use of a $13$ segment shadow encoder as a
 means of describing hand written data for input to a neural network. He
@@ -1993,7 +1926,7 @@ the middle layer). Hence this network was never fully allowed to
 converge to a solution. Possible methods of speeding convergence are
 dealt with in a later chapter.
 
-## Dot Matrix Letter Encoding
+## 6.3. Dot Matrix Letter Encoding
 
 This was the other major initial test experiment. Shadow encoding,
 although partly removing some of the inherent problems of neural network
@@ -2018,7 +1951,7 @@ a PC with an 8087.
 This example is extensively discussed in the next chapter, and is used
 throughout the thesis for experimental purposes.
 
-# Experiments on learning
+# Chapter 7: Experiments on learning
 
 In this chapter, the dot matrix encoding of English language characters
 will be considered in detail. There are two important facets to consider
@@ -2065,7 +1998,7 @@ examine below the effects of these parameters' variations on learning
 time $t$ and error rate $E$. A summary is included at the end of this
 chapter.
 
-## Variation of Learning Time with Parameters
+## 7.1. Variation of Learning Time with Parameters
 
 This experiment dealt with the length of time taken to fully train the
 network with the error criteria set above. However, there is a subtle
@@ -2143,7 +2076,7 @@ both $\varepsilon$ and neurons in the middle layer.
 The effect of $\varepsilon$ and neurons in layer 1 on error rate will be
 examined in the next section.
 
-## Variation of Error Rate with Parameters
+## 7.2. Variation of Error Rate with Parameters
 
 The experiment detailed here entailed taking a random sample of each of
 the $\varepsilon$ and middle layer values used in the previous
@@ -2221,7 +2154,7 @@ total error was used to get some spread between the various cases.
 The next experiments examine the effect of casualties in the network
 upon its performance.
 
-## Summary
+## 7.3. Summary
 
 The results presented in this chapter highlight some features of
 learning with this problem. There can be large variations in the
@@ -2242,7 +2175,7 @@ take longer to teach, and an explanation for this has been proposed.
 There is not a dramatic difference in error rate between the
 different $\varepsilon$ and neuron values (about 20% variation at most).
 
-# Effects of casualties
+# Chapter 8: Effects of casualties
 
 One feature that separates neural networks from other computational
 techniques is the fact that knowledge is distributed amongst the weights
@@ -2279,7 +2212,7 @@ used.
 We examine below these two types of casualties. A summary of results is
 given at the end of this chapter.
 
-## Casualties in Connections
+## 8.1. Casualties in Connections
 
 FishNET, the neural network simulator package used in this thesis,
 stores networks as ASCII files. Hence, generating casualties in the
@@ -2331,7 +2264,7 @@ much the same way. Of course, for the same *number* of weight casualties
 the effects will be less, but for the same *percentage* of the total
 weight population the behaviour will probably be the same.
 
-## Casualties in Middle Layer Neurons
+## 8.2. Casualties in Middle Layer Neurons
 
 In this experiment, various numbers of middle layer neurons were
 disabled, by setting the connecting weights between these neurons and
@@ -2390,16 +2323,14 @@ For illustrative purposes, a mean time between failure analysis is
 undertaken below to show just how reliable a neural network is with
 regard to failure in intermediate layer neurons.
 
-## Mean Time Between Failure Analysis
+## 8.3. Mean Time Between Failure Analysis
 
 Angus \[28\] gives a simple calculation for mean time between failure
 (MTBF), which we use below for illustrative purposes. From \[28\],
 $$
-
 {\displaystyle\theta_{\rm sys}} = 
     {\displaystyle{\sum_{i=0}^{n-k} {n\choose i} (\lambda/\mu)^i}\over
         \displaystyle{k\lambda {n\choose k} (\lambda/\mu)^{(n-k)}}},
-
 $$
 where the notation is explained as
 
@@ -2415,9 +2346,7 @@ where the notation is explained as
 and
 
 $$
-
 {n\choose i} = { n! \over i!\,(n-i)!}.
-
 $$
 
 Imagine that a neural network is made up of individual, replaceable
@@ -2432,7 +2361,7 @@ Then, MTBF ($\theta_{\rm sys}$) for this network is $7.337004\times10^8$
 hours, or $83\,756$ years. Quite a long time. (These figures come
 from $n=15$, $k=13$, $\lambda = {1\over10\,000}$, and $\mu={1\over1}$.)
 
-## Summary
+## 8.4. Summary
 
 This chapter's results reveal some important facts about the
 representation of knowledge in back-propagation neural networks, as well
@@ -2451,7 +2380,12 @@ of an input to produce recognition of the appropriate pattern. These
 results have shown that this same conclusion can be drawn by removing
 intermediate layer neurons, and observing the increased errors.
 
-# Conclusions
+# Part 4: Conclusions
+
+> *This is not the end. It is not even the beginning of the end. But it
+> is, perhaps, the end of the beginning. **Winston Churchill, 1942***
+
+# Chapter 9: Conclusions
 
 The result of this thesis has been the production of a portable neural
 network simulator called fishNET that will operate with networks of any
@@ -2462,7 +2396,7 @@ namely performance and flexibility. Also, we recap some uses for
 fishNET, and the results of parameters and casualties on network
 behaviour. Lastly, some avenues for possible further work are suggested.
 
-## Software -- Design and Performance
+## 9.1. Software -- Design and Performance
 
 A large part of the work for this thesis involved writing and testing a
 software package called fishNET. FishNET was written to be a portable,
@@ -2475,7 +2409,7 @@ point calculations required during learning tends to be the limiting
 factor involved with using fishNET, not a lack of memory, especially in
 PC implementations.
 
-## Possible Uses of FishNET
+## 9.2. Possible Uses of FishNET
 
 Briefly, the flexibility of neural networks in general was examined by
 testing fishNET with a wide range of problems, for which it successfully
@@ -2484,7 +2418,7 @@ quickly "taught" to perform almost any pattern recognition task is an
 important result. Hence, neural networks are an important tool for
 engineers.
 
-## Behaviour of Neural Networks
+## 9.3. Behaviour of Neural Networks
 
 The behaviour of neural networks with respect to parameter variations
 and casualties was investigated. The problem of dot-matrix encoded
@@ -2535,7 +2469,7 @@ looking at the structure of weights. Here it has been done without
 examining the distribution and strength of connections, instead by
 viewing performance with casualties in the network.
 
-## Further Work
+## 9.4. Further Work
 
 As a large part of the time involved with this thesis was required to
 write fishNET, there is still a lot of work that could be done using the
@@ -2576,205 +2510,212 @@ $n$-transputer environment.
 
 ---THE END ---
 
-A Software
+# Part 5: Appendices
+
+# Appendix A: Software
 
 This appendix contains complete printouts of all source and include
 files used with the package fishNET.
 
-'C' Source Files
+## 'C' Source Files
 
-fishNET.c
+### fishNET.c
 
 *\[Listing: fishNET.ct\]*
 
-error.c
+### error.c
 
 *\[Listing: error.ct\]*
 
-learn.c
+### learn.c
 
 *\[Listing: learn.ct\]*
 
-input.c
+### input.c
 
 *\[Listing: input.ct\]*
 
-show.c
+### show.c
 
 *\[Listing: show.ct\]*
 
-'C' Include Files
+## 'C' Include Files
 
-fishNET.h
+### fishNET.h
 
 *\[Listing: fishNET.ht\]*
 
-error.h
+### error.h
 
 *\[Listing: error.ht\]*
 
-learn.h
+### learn.h
 
 *\[Listing: learn.ht\]*
 
-input.h
+### input.h
 
 *\[Listing: input.ht\]*
 
-show.h
+### show.h
 
 *\[Listing: show.ht\]*
 
-net_type.h
+### net_type.h
 
 *\[Listing: net_type.ht\]*
 
-Makefile
+## Makefile
 
 *\[Listing: fishNET.t\]*
 
-The Help File --- help.hlp
+## The Help File --- help.hlp
 
 *\[Listing: help.hlp\]*
 
-# Appendix B: Dot-Matrix Encoded Characters {#appendix-b-dot-matrix-encoded-characters .unnumbered}
+# Appendix B: Dot-Matrix Encoded Characters
 
 This appendix contains the data used for dot-matrix encoding of English
 language characters. Input and expected output are shown
 
-Input Data
+## Input Data
 
 *\[Listing: hugein.dat\]*
 
-Expected Output Data
+## Expected Output Data
 
 *\[Listing: hugeout.dat\]*
 
-Data Used for Testing
+## Data Used for Testing
 
 The data below was used for all the experiments in the thesis.
 
 *\[Listing: hugerun.dat\]*
 
-\- Robert Hecht-Nielsen, "Neurocomputing: picking the human brain,"
+# References
+
+\[1\] Robert Hecht-Nielsen, "Neurocomputing: picking the human brain,"
 *IEEE Spectrum **25*** no 3 (1988), 36--41.
 
-\- David W. Tank and John J. Hopfield, "Collective Computation in
+\[2\] David W. Tank and John J. Hopfield, "Collective Computation in
 Neuronlike Circuits," *Scientific American* December 1987, 62--70.
 
-\- Mark F. Bear, Leon N. Cooper, and Ford F. Ebner, "A Physiological
+\[3\] Mark F. Bear, Leon N. Cooper, and Ford F. Ebner, "A Physiological
 Basis for a Theory of Synapse Modification," *Science **237*** (1987),
 42--48.
 
-\- John J. Hopfield and David W. Tank, "Computing with Neural Circuits:
-A Model," *Science **233*** (1986), 625--633.
+\[4\] John J. Hopfield and David W. Tank, "Computing with Neural
+Circuits: A Model," *Science **233*** (1986), 625--633.
 
-\- David Zipser and Richard A. Andersen, "A back-propagation programmed
-network that simulates response properties of a subset of posterior
-parietal neurons," *Nature **331*** (1988), 679--684.
+\[5\] David Zipser and Richard A. Andersen, "A back-propagation
+programmed network that simulates response properties of a subset of
+posterior parietal neurons," *Nature **331*** (1988), 679--684.
 
-\- Donald Hebb, "The organization of behaviour," John Wiley, New York
+\[6\] Donald Hebb, "The organization of behaviour," John Wiley, New York
 (1949).
 
-\- H. Frohn, H. Geiger, and W. Singer, "A Self-Organizing Neural Network
-Sharing Features of the Mammalian Visual System," *Biological
+\[7\] H. Frohn, H. Geiger, and W. Singer, "A Self-Organizing Neural
+Network Sharing Features of the Mammalian Visual System," *Biological
 Cybernetics **55*** (1987), 333--343.
 
-\- Ralph M. Seigel, "Discovering structure from motion in monkey, man
+\[8\] Ralph M. Seigel, "Discovering structure from motion in monkey, man
 and machine," from *Neural information processing systems* D.Z.Andersen
 ed. (1988)
 
-\- Gail A. Carpenter and Stephen Grossberg, "The ART of Adaptive Pattern
-Recognition by a Self-Organizing Neural Network," *IEEE Computer* March
-1988, 77--88.
+\[9\] Gail A. Carpenter and Stephen Grossberg, "The ART of Adaptive
+Pattern Recognition by a Self-Organizing Neural Network," *IEEE
+Computer* March 1988, 77--88.
 
-\- Teuvo Kohonen, "The 'Neural' Phonetic Typewriter," *IEEE Computer*
-March 1988, 11--22.
+\[10\] Teuvo Kohonen, "The 'Neural' Phonetic Typewriter," *IEEE
+Computer* March 1988, 11--22.
 
-\- Kunihiko Fukushima, "A Neural Network for Visual Pattern
+\[11\] Kunihiko Fukushima, "A Neural Network for Visual Pattern
 Recognition," *IEEE Computer* March 1988, 65--75.
 
-\- Jerome A. Feldman, Mark A. Fanty, and Nigel H. Goddard, "Computing
-with Structured Neural Networks," *IEEE Computer* March 1988, 91--103.
+\[12\] Jerome A. Feldman, Mark A. Fanty, and Nigel H. Goddard,
+"Computing with Structured Neural Networks," *IEEE Computer* March 1988,
+91--103.
 
-\- James A. Anderson, "Networks for fun and profit," *Nature **322***
-(1986), 406--7.
+\[13\] James A. Anderson, "Networks for fun and profit," *Nature
+**322*** (1986), 406--7.
 
-\- A paper by Amir F. Atiya, "Learning on a general network," Department
-of Electrical Engineering, California Institute of Technology CA 91125
---- no other publishing data.
+\[14\] A paper by Amir F. Atiya, "Learning on a general network,"
+Department of Electrical Engineering, California Institute of Technology
+CA 91125 --- no other publishing data.
 
-\- Alfred V. Aho, John E. Hopcroft, and Jeffrey D. Ullman, "Data
+\[15\] Alfred V. Aho, John E. Hopcroft, and Jeffrey D. Ullman, "Data
 Structures and Algorithms," Addison-Wesley, Sydney, 1983.
 
-\- Alan F. Murray and Anthony V. W. Smith, "Asynchronous VLSI Neural
+\[16\] Alan F. Murray and Anthony V. W. Smith, "Asynchronous VLSI Neural
 Networks Using Pulse-Stream Arithmetic," *IEEE Journal of Solid-State
 Circuits **IEEE-JSSC 23*** no 3 (1988), 688--697.
 
-\- John J. Hopfield and David W. Tank, "'Neural' Computation of
+\[17\] John J. Hopfield and David W. Tank, "'Neural' Computation of
 Decisions in Optimization Problems," *Biological Cybernetics **52***
 (1985), 141--152.
 
-\- Ralph Linsker, "Self-Organization in a Perceptual Network," *IEEE
+\[18\] Ralph Linsker, "Self-Organization in a Perceptual Network," *IEEE
 Computer* March 1988, 105--117.
 
-\- A paper by G. Z. Sun, H. H. Chen, and Y. C. Lee, "Learning Stereopsis
-with Neural Networks," Laboratory for Plasma and Fusion Energy Studies,
-Dept. of Physics and Astronomy, and Inst. for Advanced Computer Studies,
-all University of Maryland, College Park MD 20742 --- no other
-publishing data.
+\[19\] A paper by G. Z. Sun, H. H. Chen, and Y. C. Lee, "Learning
+Stereopsis with Neural Networks," Laboratory for Plasma and Fusion
+Energy Studies, Dept. of Physics and Astronomy, and Inst. for Advanced
+Computer Studies, all University of Maryland, College Park MD 20742 ---
+no other publishing data.
 
-\- David E. Rumelhart, Geoffrey E. Hinton, and Ronald J. Williams,
+\[20\] David E. Rumelhart, Geoffrey E. Hinton, and Ronald J. Williams,
 "Learning representations by back-propagating errors," *Nature **323***
 (1986), 533--536.
 
-\- Richard F. Lyon and Carver Mead, "An Analog Electronic Cochlea,"
+\[21\] Richard F. Lyon and Carver Mead, "An Analog Electronic Cochlea,"
 *IEEE Transactions on Acoustics, Speech, and Signal Processing
 **IEEE-ASSP 36*** no 7 (1988), 1119--1134.
 
-\- Jacques J. Vidal, "Implementing Neural Nets with Programmable Logic,"
-*IEEE Transactions on Acoustics, Speech, and Signal Processing
+\[22\] Jacques J. Vidal, "Implementing Neural Nets with Programmable
+Logic," *IEEE Transactions on Acoustics, Speech, and Signal Processing
 **IEEE-ASSP 36*** no 7 (1988), 1180--1190.
 
-\- R. Paul Gorman and Terrence J. Sejnowski, "Learned Classification of
-Sonar Targets Using a Massively Parallel Network," *IEEE Transactions on
-Acoustics, Speech, and Signal Processing **IEEE-ASSP 36*** no 7 (1988),
-1135--1140.
+\[23\] R. Paul Gorman and Terrence J. Sejnowski, "Learned Classification
+of Sonar Targets Using a Massively Parallel Network," *IEEE Transactions
+on Acoustics, Speech, and Signal Processing **IEEE-ASSP 36*** no 7
+(1988), 1135--1140.
 
-\- Yi-Tong Zhou, Rama Chellappa, Aseem Vaid, and B. Keith Jenkins,
+\[24\] Yi-Tong Zhou, Rama Chellappa, Aseem Vaid, and B. Keith Jenkins,
 "Image Restoration Using a Neural Network," *IEEE Transactions on
 Acoustics, Speech, and Signal Processing **IEEE-ASSP 36*** no 7 (1988),
 1141--1151.
 
-\- David J. Burr, "Experiments on Neural Net Recognition of Spoken and
-Written Text," *IEEE Transactions on Acoustics, Speech, and Signal
+\[25\] David J. Burr, "Experiments on Neural Net Recognition of Spoken
+and Written Text," *IEEE Transactions on Acoustics, Speech, and Signal
 Processing **IEEE-ASSP 36*** no 7 (1988), 1162--1168.
 
-\- Alan S. Gevins and Nelson H. Morgan, "Applications of Neural-Network
-(NN) Signal Processing in Brain Research," *IEEE Transactions on
-Acoustics, Speech, and Signal Processing **IEEE-ASSP 36*** no 7 (1988),
-1152--1161.
+\[26\] Alan S. Gevins and Nelson H. Morgan, "Applications of
+Neural-Network (NN) Signal Processing in Brain Research," *IEEE
+Transactions on Acoustics, Speech, and Signal Processing **IEEE-ASSP
+36*** no 7 (1988), 1152--1161.
 
-\- Thomas Plum and Jim Brodie, "Efficient C," Plum Hall, Cardiff New
+\[27\] Thomas Plum and Jim Brodie, "Efficient C," Plum Hall, Cardiff New
 Jersey, 1985.
 
-\- John E. Angus, "On Computing MTBF for a $k$-out-of-$n:G$ Repairable
-System," *IEEE Transactions on Reliability **37*** no 3 (1988),
-312--313.
+\[28\] John E. Angus, "On Computing MTBF for a $k$-out-of-$n:G$
+Repairable System," *IEEE Transactions on Reliability **37*** no 3
+(1988), 312--313.
 
-\- Donald E. Knuth, "The TeXbook," Addison Wesley, Sydney, 1986.
+\[29\] Donald E. Knuth, "The TeXbook," Addison Wesley, Sydney, 1986.
+
+# Acknowledgements
 
 There are many people that I would like to thank for making my work so
 much easier and enjoyable.
 
 First and foremost, I would like to thank my supervisor, Dr Peter
-Nickolls. Thankyou for always providing sound advice, for letting me run
-the project as I saw fit, and for steering me in the right direction
+Nickolls. Thank you for always providing sound advice, for letting me
+run the project as I saw fit, and for steering me in the right direction
 with regards to which model to work on.
 
-Thankyou to my family for supporting me and being tolerant when I got up
-late. Thankyou all for proofreading both this thesis and my essay, for
-providing the computer, and for feeding me.
+Thank you to my family for supporting me and being tolerant when I got
+up late. Thank you all for proofreading both this thesis and my essay,
+for providing the computer, and for feeding me.
 
 Thanks to the programmers at Bain and Company's Fixed Interest division,
 (Jodi, Phil who came to the seminar, and Monique,) but especially
@@ -2788,8 +2729,8 @@ To Kerryn, thanks for being interested above and beyond the call of
 duty, and to my friends for all the wit, wisdom, and good times over the
 past five years.
 
-Thankyou Andrew Joyner for thinking of the name fishNET for the package,
-without which it wouldn't have been the same.
+Thank you Andrew Joyner for thinking of the name fishNET for the
+package, without which it wouldn't have been the same.
 
 And finally, thanks to my brother Alastair, who kept me ideologically
 sound during all those 2 a.m. tea breaks.

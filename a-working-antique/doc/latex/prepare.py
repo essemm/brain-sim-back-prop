@@ -45,6 +45,54 @@ POSTAMBLE = r"""
 """
 
 
+# --- Heading numbering state (reset in main() before processing) ---
+_cnt = {'part': -1, 'chap': -1, 'sec': 0, 'ssec': 0, 'sssec': 0,
+        'app_ltr': '', 'sapp': 0, 'ssapp': 0}
+
+def _reset_cnt():
+    _cnt.update({'part': -1, 'chap': -1, 'sec': 0, 'ssec': 0, 'sssec': 0,
+                 'app_ltr': '', 'sapp': 0, 'ssapp': 0})
+
+def _sub_heading(m):
+    r"""Single-pass handler for \sssec / \ssec / \sec / \chap in document order.
+
+    Groups: 1=sssec title, 2=ssec title, 3=sec title, 4=chap title.
+    Using one re.sub call guarantees counters are updated in document order —
+    separate passes would let e.g. all \sec fire before any \ssec, making
+    _cnt['sec'] already at its final value when the first \ssec is reached.
+    """
+    if m.group(4) is not None:          # \chap
+        _cnt['chap'] += 1
+        _cnt['sec'] = _cnt['ssec'] = _cnt['sssec'] = 0
+        return r'\chapter{Chapter ' + str(_cnt['chap']) + ': ' + m.group(4).strip() + '}'
+    if m.group(3) is not None:          # \sec
+        _cnt['sec'] += 1
+        _cnt['ssec'] = _cnt['sssec'] = 0
+        n = f'{_cnt["chap"]}.{_cnt["sec"]}'
+        return r'\section{' + n + '. ' + m.group(3).strip() + '}'
+    if m.group(2) is not None:          # \ssec
+        _cnt['ssec'] += 1
+        _cnt['sssec'] = 0
+        n = f'{_cnt["chap"]}.{_cnt["sec"]}.{_cnt["ssec"]}'
+        return r'\subsection{' + n + '. ' + m.group(2).strip() + '}'
+    # \sssec (group 1)
+    _cnt['sssec'] += 1
+    n = f'{_cnt["chap"]}.{_cnt["sec"]}.{_cnt["ssec"]}.{_cnt["sssec"]}'
+    return r'\subsubsection{' + n + '. ' + m.group(1).strip() + '}'
+
+def _sub_app(m):
+    ltr = m.group(1).strip()
+    _cnt['app_ltr'] = ltr
+    _cnt['sapp'] = _cnt['ssapp'] = 0
+    return r'\chapter*{Appendix ' + ltr + ': ' + m.group(2).strip() + '}'
+
+def _sub_sapp(m):
+    return r'\section*{' + m.group(1).strip() + '}'
+
+def _sub_ssapp(m):
+    return r'\subsection*{' + m.group(1).strip() + '}'
+
+
 def skip_braced(text: str, i: int) -> int:
     """Advance i past a balanced {...} group starting at text[i]."""
     assert text[i] == '{'
@@ -80,13 +128,25 @@ def replace_parts(text: str) -> str:
             word = re.match(r'\S+', text[i:])
             title = word.group() if word else ''
             i += len(title)
-        # Skip whitespace and optional quote group
-        while i < len(text) and text[i] in ' \t':
+        # Read optional quote group
+        quote = ''
+        while i < len(text) and text[i] in ' \t\n':
             i += 1
         if i < len(text) and text[i] == '{':
-            i = skip_braced(text, i)
-        # Emit as a comment — the real heading comes from \chap below it.
-        result.append(f'% PART: {title}')
+            j = skip_braced(text, i)
+            quote = text[i+1:j-1].strip()
+            i = j
+        _cnt['part'] += 1
+        heading = r'\chapter*{Part ' + str(_cnt['part']) + ': ' + title + '}'
+        if quote:
+            # Clean up plain-TeX font commands in the quote
+            quote = re.sub(r'\{\\bf\s+', r'\\textbf{', quote)
+            quote = re.sub(r'\{\\sl\s+|\{\\it\s+', r'\\textit{', quote)
+            quote = re.sub(r'\\cr\b', ' ', quote)
+            quote = re.sub(r'\\hfill?\b', '', quote)
+            result.append(heading + '\n\n\\begin{quote}\\textit{' + quote.strip() + '}\\end{quote}')
+        else:
+            result.append(heading)
     result.append(text[i:])
     return ''.join(result)
 
@@ -278,20 +338,22 @@ def process(text: str) -> str:
     text = re.sub(r'\{\\ninerm\s+', r'{', text)
     text = re.sub(r'\{\\tt\s+', r'\\texttt{', text)
 
-    # Structure macros: \chap Title  →  \chapter{Title}
-    # These take the rest of the line as their argument.
-    text = re.sub(r'^\\chap\s+(.+)$', lambda m: r'\chapter{' + m.group(1).strip() + '}', text, flags=re.MULTILINE)
-    text = re.sub(r'^\\sec\s+(.+)$',  lambda m: r'\section{' + m.group(1).strip() + '}', text, flags=re.MULTILINE)
-    text = re.sub(r'^\\ssec\s+(.+)$', lambda m: r'\subsection{' + m.group(1).strip() + '}', text, flags=re.MULTILINE)
-    text = re.sub(r'^\\sssec\s+(.+)$',lambda m: r'\subsubsection{' + m.group(1).strip() + '}', text, flags=re.MULTILINE)
+    # Structure macros — single combined pass so counters update in document order.
+    # Groups: 1=\sssec, 2=\ssec, 3=\sec, 4=\chap  (most-specific first)
+    text = re.sub(
+        r'^\\sssec\s+(.+)$|^\\ssec\s+(.+)$|^\\sec\s+(.+)$|^\\chap\s+(.+)$',
+        _sub_heading, text, flags=re.MULTILINE,
+    )
 
-    # \part {Title} {quote}  or  \part Word {quote}  →  \chapter{Title}
+    # \part {Title} {quote}  →  \chapter*{Part N: Title}
     text = replace_parts(text)
 
-    # \app {A} Title  →  \chapter*{Appendix A: Title}
-    text = re.sub(r'^\\app\s*\{([^}]*)\}\s*(.+)$',
-                  lambda m: r'\chapter*{Appendix ' + m.group(1).strip() + ': ' + m.group(2).strip() + '}',
-                  text, flags=re.MULTILINE)
+    # \app {A} Title  or  \app A Title  →  \chapter*{Appendix A: Title}
+    text = re.sub(r'^\\app\s+\{?([A-Za-z]+)\}?\s+(.+)$', _sub_app, text, flags=re.MULTILINE)
+    # \sapp Title  →  \section*{A.N. Title}
+    text = re.sub(r'^\\sapp\s+(.+)$',               _sub_sapp,  text, flags=re.MULTILINE)
+    # \ssapp Title  →  \subsection*{A.N.M. Title}
+    text = re.sub(r'^\\ssapp\s+(.+)$',              _sub_ssapp, text, flags=re.MULTILINE)
 
     # Figure inserts: convert to a simple caption comment so content isn't lost
     # \topinsert / \midinsert ... \endinsert
@@ -307,8 +369,9 @@ def process(text: str) -> str:
     # \tablerule  →  \hline
     text = re.sub(r'\\tablerule\b', r'\\hline', text)
 
-    # \eqno(N)  →  \tag{N}  (plain TeX equation numbering → LaTeX/MathJax)
-    text = re.sub(r'\\eqno\(([^)]+)\)', r'\\tag{\1}', text)
+    # \eqno(N)  →  \qquad\text{(N)}  (plain TeX equation numbering → right-side label)
+    # \tag{} requires equation/align environments; \qquad\text{} works in \[...\] too.
+    text = re.sub(r'\\eqno\(([^)]+)\)', r'\\qquad\\text{(\1)}', text)
 
     # \lower.5ex\hbox{e}  →  e  (plain TeX typographic trick for "Intel" logo)
     text = re.sub(r'\\lower[^\\]*\\hbox\{([^}]*)\}', r'\1', text)
@@ -353,20 +416,29 @@ def process(text: str) -> str:
 
 
 FRONT_MATTER = """\
-# Brain Simulation: Computation in Back-Propagation Neural Networks
+*Thesis*
 
-**Author:** Scott MacGibbon
-**Supervisor:** Dr Peter Nickolls
-**Date:** 4 November 1988
-**Degree:** Bachelor of Engineering, University of Sydney
+---
+
+**Brain Simulation: Computation in Back Propagation Neural Networks**
+
+---
+
+by **Scott MacGIBBON**
+
+Supervisor: Dr Peter Nickolls
+
+4 November, 1988
 
 ---
 
 """
 
-# Matches the noisy TeX layout residue pandoc emits from TFRONT.TEX
+# Matches the noisy TeX layout residue pandoc emits from TFRONT.TEX.
+# Replaces everything from the first line (which starts "to 2cm ...") up to
+# the first Markdown heading (# Part 0: ...).
 FRONT_MATTER_NOISE_RE = re.compile(
-    r'^to \d.*?(?=^# Synopsis)',
+    r'^to \d.*?(?=^# )',
     re.MULTILINE | re.DOTALL,
 )
 
@@ -618,24 +690,52 @@ def replace_vbox_tables(text: str) -> str:
 
 
 def fix_display_math(text: str) -> str:
-    """Ensure every $$ ... $$ display block is on its own line.
+    """Ensure every $$ ... $$ display block is on its own line with no inner blank lines.
 
     Pandoc sometimes emits  $$expr$$ prose  all on one line.  KaTeX chokes
     on this because the second $ in the closing $$ looks like the start of a
     new inline-math span.  Split so the closing $$ and any trailing prose each
     get their own line, separated by a blank line.
+
+    Pandoc also emits blank lines inside $$ ... $$ blocks.  When thesis.md is
+    fed back to pandoc for PDF generation, inner blank lines break the display-math
+    block into separate paragraphs, causing Markdown italic processing to corrupt
+    underscores (e.g. y_i becomes y followed by italic "i w").
     """
     # Match a closing $$ that is followed by non-whitespace on the same line.
-    # Insert a newline after $$ and a blank line before the trailing text.
     text = re.sub(r'\$\$( *)(\S)', r'$$\n\n\2', text)
     # Match an opening $$ that is preceded by non-whitespace on the same line.
     text = re.sub(r'(\S)( *)\$\$', r'\1\n\n$$', text)
-    return text
+    # Remove blank lines inside $$ ... $$ blocks using a line-scanning approach.
+    # The regex approach fails because the non-greedy match stops at the wrong \n$$.
+    lines = text.split('\n')
+    out = []
+    in_math = False
+    for line in lines:
+        if line.rstrip() == '$$':
+            in_math = not in_math
+            out.append(line)
+        elif in_math and line.strip() == '':
+            pass  # drop blank lines inside $$...$$
+        else:
+            out.append(line)
+    return '\n'.join(out)
+
+
+def strip_heading_attrs(text: str) -> str:
+    r"""Remove pandoc's {#id .class} attribute blocks from heading lines.
+
+    Starred LaTeX commands (\chapter*, \section*, etc.) produce e.g.
+    '# References {#references .unnumbered}' in pandoc's Markdown output.
+    The attributes are noise for plain-Markdown rendering.
+    """
+    return re.sub(r'^(#{1,6} .*?) \{[^{}]+\}$', r'\1', text, flags=re.MULTILINE)
 
 
 def main():
     out_path = HERE.parent / "thesis_pandoc.tex"
     md_out  = HERE.parent / "thesis.md"
+    _reset_cnt()          # initialise heading counters before processing
     parts = [PREAMBLE]
 
     for fname in CONTENT_FILES:
@@ -644,6 +744,8 @@ def main():
             print(f"Warning: {fname} not found, skipping", file=sys.stderr)
             continue
         raw = fpath.read_text(encoding="latin-1", errors="replace")
+        if fname == "ACKNOWLE.TEX":
+            raw = r"\chapter*{Acknowledgements}" + "\n\n" + raw
         parts.append(f"\n% ---- {fname} ----\n")
         parts.append(process(raw))
 
@@ -669,6 +771,7 @@ def main():
     md = FRONT_MATTER_NOISE_RE.sub(FRONT_MATTER, md)
     md = fix_display_math(md)        # normalise $$ spacing first
     md = replace_vbox_tables(md)     # then convert \vbox tables
+    md = strip_heading_attrs(md)     # remove {#id .unnumbered} noise
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")
 
