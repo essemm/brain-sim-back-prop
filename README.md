@@ -7,25 +7,23 @@ thesis at the University of Sydney in 1988.
 **Author:** Scott MacGibbon  
 **Degree:** Bachelor of Engineering, University of Sydney
 
-The disks containing the code (and the thesis text, in TeX) have in lived in the back of the bound thesis until 2026:
+The disks containing the code (and the thesis text, in TeX) have in lived in the back of the bound thesis across a couple of continents, until 2026:
 
 <figure>
   <img src="the-museum--from-original-disks/images/IMG_6689.png" alt="The 5.25&quot; disks">
   <figcaption>The 5.25" disks</figcaption>
 </figure>
-
+<br>
 <figure>
   <img src="the-museum--from-original-disks/images/IMG_7002.png" alt="The 5.25&quot; disks">
   <figcaption>My bound copy</figcaption>
 </figure>
-
+<br>
 <figure>
   <img src="the-museum--from-original-disks/images/IMG_7003.png" alt="The 5.25&quot; disks">
   <figcaption>Title page</figcaption>
 </figure>
-
-
-
+<br>
 
 ## Contents
 I used a service to extract the contents of the disks. Surprisingly, the contents came straight off, and they are uploaded here unchanged. Then, using an LLM to modernise the old K&R code that also had these fabulous relics like `#ifndef MSDOS`, from my old IBM PC XT. It did make me a tad nostaligic. For a moment.
