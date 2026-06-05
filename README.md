@@ -8,20 +8,19 @@ thesis at the University of Sydney in 1988.
 **Degree:** Bachelor of Engineering, University of Sydney
 
 The disks containing the code (and the thesis text, in TeX) have in lived in the back of the bound thesis across a couple of continents, until 2026:
-
 <figure>
-  <img src="the-museum--from-original-disks/images/IMG_6689.png" alt="The 5.25&quot; disks">
-  <figcaption>The 5.25" disks</figcaption>
-</figure>
-<br>
-<figure>
-  <img src="the-museum--from-original-disks/images/IMG_7002.png" alt="The 5.25&quot; disks">
   <figcaption>My bound copy</figcaption>
+  <img src="the-museum--from-original-disks/images/IMG_7002.png" alt="The 5.25&quot; disks">
 </figure>
 <br>
 <figure>
+  <figcaption>The 5.25" disks, as stuck into the back of the bound book. I pulled these away from the back with some fear, but all was well</figcaption>
+  <img src="the-museum--from-original-disks/images/IMG_6689.png" alt="The 5.25&quot; disks">
+</figure>
+<br>
+<figure>
+  <figcaption>Title page, in all its once-exotic laser-printed glory</figcaption>
   <img src="the-museum--from-original-disks/images/IMG_7003.png" alt="The 5.25&quot; disks">
-  <figcaption>Title page</figcaption>
 </figure>
 <br>
 
