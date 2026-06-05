@@ -7,26 +7,29 @@ thesis at the University of Sydney in 1988.
 **Author:** Scott MacGibbon  
 **Degree:** Bachelor of Engineering, University of Sydney
 
-The disks containing the code (and the thesis text, in TeX) have in lived in the back of the bound thesis across a couple of continents, until 2026:
+The disks containing the code (and the thesis text, in TeX) lived in the back of the bound thesis across a couple of continents, until 2026:
 <figure>
   <figcaption>My bound copy</figcaption>
-  <img src="the-museum--from-original-disks/images/IMG_7002.png" alt="The 5.25&quot; disks">
+  <img src="the-museum--from-original-disks/images/IMG_7002.png" alt="My bound copy">
 </figure>
 <br>
 <figure>
   <figcaption>The 5.25" disks, as stuck into the back of the bound book. I pulled these away from the back with some fear, but all was well</figcaption>
-  <img src="the-museum--from-original-disks/images/IMG_6689.png" alt="The 5.25&quot; disks">
+  <img src="the-museum--from-original-disks/images/IMG_6689.png" alt="The 5.25&quot; disks, as stuck into the back of the bound book. I pulled these away from the back with some fear, but all was well">
 </figure>
 <br>
 <figure>
   <figcaption>Title page, in all its once-exotic laser-printed glory</figcaption>
-  <img src="the-museum--from-original-disks/images/IMG_7003.png" alt="The 5.25&quot; disks">
+  <img src="the-museum--from-original-disks/images/IMG_7003.png" alt="Title page, in all its once-exotic laser-printed glory">
 </figure>
 <br>
 
-## Contents
-I used a service to extract the contents of the disks. Surprisingly, the contents came straight off, and they are uploaded here unchanged. Then, using an LLM to modernise the old K&R code that also had these fabulous relics like `#ifndef MSDOS`, from my old IBM PC XT. It did make me a tad nostaligic. For a moment.
+## Background
+I used a service to extract the contents of the disks. Surprisingly, the contents came straight off, and they are uploaded here unchanged. Then, I used an LLM to modernise the old K&R code that also had these fabulous relics like `#ifndef MSDOS`, from my old IBM PC XT. It did make me a tad nostalgic. For a moment.
 
+Lastly, the repo and the project have different names. Calling the project `fishNET` was suggested by my (acknowledged) friend, and is an unfortunate reminder of my undergraduate humour. It may have been decided in a pub, it may not, I don't remember but that is <del>probable</del> possible. Anyway, apologies.
+
+## Repo structure
 There are two directories:
 
 - `the-museum--from-original-disks/` — Original K&R C source as recovered from the floppy disks, kept for reference
@@ -44,11 +47,11 @@ The code in the working antique directory was minimally converted to ANSI C (C89
 
 The goal was the minimum modernisation needed to get a clean build with zero warnings under Apple clang, while staying true to the original logic — not a rewrite into modern C (C11/C17 etc.).
 
-The most subtle change was the way 16-bit DOS rand() generated compared to macOS - the max rand was, in the distant past, 32767 - but now, it is $2^{31} - 1$. This caused the program to never converge. The original code `#define RANDDIV 54612.0` became `#define RANDDIV ((double)RAND_MAX / 0.6)` and I was surprised that the code ran.
+The most subtle change over the decades concerned `rand()`. On the original 16-bit DOS compiler, RAND_MAX was 32767, while on today's macOS it's $2^{31} - 1$. The original `#define RANDDIV 54612.0` assumed that smaller maximum, so weight initialisation in the network was scaled incorrectly. Since the weights were so huge, the network never converged. Changing `RANDDIV` to `#define RANDDIV ((double)RAND_MAX / 0.6)` corrected this - I was truly surprised that the code ran.
 
-The "working antique" directory also contains the thesis documents in plain TeX. To convert this was more painful than the code! The process was to create a Python script that pre-processed each TeX file converting headings, equations, tables, and references into LaTeX that `pandoc` could then process. Then `pandoc` created a Markdown version. From this, a PDF was generated using `pandoc` that in turn used the `xelatex` PDF engine to bring over the equations.
+The "working antique" directory also contains the thesis documents in plain TeX. To convert this was more painful than the code! The process was: create a Python script that pre-processed each TeX file converting headings, equations, tables, and references into LaTeX that `pandoc` could then process. Then `pandoc` created a Markdown version. From this, a PDF was generated using `pandoc` that in turn used the `xelatex` PDF engine to bring over the equations.
 
-These are all in the `a-working-antique/doc` directory. 
+These are all in the `a-working-antique/doc` directory.
 
 ## Building
 
