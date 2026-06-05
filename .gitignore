@@ -2,7 +2,6 @@
 *.o
 *.obj
 *.exe
-fishNET
 obj/
 
 # macOS

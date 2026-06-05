@@ -7,19 +7,51 @@ thesis at the University of Sydney in 1988.
 **Author:** Scott MacGibbon  
 **Degree:** Bachelor of Engineering, University of Sydney
 
-The disks lived in the back of the bound thesis until 2026
-<img width="768" height="1024" alt="FB0F6BC4-7A4F-4D9E-BA57-54F5610DCDF6_1_105_c" src="https://github.com/user-attachments/assets/c240a231-8075-44ba-b7c6-fd0bbab69998" />
+The disks containing the code (and the thesis text, in TeX) have in lived in the back of the bound thesis until 2026:
 
-<img width="2048" height="1536" alt="8B2F6FAE-C879-41D4-A9C0-4DDF9DF5817A_1_102_o" src="https://github.com/user-attachments/assets/96a5d4de-e49d-46a5-babe-5244f36d536b" />
+<figure>
+  <img src="the-museum--from-original-disks/images/IMG_6689.png" alt="The 5.25&quot; disks">
+  <figcaption>The 5.25" disks</figcaption>
+</figure>
 
+<figure>
+  <img src="the-museum--from-original-disks/images/IMG_7002.png" alt="The 5.25&quot; disks">
+  <figcaption>My bound copy</figcaption>
+</figure>
+
+<figure>
+  <img src="the-museum--from-original-disks/images/IMG_7003.png" alt="The 5.25&quot; disks">
+  <figcaption>Title page</figcaption>
+</figure>
 
 
 
 
 ## Contents
+I used a service to extract the contents of the disks. Surprisingly, the contents came straight off, and they are uploaded here unchanged. Then, using an LLM to modernise the old K&R code that also had these fabulous relics like `#ifndef MSDOS`, from my old IBM PC XT. It did make me a tad nostaligic. For a moment.
 
-- `a-working-antique/` — Modernised ANSI C version; this is the one to build and run
+There are two directories:
+
 - `the-museum--from-original-disks/` — Original K&R C source as recovered from the floppy disks, kept for reference
+- `a-working-antique/` — Modernised ANSI C version; this is the one to build and run
+
+The code in the working antique directory was minimally converted to ANSI C (C89/90):
+
+- Function definitions and declarations converted from K&R style to ANSI prototypes.
+- `#ifdef MSDOS` blocks and all DOS-specific code removed throughout.
+- `_control87()` and `_status87()` FPU calls removed (`error.c`, `fishnet.c`).
+- `stdprn` (the DOS printer handle) replaced by `#define stdprn stderr` in `fishnet.c` and `show.c`.
+- `_splitpath` and `_makepath`, and the `extension()` and `add_extension()` functions removed from `input.c`.
+- Signal handlers declared as `void f(int sig)`, casting away the unused parameter with `(void)sig`.
+- `register` keyword removed everywhere
+
+The goal was the minimum modernisation needed to get a clean build with zero warnings under Apple clang, while staying true to the original logic — not a rewrite into modern C (C11/C17 etc.).
+
+The most subtle change was the way 16-bit DOS rand() generated compared to macOS - the max rand was, in the distant past, 32767 - but now, it is $2^{31} - 1$. This caused the program to never converge. The original code `#define RANDDIV 54612.0` became `#define RANDDIV ((double)RAND_MAX / 0.6)` and I was surprised that the code ran.
+
+The "working antique" directory also contains the thesis documents in plain TeX. To convert this was more painful than the code! The process was to create a Python script that pre-processed each TeX file converting headings, equations, tables, and references into LaTeX that `pandoc` could then process. Then `pandoc` created a Markdown version. From this, a PDF was generated using `pandoc` that in turn used the `xelatex` PDF engine to bring over the equations.
+
+These are all in the `a-working-antique/doc` directory. 
 
 ## Building
 

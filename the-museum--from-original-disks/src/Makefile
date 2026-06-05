@@ -1,6 +1,6 @@
 # Makefile for fishNET
 # Modernised from the original 1988 DOS version.
-# Scanned by LLM from the accompanying IMG_7021.png file which is a photo of the original thesis document page
+# Scanned by LLM from the accompanying images-for-missing-files/IMG_7021.png file which is a photo of the original thesis document page
 
 CC     = cc
 CFLAGS = -O2 -Wall -Wno-unused-result
