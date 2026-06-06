@@ -1575,11 +1575,10 @@ the structure previously described in 4.1.3. Input/Output data
 structures. The function call returns a pointer to an array of type
 `I_O`, that is `I_O *`. The call is
 
-$$
-\begin{aligned}\texttt{input} &\texttt{= get\_data(parameter->sample\_in);}\\
-    \texttt{output} &\texttt{= get\_data(parameter->sample\_out);}\\
-\end{aligned}
-$$
+
+<div align="center"><code>input = get_data(parameter->sample_in);</code><br>
+<code>output = get_data(parameter->sample_out);</code></div>
+
 
 #### 4.2.1.4. Teaching the Network
 
@@ -1902,8 +1901,8 @@ $$
 So the equation for memory usage by a network becomes
 
 
-<div align="center"><code>\texttt{NETWORK}_space = (n_layer \times 4) + 
- (n_neuron \times 12) + (n_weight \times 24),</code></div>
+<div align="center"><code>\texttt{NETWORK}_space = (n_layer \times 4) + </code><br>
+<code> (n_neuron \times 12) + (n_weight \times 24),</code></div>
 
 where $n_{\text{layer}}$ is the number or layers, etc.
 

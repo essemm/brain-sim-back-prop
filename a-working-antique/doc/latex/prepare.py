@@ -978,11 +978,32 @@ def fix_display_command_blocks(text: str) -> str:
     """
     def _is_command_body(body: str) -> bool:
         s = body.lstrip()
-        return (s.startswith(r'\text{') or s.startswith(r'\texttt{')
-                or (s.startswith(r'{\rm ') and r'\{' in body))
+        if s.startswith(r'\text{') or s.startswith(r'\texttt{'):
+            return True
+        if s.startswith(r'{\rm ') and r'\{' in body:
+            return True
+        # \begin{aligned} whose cells are exclusively \texttt{...}
+        am = re.fullmatch(r'\\begin\{aligned\}(.*?)\\end\{aligned\}', s, re.DOTALL)
+        if am:
+            leftover = re.sub(r'\\texttt\{[^{}]*\}', '', am.group(1))
+            if re.sub(r'[&\\\s]', '', leftover) == '':
+                return True
+        return False
 
     def _clean_body(body: str) -> str:
         body = body.strip()
+        # \begin{aligned} with all-\texttt cells → newline-separated code lines
+        am = re.fullmatch(r'\\begin\{aligned\}(.*?)\\end\{aligned\}', body, re.DOTALL)
+        if am:
+            lines = []
+            for row in re.split(r'\\\\', am.group(1)):
+                parts = re.findall(r'\\texttt\{([^{}]*)\}', row)
+                if parts:
+                    line = ' '.join(parts).replace(r'\_', '_')
+                    line = re.sub(r'\\ ', ' ', line).strip()
+                    if line:
+                        lines.append(line)
+            return '\n'.join(lines)
         # Unwrap top-level \texttt{...} (function/command displays)
         m = re.fullmatch(r'\\texttt\{(.*)\}', body, re.DOTALL)
         if m:
@@ -1020,7 +1041,11 @@ def fix_display_command_blocks(text: str) -> str:
         body = m.group(1)
         if _is_command_body(body):
             cmd = _clean_body(body)
-            return f'\n<div align="center"><code>{cmd}</code></div>\n'
+            lines = cmd.split('\n')
+            if len(lines) == 1:
+                return f'\n<div align="center"><code>{cmd}</code></div>\n'
+            inner = '<br>\n'.join(f'<code>{l}</code>' for l in lines)
+            return f'\n<div align="center">{inner}</div>\n'
         return m.group(0)
 
     return re.sub(r'\$\$\n(.*?)\n\$\$', _replace, text, flags=re.DOTALL)
