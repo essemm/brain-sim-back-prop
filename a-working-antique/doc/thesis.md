@@ -991,11 +991,11 @@ order. For the "neurons" token, the order of the numbers
 $a_0 \to a_{n-1}$ is taken as the same as the number of neurons in the
 layers $0 \to n-1$. Data following the "weights" token behaves
 identically: if there are $a_0$ neurons in layer 0, and $a_1$ in
-layer 1, then there will be a_0 × a_1 weights between layer 0
+layer 1, then there will be a₀ × a₁ weights between layer 0
 and layer 1. The first $a_1$ weights are the strengths of connections
 between the first neuron in layer 0 and the neurons in the layer
 above. The second $a_1$ weights apply to the second neuron's connections
-to the layer above, etc., until the $a_0$th $a_1$ weights apply to the
+to the layer above, etc., until the a₀th $a_1$ weights apply to the
 last neuron in layer 0. The pattern is repeated for all layers (note
 that there are no weights associated with the output n-1th layer).
 
@@ -1517,9 +1517,9 @@ appropriate subroutine and its functions will be examined.
 The action taken here depends upon the command line options set. If
 there are no options set, the program calls
 
-$$
-\texttt{parameter = input\_parameters();}
-$$
+
+<div align="center"><code>parameter = input_parameters();</code></div>
+
 
 which returns a pointer to
 a structure containing the important parameters of network operation,
@@ -1527,9 +1527,9 @@ read from the keyboard.
 
 If the `-c` option was used, the program instead calls
 
-$$
-\texttt{parameter = finput\_parameters(config\_file);}
-$$
+
+<div align="center"><code>parameter = finput_parameters(config_file);</code></div>
+
 
 which returns
 a pointer to a structure, containing the important parameters of network
@@ -1545,9 +1545,9 @@ allocating space for the network.
 If the network is to be trained from the start (that is, no network is
 pre-loaded), the program allocates space for it by
 
-$$
-\texttt{network = allocate(parameter);}
-$$
+
+<div align="center"><code>network = allocate(parameter);</code></div>
+
 
 This function allocates
 space (from the heap) and sets up random weights for a network of the
@@ -1557,9 +1557,9 @@ If the network is to be loaded from disk (the `-n` command line
 directive was used), fishNET reads the parameters and allocates space
 for the network by
 
-$$
-\texttt{net\_and\_param = load\_network\_and\_parameters(netfile);}
-$$
+
+<div align="center"><code>net_and_param = load_network_and_parameters(netfile);</code></div>
+
 
 The function takes as its arguments the name of the network file, and
 returns a pointer to a structure which contains: a pointer to a
@@ -1585,9 +1585,9 @@ $$
 
 The network is taught by the function
 
-$$
-\texttt{learn(network,\ parameter,\ start\_time);}
-$$
+
+<div align="center"><code>learn(network, parameter, start_time);</code></div>
+
 
 This function
 uses the information in the variable `parameter`, which is actually a
@@ -1636,18 +1636,18 @@ discarded.
 If `-s` was selected, the network is saved to disk by a call to the
 function
 
-$$
-\texttt{store\_network(network,\ parameter);}
-$$
+
+<div align="center"><code>store_network(network, parameter);</code></div>
+
 
 and execution
 occurs immediately.
 
 If `-x` was specified, the learning parameters are saved by
 
-$$
-\texttt{store\_learnt\_parameters(parameter);}
-$$
+
+<div align="center"><code>store_learnt_parameters(parameter);</code></div>
+
 
 and the program exits
 without execution.
@@ -1663,9 +1663,9 @@ below times their interconnecting weights. The output of every neuron is
 its input times the transfer function. The call that performs these
 functions is
 
-$$
-\texttt{operate(network,\ input\_case->item,\ parameter);}
-$$
+
+<div align="center"><code>operate(network, input_case->item, parameter);</code></div>
+
 
 # Chapter 5: Performance
 
@@ -1901,10 +1901,10 @@ $$
 
 So the equation for memory usage by a network becomes
 
-$$
-\texttt{NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
-    (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
-$$
+
+<div align="center"><code>\texttt{NETWORK}_space = (n_layer \times 4) + 
+ (n_neuron \times 12) + (n_weight \times 24),</code></div>
+
 where $n_{\text{layer}}$ is the number or layers, etc.
 
 Memory required for teaching and execution data depends upon the number

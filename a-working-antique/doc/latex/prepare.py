@@ -934,8 +934,19 @@ def fix_inline_math_symbols(text: str) -> str:
 
     # ── Arithmetic and range expressions ─────────────────────────────────────
     text = re.sub(r'\$([a-zA-Z])-(\d+)\$', r'\1-\2', text)          # $n-1$ → n-1
-    text = re.sub(r'\$([a-zA-Z]_\d+)\s*\\times\s*([a-zA-Z]_\d+)\$',
-                  r'\1 × \2', text)                                  # $a_0 \times a_1$
+    # $a_0$th → a₀th  (GitHub math span won't close before an unbroken letter run)
+    _SUBS = '₀₁₂₃₄₅₆₇₈₉'
+    text = re.sub(
+        r'\$([a-zA-Z])_(\d)\$([a-zA-Z]+)',
+        lambda m: f'{m.group(1)}{_SUBS[int(m.group(2))]}{m.group(3)}',
+        text,
+    )
+    text = re.sub(
+        r'\$([a-zA-Z])_(\d+)\s*\\times\s*([a-zA-Z])_(\d+)\$',
+        lambda m: (f'{m.group(1)}{_SUBS[int(m.group(2))]} × '
+                   f'{m.group(3)}{_SUBS[int(m.group(4))]}'),
+        text,
+    )                                                                # $a_0 \times a_1$ → a₀ × a₁
     # Ranges: $X\to Y$ — keep as inline LaTeX with normalised spacing
     text = re.sub(r'\$([^$]+?)\\to\s*([^$]+?)\$',
                   lambda m: f'${m.group(1).strip()} \\to {m.group(2).strip()}$',
@@ -967,10 +978,17 @@ def fix_display_command_blocks(text: str) -> str:
     """
     def _is_command_body(body: str) -> bool:
         s = body.lstrip()
-        return s.startswith(r'\text{') or (s.startswith(r'{\rm ') and r'\{' in body)
+        return (s.startswith(r'\text{') or s.startswith(r'\texttt{')
+                or (s.startswith(r'{\rm ') and r'\{' in body))
 
     def _clean_body(body: str) -> str:
         body = body.strip()
+        # Unwrap top-level \texttt{...} (function/command displays)
+        m = re.fullmatch(r'\\texttt\{(.*)\}', body, re.DOTALL)
+        if m:
+            body = m.group(1).replace(r'\_', '_')
+            body = re.sub(r'\\ ', ' ', body)
+            return re.sub(r'  +', ' ', body).strip()
         # Unwrap top-level \text{...}
         m = re.fullmatch(r'\\text\{(.*)\}', body, re.DOTALL)
         if m:
