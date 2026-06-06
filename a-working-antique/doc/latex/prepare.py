@@ -936,13 +936,13 @@ def fix_inline_math_symbols(text: str) -> str:
     text = re.sub(r'\$([a-zA-Z])-(\d+)\$', r'\1-\2', text)          # $n-1$ → n-1
     text = re.sub(r'\$([a-zA-Z]_\d+)\s*\\times\s*([a-zA-Z]_\d+)\$',
                   r'\1 × \2', text)                                  # $a_0 \times a_1$
-    # Ranges: $X\to Y$ — strip TeX braces from both sides
-    def _debraces(s: str) -> str:
-        s = re.sub(r'_\{([^{}]+)\}', r'_\1', s)
-        return re.sub(r'\{([^{}]+)\}', r'\1', s).strip()
+    # Ranges: $X\to Y$ — keep as inline LaTeX with normalised spacing
     text = re.sub(r'\$([^$]+?)\\to\s*([^$]+?)\$',
-                  lambda m: f'{_debraces(m.group(1))} to {_debraces(m.group(2))}',
+                  lambda m: f'${m.group(1).strip()} \\to {m.group(2).strip()}$',
                   text)
+
+    # w_N,M weight subscripts in table cells (clean_tex_text strips $w_{N,M}$ → w_N,M)
+    text = re.sub(r'\bw_(\d+),(\d+)\b', r'$w_{\1,\2}$', text)
 
     # ── Special bracket / brace placeholders ────────────────────────────────
     text = re.sub(r'\$\\langle\\rangle\$', '<>', text)

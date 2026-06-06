@@ -931,8 +931,8 @@ and data items necessary.
 | "max sweeps" | < q> |
 Simply place the desired value next to the appropriate token. Tokens
 must be in order. For the "neurons" token, the order of the
-numbers a_0 to a_n-1 is taken as the number of neurons in the
-layers 0 to n-1. Hence the example
+numbers $a_0 \to a_{n-1}$ is taken as the number of neurons in the
+layers $0 \to n-1$. Hence the example
 | layers | 3 |  |  |
 | --- | --- | --- | --- |
 | neurons | 13 | 20 | 5 |
@@ -988,8 +988,8 @@ the same as the previously described configuration file format
 
 Place the desired value next to the appropriate token. Tokens must be in
 order. For the "neurons" token, the order of the numbers
-a_0 to a_n-1 is taken as the same as the number of neurons in the
-layers 0 to n-1. Data following the "weights" token behaves
+$a_0 \to a_{n-1}$ is taken as the same as the number of neurons in the
+layers $0 \to n-1$. Data following the "weights" token behaves
 identically: if there are $a_0$ neurons in layer 0, and $a_1$ in
 layer 1, then there will be a_0 × a_1 weights between layer 0
 and layer 1. The first $a_1$ weights are the strengths of connections
@@ -1004,14 +1004,14 @@ For example, consider the following fragment of a network file:
 | "layers" | 3 |  |  |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | "neurons" | 1 | 2 | 3 |  |  |  |  |  |
-| "weights" | w_1,1 | w_1,2 | w_2,1 | w_2,2 | w_2,3 | w_2,4 | w_2,5 | w_2,6 |
+| "weights" | $w_{1,1}$ | $w_{1,2}$ | $w_{2,1}$ | $w_{2,2}$ | $w_{2,3}$ | $w_{2,4}$ | $w_{2,5}$ | $w_{2,6}$ |
 
 Here there are 3 layers; the input layer contains 1 neuron, the
 middle layer contains 2 neurons, and the top layer 3 neurons. The
 weights $w_{1,1}$ and $w_{1,2}$ connect the single input neuron to the
 first and second of the 2 second layer neurons respectively. The
-weights w_2,1 to w_2,3 connect the first neuron in the second
-layer with the neurons 1 to 3 in the top layer, etc.
+weights $w_{2,1} \to w_{2,3}$ connect the first neuron in the second
+layer with the neurons $1 \to 3$ in the top layer, etc.
 
 The token "start time" marks the value of *t* that the network will
 start learning from, if the user desires continued teaching of the
@@ -1837,8 +1837,8 @@ These are close to the roughly measured times.
 As you can see, the fact that there are so many more weights than
 neurons means that calculations involving weights consume the most
 significant part of the time, even though the execution speed of a
-neuron is typically 3 to 12 times slower. In these calculations,
-memory addressing time has been ignored, as it is 100 to 1000 times
+neuron is typically $3 \to 12$ times slower. In these calculations,
+memory addressing time has been ignored, as it is $100 \to 1000$ times
 faster than floating point operations.
 
 ## 5.3. Memory Used
@@ -2033,7 +2033,7 @@ behaviour, and the effect of casualties within the network.
 
 The first piece of test data that was created and run on the network was
 a simple O and X recogniser. There were 9 neurons (bits) on the input,
-6 to 9 neurons in the middle layer, and 2 output neurons (bits),
+$6 \to 9$ neurons in the middle layer, and 2 output neurons (bits),
 each one of which signalled either a O or a X. The network converged to
 a solution in about 100 learning iterations for 7 intermediate layer
 neurons; the speed of learning versus number of intermediate neurons
@@ -2425,7 +2425,7 @@ Looking at the graph, we see that the error starts to increase rapidly
 beyond casualty rates around 30%. Error rates of both kinds become
 exponentially worse, and the network can be said to be no longer able to
 recognize patterns meaningfully. (Actual error has risen from 3/20
-or 4/20 cases at 20 to 30% casualties, to 15/20 by 40%
+or 4/20 cases at $20 \to 30$% casualties, to 15/20 by 40%
 casualties.)
 
 From this data, we draw the conclusion that our ε = 1.0 and
