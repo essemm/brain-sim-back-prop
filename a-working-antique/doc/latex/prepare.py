@@ -472,6 +472,8 @@ def clean_tex_text(s: str) -> str:
     s = re.sub(r'\\ldots(?![a-zA-Z])', '...', s)
     s = re.sub(r'\\vdots(?![a-zA-Z])', '⋮', s)
     s = re.sub(r'\\cdots(?![a-zA-Z])', '...', s)
+    # Escaped special characters
+    s = re.sub(r'\\%', '%', s)
     # Escaped braces → plain braces, then stripped below
     s = re.sub(r'\\[{}]', '', s)
     # TeX control space \ and spacing
@@ -554,39 +556,41 @@ def halign_to_code(halign_body: str) -> str:
 
 
 def halign_to_table(halign_body: str) -> str:
-    r"""Convert a \halign body to a Markdown pipe table.
+    r"""Convert a \halign body to a Markdown pipe table or an HTML table.
 
     Two separator styles:
       vrule tables  — template contains \vrule; data cells delimited by &&
       simple tables — no \vrule; data cells delimited by single &
-    Interior empty cells are preserved for column alignment; only trailing
-    empty cells are trimmed.
+
+    When any cell carries a \multispan N (colspan > 1), emits an HTML table
+    so that spanning headers render correctly with borders.  Plain tables with
+    no spanning cells emit standard Markdown pipe syntax.
+
+    Each cell is tracked as [content, colspan] where colspan=0 marks a cell
+    that has been absorbed by the preceding span and should be skipped.
     """
-    # Detect separator style from the template
     vrule_table = r'\vrule' in halign_body
 
     rows_raw = re.split(r'\\cr', halign_body)
-    grid = []
+    # grid_raw: list of rows; each row is a list of [content_str, colspan_int]
+    grid_raw = []
+    has_colspan = False
     first = True
 
     for row in rows_raw:
         row = row.strip()
         if not row:
             continue
-        # Skip template row (format spec line — has # placeholders)
         if first:
             first = False
             if re.match(r'#|\\strut#', row):
                 continue
             if re.match(r'[#\\]', row) and '&' not in row.split('\n')[0]:
                 continue
-        # Skip spacer rows
         if 'height2pt' in row and '\\omit' in row:
             continue
-        # Pure separator rows
         if re.match(r'(\\hline|\\hrule)\s*$', row):
             continue
-        # Strip leading \noalign / \hline / \hrule prefix
         row = re.sub(r'^(\\noalign\{[^{}]*\}|\\hline\b|\\hrule\b)\s*', '', row).strip()
         if not row:
             continue
@@ -595,33 +599,74 @@ def halign_to_table(halign_body: str) -> str:
 
         row_stripped = row.rstrip('&').strip()
         if vrule_table:
-            # Split by && (vrule columns sit between data columns)
             parts = row_stripped.split('&&')
-            # Strip any leading bare & that comes from a template starting with &\vrule#
             if parts:
                 parts[0] = parts[0].lstrip('&').strip()
-            # Drop now-empty leading part
             if parts and not parts[0]:
                 parts = parts[1:]
         else:
-            # Simple table: each & is a column separator
             parts = row_stripped.split('&')
 
-        cells = [clean_tex_text(p) for p in parts]
-        # Drop trailing empty cells but preserve interior ones for alignment
-        while cells and not cells[-1]:
+        # Build cell list, expanding \multispan N into colspan slots.
+        # Strip each part first — TeX line-breaks leave leading \n on some parts.
+        cells = []
+        for p in parts:
+            p = p.strip()
+            ms = re.match(r'\\multispan\s*\{?(\d+)\}?\s*', p) if vrule_table else None
+            if ms:
+                n = int(ms.group(1))
+                # In a vrule table \multispan N spans ceil(N/2) logical columns.
+                colspan = (n + 1) // 2
+                cells.append([clean_tex_text(p[ms.end():]), colspan])
+                for _ in range(colspan - 1):
+                    cells.append(['', 0])   # absorbed by the span
+                if colspan > 1:
+                    has_colspan = True
+            else:
+                cells.append([clean_tex_text(p), 1])
+
+        # Drop trailing non-absorbed empty cells.
+        while cells and cells[-1][0] == '' and cells[-1][1] != 0:
             cells.pop()
         if cells:
-            grid.append(cells)
+            grid_raw.append(cells)
 
-    if not grid:
+    if not grid_raw:
         return ''
 
-    # Normalize all rows to the same column count
-    ncols = max(len(row) for row in grid)
-    for row in grid:
+    # Normalise all rows to the same cell count.
+    ncols = max(len(row) for row in grid_raw)
+    for row in grid_raw:
         while len(row) < ncols:
-            row.append('')
+            row.append(['', 1])
+
+    # ------------------------------------------------------------------ HTML
+    if has_colspan:
+        # Rows before the first row whose lead cell is numeric are header rows.
+        first_data = len(grid_raw)
+        for i, row in enumerate(grid_raw):
+            lead = next((c[0] for c in row if c[0] and c[1] != 0), '')
+            if lead and re.match(r'^\d', lead):
+                first_data = i
+                break
+
+        lines = ['<table border="1">']
+        for i, row in enumerate(grid_raw):
+            tag = 'th' if i < first_data else 'td'
+            cells_html = []
+            for content, colspan in row:
+                if colspan == 0:
+                    continue
+                attrs = f' colspan="{colspan}"' if colspan > 1 else ''
+                if tag == 'th':
+                    attrs += ' align="center"'
+                cells_html.append(f'<{tag}{attrs}>{content}</{tag}>')
+            lines.append('<tr>' + ''.join(cells_html) + '</tr>')
+        lines.append('</table>')
+        return '\n'.join(lines)
+
+    # --------------------------------------------------------------- Markdown
+    grid = [[c[0] for c in row] for row in grid_raw]
 
     def fmt_row(cells):
         return '| ' + ' | '.join(cells) + ' |'
@@ -720,6 +765,30 @@ def fix_display_math(text: str) -> str:
         else:
             out.append(line)
     return '\n'.join(out)
+
+
+def fix_inline_math_symbols(text: str) -> str:
+    """Convert simple inline math expressions to plain Unicode text.
+
+    In the original TeX, bare numbers and single symbols are written in math
+    mode ($0.5$, $\\varepsilon$, $\\Delta w(t)$) for font consistency or to
+    suppress line breaks.  On GitHub these render as literal $...$ strings
+    rather than the intended character.  More complex math (subscripts,
+    partial derivatives, equations) is left as-is for the PDF renderer.
+    """
+    # $10\,000$ → 10,000  (TeX thin-space thousands separator)
+    text = re.sub(r'\$(\d+)\\,(\d+)\$', r'\1,\2', text)
+    # $0.5$  $3.$  $100$ → plain number (decimal or integer, optional trailing dot)
+    text = re.sub(r'\$(\d+(?:\.\d*)?)\$', r'\1', text)
+    # $\varepsilon = 1.0$ → ε = 1.0
+    text = re.sub(r'\$\\varepsilon\s*=\s*(\d+(?:\.\d+)?)\$', r'ε = \1', text)
+    # $\varepsilon$ → ε  (standalone Greek letter)
+    text = re.sub(r'\$\\varepsilon\$', 'ε', text)
+    # $\alpha$ → α
+    text = re.sub(r'\$\\alpha\$', 'α', text)
+    # $\Delta w(t)$ → Δw(t)
+    text = re.sub(r'\$\\Delta w\(t\)\$', 'Δw(t)', text)
+    return text
 
 
 def _gfm_anchor(text: str) -> str:
@@ -821,6 +890,7 @@ def main():
     md = fix_display_math(md)        # normalise $$ spacing first
     md = replace_vbox_tables(md)     # then convert \vbox tables
     md = strip_heading_attrs(md)     # remove {#id .unnumbered} noise
+    md = fix_inline_math_symbols(md) # unwrap bare-number $N$, Greek letters, Δw(t)
     md = generate_toc(md)            # insert TOC after front matter
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")

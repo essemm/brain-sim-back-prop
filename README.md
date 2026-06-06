@@ -25,6 +25,8 @@ The disks containing the code (and the thesis text, in TeX) lived in the back of
 <br>
 
 ## Background
+This is recovered and revived as an ancient artifact of where neural networks started for me. 
+
 I used a service to extract the contents of the disks. Surprisingly, the contents came straight off, and they are uploaded here unchanged. Then, I used an LLM to modernise the old K&R code that also had these fabulous relics like `#ifndef MSDOS`, from my old IBM PC XT. It did make me a tad nostalgic. For a moment.
 
 Lastly, the repo and the project have different names. Calling the project `fishNET` was suggested by my (acknowledged) friend, and is an unfortunate reminder of my undergraduate humour. It may have been decided in a pub, it may not, I don't remember but that is <del>probable</del> possible. Anyway, apologies.
@@ -32,7 +34,7 @@ Lastly, the repo and the project have different names. Calling the project `fish
 ## Repo structure
 There are two directories:
 
-- `the-museum--from-original-disks/` — Original K&R C source as recovered from the floppy disks, kept for reference
+- `the-museum--from-original-disks/` — Original K&R C source as recovered from the floppy disks, kept for reference, as well as original thesis Tex documents
 - `a-working-antique/` — Modernised ANSI C version; this is the one to build and run
 
 The code in the working antique directory was minimally converted to ANSI C (C89/90):
@@ -49,9 +51,9 @@ The goal was the minimum modernisation needed to get a clean build with zero war
 
 The most subtle change over the decades concerned `rand()`. On the original 16-bit DOS compiler, RAND_MAX was 32767, while on today's macOS it's $2^{31} - 1$. The original `#define RANDDIV 54612.0` assumed that smaller maximum, so weight initialisation in the network was scaled incorrectly. Since the weights were so huge, the network never converged. Changing `RANDDIV` to `#define RANDDIV ((double)RAND_MAX / 0.6)` corrected this - I was truly surprised that the code ran. The supplied test case is the same one I used back in 1988, a set of 5 dot matrix letters with 5 output values indicating which letter was recognised (Chapter 7). In the thesis I also had a set of letters with (what now seems minor) noise to test the resilience of the matches. I also "damaged" the saved weight values to demonstrate the impacts of errors on matching performance (Chapter 8).
 
-The "working antique" directory also contains the thesis documents in plain TeX. To convert this was more painful than the code! The process was: create a Python script that pre-processed each TeX file converting headings, equations, tables, and references into LaTeX that `pandoc` could then process. Then `pandoc` created a Markdown version. From this, a PDF was generated using `pandoc` that in turn used the `xelatex` PDF engine to bring over the equations.
+The "working antique" directory also contains the thesis documents converted from plain TeX. To convert this was more painful than the code! The process was: create a Python script that pre-processed each TeX file converting headings, equations, tables, and references into LaTeX that `pandoc` could then process. Then `pandoc` created a Markdown version. From this, a PDF was generated using `pandoc` that in turn used the `xelatex` PDF engine to bring over the equations.
 
-These are all in the `a-working-antique/doc` directory.
+These are all in the `a-working-antique/doc` directory. [Thesis in markdown format](a-working-antique/doc/thesis.md) or [PDF](a-working-antique/doc/thesis.pdf)
 
 ## Building
 
@@ -120,7 +122,7 @@ the network file.
 
 The `a-working-antique/data/letters/` directory contains a ready-to-run example:
 five 13×15 pixel bitmaps of the letters A, V, C, E and T, with one-hot expected
-outputs. The network architecture is 195 inputs → 40 hidden → 5 outputs.
+outputs. The network architecture is 195 input neurons → 40 hidden → 5 outputs.
 
 ```sh
 cd a-working-antique
