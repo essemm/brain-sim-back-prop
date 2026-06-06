@@ -1026,6 +1026,39 @@ def fix_display_command_blocks(text: str) -> str:
     return re.sub(r'\$\$\n(.*?)\n\$\$', _replace, text, flags=re.DOTALL)
 
 
+def link_references(text: str) -> str:
+    """Add HTML anchors to reference entries and hyperlink in-text citations.
+
+    Reference entries: \\[N\\] at the start of a line in the References section →
+        <a name="ref-N"></a>**[N]**
+    In-text citations: \\[N\\] or \\[N,M,...\\] anywhere else →
+        [[N]](#ref-N)  or  [[N]](#ref-N)[[M]](#ref-M) ...
+    """
+    ref_marker = '\n# References\n'
+    if ref_marker not in text:
+        return text
+
+    pre, post = text.split(ref_marker, 1)
+
+    # Anchor each reference entry (line-start \[N\] in the References section)
+    post = re.sub(
+        r'^\\\[(\d+)\\\]',
+        lambda m: f'<a name="ref-{m.group(1)}"></a>**[{m.group(1)}]**',
+        post,
+        flags=re.MULTILINE,
+    )
+
+    # Link all remaining \[N\] and \[N,M,...\] citation markers
+    def _link(m):
+        nums = [n.strip() for n in m.group(1).split(',')]
+        return ''.join(f'[[{n}]](#ref-{n})' for n in nums)
+
+    pre  = re.sub(r'\\\[(\d+(?:,\s*\d+)*)\\\]', _link, pre)
+    post = re.sub(r'\\\[(\d+(?:,\s*\d+)*)\\\]', _link, post)
+
+    return pre + ref_marker + post
+
+
 def _gfm_anchor(text: str) -> str:
     """Compute the GitHub-Flavored Markdown heading anchor for a heading string."""
     s = text.lower()
@@ -1128,6 +1161,7 @@ def main():
     md = strip_heading_attrs(md)     # remove {#id .unnumbered} noise
     md = fix_display_command_blocks(md)    # $${\rm fishNET...}$$ → centred <code> (before inline)
     md = fix_inline_math_symbols(md)       # unwrap bare-number $N$, Greek letters, etc.
+    md = link_references(md)             # anchor ref entries; hyperlink \[N\] citations
     md = generate_toc(md)                 # insert TOC after front matter
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")

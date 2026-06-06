@@ -214,7 +214,7 @@ independent software specification for a software model.
 ## 1.1. Definition of Terms
 
 Before I begin this discussion of neural networks, definition of a few
-terms will aid clarity \[1\].
+terms will aid clarity [[1]](#ref-1).
 
 A *connection* is a signal pathway between processing elements (or
 neurons), that correspond to the axons and synapses of biological
@@ -239,7 +239,7 @@ A neural network is a collection of graded response neurons (processing
 elements), representing an approximation to biological neurons, in some
 kind of feedforward/feedback network.
 
-There are many different kinds of neural networks (Hecht-Nielsen \[1\]
+There are many different kinds of neural networks (Hecht-Nielsen [[1]](#ref-1)
 suggests that there are 13 main types), with the most common (or
 important) being the Hopfield, back-propagation (Rumelhart et al.),
 "improved" neocognitron (Fukushima), and adaptive resonance theorem or
@@ -248,7 +248,7 @@ tasks, and some have weak points. They vary considerably in complexity
 and power.
 
 Neural networks are often described as a network of "collective
-decision" \[2\] circuits. They gain their power the same way the human
+decision" [[2]](#ref-2) circuits. They gain their power the same way the human
 brain does: many (many many) simple analog devices computing at the same
 time, while connected in parallel and continuously communicating with
 each other. The human brain has, by most estimates, 10^11 neurons
@@ -270,13 +270,13 @@ a later section, "Why and how do neural networks solve problems?"
 Simulations of neural networks involve several important simplifications
 to the behaviour of the individual neurons. It has been shown that
 analog neurons perform better than earlier two-state (binary neuron)
-attempts \[2,17\], but many features evident in biological neurons (much
-chemistry is discussed in \[3\]) are simply ignored in the most commonly
+attempts [[2]](#ref-2)[[17]](#ref-17), but many features evident in biological neurons (much
+chemistry is discussed in [[3]](#ref-3)) are simply ignored in the most commonly
 used models of neurons, and analogies are made to voltages and currents.
 The model I will use for neurons is simple also, with the transfer
 function shown in figure 2 being the output from the inputs times the
 weights and summed. The relationship of the simple model to biology is
-shown in \[4\].
+shown in [[4]](#ref-4).
 
 ## 1.3. Neurological Relevance
 
@@ -295,38 +295,38 @@ time, have yielded very good results.
 
 Parts of the brain, specifically area 7a of the posterior parietal
 cortex in monkeys, have been successfully modelled by Zipser and
-Andersen \[5\] using back-propagation \[20\] learning in a feed-forward
+Andersen [[5]](#ref-5) using back-propagation [[20]](#ref-20) learning in a feed-forward
 neural network, similar in form to the one intended for this project.
 The neurons respond to the location of the stimulus with respect to the
 eye and the position of the eyes to calculate the location of external
 objects. Even though the authors admit that there is no way that the
 back-propagation method is the only method used in the brain, it is very
-likely that a combination of Hebb-like \[6,18\] learning and the feeding
+likely that a combination of Hebb-like [[6]](#ref-6)[[18]](#ref-18) learning and the feeding
 back of errors would generate similar results. (Hebb was the first to
 suggest a biologically plausible method of learning. It is described in
 a later section.) They note also that all cortical connections in the
 brain have reciprocal feedback pathways, presumably for the feeding back
 of error signals.
 
-Bear, Cooper and Ebner \[3\] have used neural networks in the reverse
+Bear, Cooper and Ebner [[3]](#ref-3) have used neural networks in the reverse
 direction to study the primary visual cortex area 17 in adult cats. They
 used a neural network, determined theoretically how the neurons could
 behave, and compared this with the actual data. The theoretical model,
 then, enabled the researchers to sort out which of the possible
 hypotheses of brain function was most correct by experiment.
 
-Frohn, Geiger and Singer \[7\] have used a model based not on rigorous
+Frohn, Geiger and Singer [[7]](#ref-7) have used a model based not on rigorous
 maths, but, rather, neurological data, to account for the features in a
 mammal's visual system. They arrived at a 5 layer model, trained by a
-Hebb-like rule \[6,18\] that teaches itself. This allowed the authors to
+Hebb-like rule [[6]](#ref-6)[[18]](#ref-18) that teaches itself. This allowed the authors to
 conclude that "the internal representation of a stimulus is the spatial
 activity pattern of a reciprocally coupled population of neurons,"
 i.e. the knowledge of patterns in the visual system is distributed. Sun,
-Chen and Lee \[19\] also give a mathematical description of Hebbian
+Chen and Lee [[19]](#ref-19) also give a mathematical description of Hebbian
 learning of stereopsis in a neural network.
 
 The importance of motion to the perception of structure in mammals has
-been simulated \[8\] with a three-layer back-propagation neural network,
+been simulated [[8]](#ref-8) with a three-layer back-propagation neural network,
 and the performance of the model was almost identical to that of man and
 monkey. The first and third layers of the model are designed to simulate
 neurons in a particular area of the brain, while it has not been
@@ -335,10 +335,10 @@ accurately determined where the middle layer could lie.
 Some models of neural networks, such as ART (due largely to Grossberg),
 are strongly based on structures found in certain parts of the brain. In
 fact, experiments with ART networks have led to a number of important
-predictions \[9\] of human brain structures that have been proven
+predictions [[9]](#ref-9) of human brain structures that have been proven
 correct. Needless to say ART is an extremely complex form of network.
 
-Other authors such as Lyon and Mead \[21\] have taken an entirely
+Other authors such as Lyon and Mead [[21]](#ref-21) have taken an entirely
 different approach. They argue that to build machines that operate like
 humans then the machines will need to "perceive" like humans. Hence they
 have built an electronic cochlea based around analog neuron-like
@@ -356,7 +356,7 @@ input or feedback, or an output connection to other neurons.
 
 At present, it seems the largest neurocomputer[^1] built to date
 has 10^6 neurons and interconnections totalling 1.5×10^6 in
-total \[1\]. This is, of course, far from the complexity of the human
+total [[1]](#ref-1). This is, of course, far from the complexity of the human
 brain, but as we shall see it still offers a great deal of power in
 solving problems.
 
@@ -375,15 +375,15 @@ to do it.
 
 But neural networks, without being programmed with an algorithm but
 taught instead, can already perform many of these tasks with 95%
-accuracy. For example, Kohonen \[10\] has built a phonetic typewriter,
-Fukushima \[11\] has used his "improved"[^2] neocognitron model to
+accuracy. For example, Kohonen [[10]](#ref-10) has built a phonetic typewriter,
+Fukushima [[11]](#ref-11) has used his "improved"[^2] neocognitron model to
 recognise Chinese characters, and many authors have shown the ability of
 neural networks to remove noise and recognize
-patterns \[7,11,12,23,24,25\]. Many other implementations of this new
+patterns [[7]](#ref-7)[[11]](#ref-11)[[12]](#ref-12)[[23]](#ref-23)[[24]](#ref-24)[[25]](#ref-25). Many other implementations of this new
 non-algorithmic neural network programming are being carried out. A very
 good example is using neural networks as a signal analyser to detect
 subtle patterns in neuroelectric signals from brian data with "highly
-dimensioned noise" \[26\].
+dimensioned noise" [[26]](#ref-26).
 
 To understand how neural networks solve problems, we'll first try to get
 an intuitive feel for how they work, compared to a digital or Von Neuman
@@ -396,7 +396,7 @@ data. On the other hand, neural networks or collective decision
 circuits, take inputs and move to minimize some function of the
 "computational energy" of the inputs, based upon the dynamic weights of
 the connections between the neurons. Some authors, notably Hopfield and
-Tank \[2\][^3]and recognized in \[13\] as relating to other physical
+Tank [[2]](#ref-2)[^3]and recognized in [[13]](#ref-13) as relating to other physical
 systems as well, notably spin glasses, see neural networks as an energy
 reducing machine: imagine an *n*-dimensional surface of hills and
 valleys, with the computation beginning at some high point on the
@@ -422,7 +422,7 @@ trivial, and can't be written as a serial algorithm.
 There are many different types of neural networks. Some are particularly
 suited to some types of problem, some are suitable for many types of
 problem. Some can "learn" without supervision, others require a teacher.
-Most of these neural models are grounded upon Donald Hebb's \[6\] theory
+Most of these neural models are grounded upon Donald Hebb's [[6]](#ref-6) theory
 of synapse modification. He indicated that a plausible explanation for
 learning would be for connections between neurons to strengthen if the
 activity of both ends of the connection increased (ie., reinforce the
@@ -430,7 +430,7 @@ connection) and weaken the connection if the ends weaken in activity
 (ie., inhibit the connection). To various extents, all these models aim
 to implement "Hebbian" learning by one method or another. (Hebb never
 mathematically quantified his thinking. A good approach to doing just
-this is given by Linsker \[18\].) Examples of several types of neural
+this is given by Linsker [[18]](#ref-18).) Examples of several types of neural
 networks appear below.
 
 ### 1.5.1. The Hopfield Network
@@ -440,7 +440,7 @@ yet it is suprisingly powerful.
 
 **Figure 3:** Hopfield network It has a feedback structure, and it
 cannot learn (although a technique for teaching feedback networks has
-been suggested by Atiya \[14\]). The selection of weights depends upon
+been suggested by Atiya [[14]](#ref-14)). The selection of weights depends upon
 the problem at hand, for example classic computer science problems such
 as the Travelling Salesman Problem (TSP), the book stacking problem, and
 a symmetry detector. All these problems can be computed after the
@@ -453,7 +453,7 @@ solution to the serial solution shows some staggering results!
 
 Let's see the difference between a brute force approach, a good serial
 algorithm, and a Hopfield neural network solution. Based upon estimates
-from \[15\], probably 10^30 comparisons would be needed for a brute
+from [[15]](#ref-15), probably 10^30 comparisons would be needed for a brute
 force approach. This is obviously not computable. An excellent serial
 algorithmic estimation approach would require roughly 1,500
 comparisons in the best case (but probably many more). But a Hopfield
@@ -466,12 +466,12 @@ several time-constants of the ciruit of figure 3. Quite a difference.
 
 This is another "classic" neural network, along with the one described
 above (they appear to be the most commonly implemented in neurological
-experiments). The inventors and main developers \[1\] are considered to
+experiments). The inventors and main developers [[1]](#ref-1) are considered to
 be Werbos, Parker and Rumelhart. It has a feedforward structure, as
 shown in figure 4.
 
 **Figure 4:** A typical back-propagtion network This network can be
-taught \[20\], ie strengths of connections may be varied within a
+taught [[20]](#ref-20), ie strengths of connections may be varied within a
 rigidly defined set of rules called a "learning algorithm", rather than
 being set by hand. The next chapter explains the back-propagation
 algorithm in detail.
@@ -503,14 +503,14 @@ into that category of neural networks that are more neurologically sound
 in their design. They both contain more complex neurons, with complex
 feedforward and feedback connections.
 
-Fukushima \[11\] has used his model to recognise Chinese characters, a
+Fukushima [[11]](#ref-11) has used his model to recognise Chinese characters, a
 task that is readily performed by over 1 billion Chinese every day but
 was yet to be done reliably by machine. It is largely immune to those
 bugbears of artificial neural networks, namely rotation, translation,
 and changes in scale. One of the most astounding properties of this
 model is its ability to shift "attention", just like a human, from one
 pattern to another for an input that contains several recognisable
-patterns at the same time. (See \[11\], which has examples.)
+patterns at the same time. (See [[11]](#ref-11), which has examples.)
 
 **Figure 5:** An example of an "improved" neocognitron
 
@@ -532,7 +532,7 @@ available, so this is as thoroughly as it will be discussed.
 ### 1.5.4. The Adaptive Resonance Theory Model
 
 The Adaptive Resonance Theory (or ART) model is the most complex one
-discussed here \[9\].
+discussed here [[9]](#ref-9).
 
 ART systems belong to a group of neural networks which fall into a
 category of "competitive learning" models. It has been used for visual
@@ -560,7 +560,7 @@ automatically? (Who twiddles the knobs on the variable resistor as the
 network learns?) For *small* problems, this technique could be used.
 
 **Figure 6:** A special machine for the TSP For example Hopfield and
-Tank \[2\] devised such a contraption shown in figure 6 using a Hopfield
+Tank [[2]](#ref-2) devised such a contraption shown in figure 6 using a Hopfield
 network that could solve the TSP for however many cities it was wired
 for (I don't think they actually built it). The output is indicated by a
 globe lit for the appropriate city (column) in the appropriate order
@@ -570,12 +570,12 @@ that example the discrete approach to neural networks is not
 particularly popular.
 
 There have been some attempts at analog ICs with variable internal
-weights (one such is described in \[2\]). The ones built have functioned
+weights (one such is described in [[2]](#ref-2)). The ones built have functioned
 successfully as associative memorys. However the density and accuracy of
 VLSI analog ICs is low, so this approach has not been terribly fruitful.
 
 A novel approach to hardware simulation has been described by Murray and
-Smith \[16\], whereby they use digital ICs which use pulse stream
+Smith [[16]](#ref-16), whereby they use digital ICs which use pulse stream
 arithmetic. Streams of pulses of varying frequency are gated within the
 connections. This gives a situation near to biology, where a neuron that
 is *"on"* produces a regular train of digital pulses (the frequency
@@ -584,7 +584,7 @@ nothing. This technique is still in the experimental stage at the date
 of publication, but it could prove possible to efficiently perform
 significant calculations in this way in hardware.
 
-Another novel approach is described by Vidal \[22\]. He proposes a
+Another novel approach is described by Vidal [[22]](#ref-22). He proposes a
 neural network implemented in programmable logic, using purely digital
 techniques, and argues that possibly digital (Boolean) techniques offer
 a good solution to network problems. This is an example of how varied
@@ -606,7 +606,7 @@ this.
 ## 1.7. Simulating Neural Networks in Software
 
 As I stated at the start of this chapter, this project is intended to
-produce a working neural network of the back-propagation model \[20\].
+produce a working neural network of the back-propagation model [[20]](#ref-20).
 Simulation of the parallel activity of the neurons is possible by
 imagining the operations occuring in discrete time steps, and
 calculating one row of neurons at a time. Of course, this technique
@@ -620,7 +620,7 @@ difficult: possibly requiring calculations of layers with smaller time
 steps due to the more complex interactions between layers.
 
 The next chapter describes the mathematics behind the back-propagation
-algorithm to be implemented, based largely on \[20\] by Rumelhart,
+algorithm to be implemented, based largely on [[20]](#ref-20) by Rumelhart,
 Hinton and Williams.
 
 # Chapter 2: The Back-Propagation Model
@@ -628,7 +628,7 @@ Hinton and Williams.
 This short chapter aims to describe, in a step-by-step way, the
 mathematical steps behind an implementation of the back-propagation
 model. The maths in the first sections is based upon Rumelhart et al.,
-\[20\]. My interpretation of the maths, the proposed method of
+[[20]](#ref-20). My interpretation of the maths, the proposed method of
 implementation, appears in the last section of this chapter. As in the
 last chapter, a biological analogy is drawn and processing elements are
 referred to as neurons.
@@ -742,7 +742,7 @@ The simplest scheme of weight modification is to modify them as we go
 for every input/output pair. (To change *w*, modify by $\Delta w = \partial E/\partial w.$) This method doesn't require
 $\partial E/\partial w$ to be stored for each pass.
 
-Another method, used by Rumelhart et al. \[20\] is to accumulate
+Another method, used by Rumelhart et al. [[20]](#ref-20) is to accumulate
 $\partial E/\partial w$ over all the input/output pairs before
 changing the weights. The simplest version of this method is to make
 
@@ -1767,7 +1767,7 @@ Calculation of execution speed is a more difficult task. Firstly, as
 after each execution there is a lot of disk output, the stop-watch time
 for the PC will be grossly distorted (floppy disk systems are even
 worse). Hence the major mathematical operations involved will be
-analysed, with their timings based upon reference \[27\]. Secondly, disk
+analysed, with their timings based upon reference [[27]](#ref-27). Secondly, disk
 output time will be an order of magnitude slower than processing speed
 in most implementations. No attempt to analyse this time is made here,
 as it is too application dependent.
@@ -1790,7 +1790,7 @@ is
 
 3.  1× `double` addition per weight.
 
-Hence, using \[27\], we find that the approximate execution speed for a
+Hence, using [[27]](#ref-27), we find that the approximate execution speed for a
 single input case is of the order of
 
 $$
@@ -1977,7 +1977,7 @@ The human brain has been dubbed 'wetware' by some authors. How does
 wetware compare with a single processor software simulation of the
 brain? Consider a very, very simple example.
 
-According to Feldman et. al. \[12\], the "execution" time for a human
+According to Feldman et. al. [[12]](#ref-12), the "execution" time for a human
 neuron to produce an output from its inputs is in the order of 5
 milliseconds. However, *all* neurons work at the same time (within a
 layer, say) so a 3 layer network should produce an output in 15
@@ -2074,7 +2074,7 @@ correct results.
 
 ## 6.2. A More Ambitious Test --- Shadow Encoding
 
-Burr \[25\] discusses the use of a 13 segment shadow encoder as a
+Burr [[25]](#ref-25) discusses the use of a 13 segment shadow encoder as a
 means of describing hand written data for input to a neural network. He
 aimed to be able to recognise the alphabet as written by a particular
 writer. He took 8 samples of the alphabet written over a period of
@@ -2083,7 +2083,7 @@ other 4 as test data to see if the network could successfully recognise
 them. His approach was remarkably fruitful, with a recognition rate of
 up to 99%. The example given here was not that large.
 
-Shadow encoding can be illustrated by figure 9, from Burr \[25\].
+Shadow encoding can be illustrated by figure 9, from Burr [[25]](#ref-25).
 
 **Figure 9:** Shadow encoding of the letter 'S'
 
@@ -2501,8 +2501,8 @@ regard to failure in intermediate layer neurons.
 
 ## 8.3. Mean Time Between Failure Analysis
 
-Angus \[28\] gives a simple calculation for mean time between failure
-(MTBF), which we use below for illustrative purposes. From \[28\],
+Angus [[28]](#ref-28) gives a simple calculation for mean time between failure
+(MTBF), which we use below for illustrative purposes. From [[28]](#ref-28),
 
 $$
 {\displaystyle\theta_{\rm sys}} = 
@@ -2771,114 +2771,114 @@ The data below was used for all the experiments in the thesis.
 
 # References
 
-\[1\] Robert Hecht-Nielsen, "Neurocomputing: picking the human brain,"
+<a name="ref-1"></a>**[1]** Robert Hecht-Nielsen, "Neurocomputing: picking the human brain,"
 *IEEE Spectrum **25*** no 3 (1988), 36--41.
 
-\[2\] David W. Tank and John J. Hopfield, "Collective Computation in
+<a name="ref-2"></a>**[2]** David W. Tank and John J. Hopfield, "Collective Computation in
 Neuronlike Circuits," *Scientific American* December 1987, 62--70.
 
-\[3\] Mark F. Bear, Leon N. Cooper, and Ford F. Ebner, "A Physiological
+<a name="ref-3"></a>**[3]** Mark F. Bear, Leon N. Cooper, and Ford F. Ebner, "A Physiological
 Basis for a Theory of Synapse Modification," *Science **237*** (1987),
 42--48.
 
-\[4\] John J. Hopfield and David W. Tank, "Computing with Neural
+<a name="ref-4"></a>**[4]** John J. Hopfield and David W. Tank, "Computing with Neural
 Circuits: A Model," *Science **233*** (1986), 625--633.
 
-\[5\] David Zipser and Richard A. Andersen, "A back-propagation
+<a name="ref-5"></a>**[5]** David Zipser and Richard A. Andersen, "A back-propagation
 programmed network that simulates response properties of a subset of
 posterior parietal neurons," *Nature **331*** (1988), 679--684.
 
-\[6\] Donald Hebb, "The organization of behaviour," John Wiley, New York
+<a name="ref-6"></a>**[6]** Donald Hebb, "The organization of behaviour," John Wiley, New York
 (1949).
 
-\[7\] H. Frohn, H. Geiger, and W. Singer, "A Self-Organizing Neural
+<a name="ref-7"></a>**[7]** H. Frohn, H. Geiger, and W. Singer, "A Self-Organizing Neural
 Network Sharing Features of the Mammalian Visual System," *Biological
 Cybernetics **55*** (1987), 333--343.
 
-\[8\] Ralph M. Seigel, "Discovering structure from motion in monkey, man
+<a name="ref-8"></a>**[8]** Ralph M. Seigel, "Discovering structure from motion in monkey, man
 and machine," from *Neural information processing systems* D.Z.Andersen
 ed. (1988)
 
-\[9\] Gail A. Carpenter and Stephen Grossberg, "The ART of Adaptive
+<a name="ref-9"></a>**[9]** Gail A. Carpenter and Stephen Grossberg, "The ART of Adaptive
 Pattern Recognition by a Self-Organizing Neural Network," *IEEE
 Computer* March 1988, 77--88.
 
-\[10\] Teuvo Kohonen, "The 'Neural' Phonetic Typewriter," *IEEE
+<a name="ref-10"></a>**[10]** Teuvo Kohonen, "The 'Neural' Phonetic Typewriter," *IEEE
 Computer* March 1988, 11--22.
 
-\[11\] Kunihiko Fukushima, "A Neural Network for Visual Pattern
+<a name="ref-11"></a>**[11]** Kunihiko Fukushima, "A Neural Network for Visual Pattern
 Recognition," *IEEE Computer* March 1988, 65--75.
 
-\[12\] Jerome A. Feldman, Mark A. Fanty, and Nigel H. Goddard,
+<a name="ref-12"></a>**[12]** Jerome A. Feldman, Mark A. Fanty, and Nigel H. Goddard,
 "Computing with Structured Neural Networks," *IEEE Computer* March 1988,
 91--103.
 
-\[13\] James A. Anderson, "Networks for fun and profit," *Nature
+<a name="ref-13"></a>**[13]** James A. Anderson, "Networks for fun and profit," *Nature
 **322*** (1986), 406--7.
 
-\[14\] A paper by Amir F. Atiya, "Learning on a general network,"
+<a name="ref-14"></a>**[14]** A paper by Amir F. Atiya, "Learning on a general network,"
 Department of Electrical Engineering, California Institute of Technology
 CA 91125 --- no other publishing data.
 
-\[15\] Alfred V. Aho, John E. Hopcroft, and Jeffrey D. Ullman, "Data
+<a name="ref-15"></a>**[15]** Alfred V. Aho, John E. Hopcroft, and Jeffrey D. Ullman, "Data
 Structures and Algorithms," Addison-Wesley, Sydney, 1983.
 
-\[16\] Alan F. Murray and Anthony V. W. Smith, "Asynchronous VLSI Neural
+<a name="ref-16"></a>**[16]** Alan F. Murray and Anthony V. W. Smith, "Asynchronous VLSI Neural
 Networks Using Pulse-Stream Arithmetic," *IEEE Journal of Solid-State
 Circuits **IEEE-JSSC 23*** no 3 (1988), 688--697.
 
-\[17\] John J. Hopfield and David W. Tank, "'Neural' Computation of
+<a name="ref-17"></a>**[17]** John J. Hopfield and David W. Tank, "'Neural' Computation of
 Decisions in Optimization Problems," *Biological Cybernetics **52***
 (1985), 141--152.
 
-\[18\] Ralph Linsker, "Self-Organization in a Perceptual Network," *IEEE
+<a name="ref-18"></a>**[18]** Ralph Linsker, "Self-Organization in a Perceptual Network," *IEEE
 Computer* March 1988, 105--117.
 
-\[19\] A paper by G. Z. Sun, H. H. Chen, and Y. C. Lee, "Learning
+<a name="ref-19"></a>**[19]** A paper by G. Z. Sun, H. H. Chen, and Y. C. Lee, "Learning
 Stereopsis with Neural Networks," Laboratory for Plasma and Fusion
 Energy Studies, Dept. of Physics and Astronomy, and Inst. for Advanced
 Computer Studies, all University of Maryland, College Park MD 20742 ---
 no other publishing data.
 
-\[20\] David E. Rumelhart, Geoffrey E. Hinton, and Ronald J. Williams,
+<a name="ref-20"></a>**[20]** David E. Rumelhart, Geoffrey E. Hinton, and Ronald J. Williams,
 "Learning representations by back-propagating errors," *Nature **323***
 (1986), 533--536.
 
-\[21\] Richard F. Lyon and Carver Mead, "An Analog Electronic Cochlea,"
+<a name="ref-21"></a>**[21]** Richard F. Lyon and Carver Mead, "An Analog Electronic Cochlea,"
 *IEEE Transactions on Acoustics, Speech, and Signal Processing
 **IEEE-ASSP 36*** no 7 (1988), 1119--1134.
 
-\[22\] Jacques J. Vidal, "Implementing Neural Nets with Programmable
+<a name="ref-22"></a>**[22]** Jacques J. Vidal, "Implementing Neural Nets with Programmable
 Logic," *IEEE Transactions on Acoustics, Speech, and Signal Processing
 **IEEE-ASSP 36*** no 7 (1988), 1180--1190.
 
-\[23\] R. Paul Gorman and Terrence J. Sejnowski, "Learned Classification
+<a name="ref-23"></a>**[23]** R. Paul Gorman and Terrence J. Sejnowski, "Learned Classification
 of Sonar Targets Using a Massively Parallel Network," *IEEE Transactions
 on Acoustics, Speech, and Signal Processing **IEEE-ASSP 36*** no 7
 (1988), 1135--1140.
 
-\[24\] Yi-Tong Zhou, Rama Chellappa, Aseem Vaid, and B. Keith Jenkins,
+<a name="ref-24"></a>**[24]** Yi-Tong Zhou, Rama Chellappa, Aseem Vaid, and B. Keith Jenkins,
 "Image Restoration Using a Neural Network," *IEEE Transactions on
 Acoustics, Speech, and Signal Processing **IEEE-ASSP 36*** no 7 (1988),
 1141--1151.
 
-\[25\] David J. Burr, "Experiments on Neural Net Recognition of Spoken
+<a name="ref-25"></a>**[25]** David J. Burr, "Experiments on Neural Net Recognition of Spoken
 and Written Text," *IEEE Transactions on Acoustics, Speech, and Signal
 Processing **IEEE-ASSP 36*** no 7 (1988), 1162--1168.
 
-\[26\] Alan S. Gevins and Nelson H. Morgan, "Applications of
+<a name="ref-26"></a>**[26]** Alan S. Gevins and Nelson H. Morgan, "Applications of
 Neural-Network (NN) Signal Processing in Brain Research," *IEEE
 Transactions on Acoustics, Speech, and Signal Processing **IEEE-ASSP
 36*** no 7 (1988), 1152--1161.
 
-\[27\] Thomas Plum and Jim Brodie, "Efficient C," Plum Hall, Cardiff New
+<a name="ref-27"></a>**[27]** Thomas Plum and Jim Brodie, "Efficient C," Plum Hall, Cardiff New
 Jersey, 1985.
 
-\[28\] John E. Angus, "On Computing MTBF for a *k*-out-of-n:G
+<a name="ref-28"></a>**[28]** John E. Angus, "On Computing MTBF for a *k*-out-of-n:G
 Repairable System," *IEEE Transactions on Reliability **37*** no 3
 (1988), 312--313.
 
-\[29\] Donald E. Knuth, "The TeXbook," Addison Wesley, Sydney, 1986.
+<a name="ref-29"></a>**[29]** Donald E. Knuth, "The TeXbook," Addison Wesley, Sydney, 1986.
 
 # Acknowledgements
 
@@ -2915,10 +2915,10 @@ sound during all those 2 a.m. tea breaks.
 [^1]: Dedicated machines built to run models of neural networks appear
     to have acquired the jargonistic term "neurocomputers".
 
-[^2]: In the latest writings I possess \[11\], Fukushima refers to the
+[^2]: In the latest writings I possess [[11]](#ref-11), Fukushima refers to the
     model he is working on as an improved version of his slightly older
     neocognitron model (circa 1984). Hence I have dubbed it an
     "improved" neocognitron, as no other official term was used in
-    \[11\].
+    [[11]](#ref-11).
 
 [^3]: \*\*
