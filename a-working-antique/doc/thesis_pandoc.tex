@@ -1126,7 +1126,7 @@ categorised by function.
 
 \subsubsection{3.1.5.1. Screen Input/Output Control}
 
-\ssssec $-v$ (verbose) flag
+\paragraph{3.1.5.1.1. $-v$ (verbose) flag}
 
 The $-v$ flag causes the program to produce verbose runtime
 information about the present status of the network.
@@ -1138,7 +1138,7 @@ for screen output.
 
 This flag cannot be used with the $-q$ flag.
 
-\ssssec $-q$ (quiet) flag
+\paragraph{3.1.5.1.2. $-q$ (quiet) flag}
 
 The $-q$ flag causes suppression of all runtime messages.
 This flag is good for batch mode processing, and of course gives the
@@ -1146,7 +1146,7 @@ fastest execution speed by virtue of minimal screen output.
 
 This flag cannot be used with the $-v$ flag.
 
-\ssssec Default
+\paragraph{3.1.5.1.3. Default}
 
 If neither the $-q$ or $-v$ flags are set, the default mode is used.
 This mode causes fishNET to print rudimentary information 
@@ -1156,7 +1156,7 @@ running.
 
 \subsubsection{3.1.5.2. Loading Configuration and Network Files from Disk}
 
-\ssssec $-c$ (load configuration file) directive
+\paragraph{3.1.5.2.1. $-c$ (load configuration file) directive}
 
 The $-c\{{\rm path}\}\langle{\rm file name}\rangle$ directive lets
 the user load a configuration file of parameters into the simulator.
@@ -1165,7 +1165,7 @@ The format of the file is described in an earlier section entitled
 
 This directive can't be used with the $-n$ directive.
 
-\ssssec $-n$ (load network file) directive
+\paragraph{3.1.5.2.2. $-n$ (load network file) directive}
 
 The $-n\{{\rm path}\}\langle{\rm file name}\rangle$ directive enables
 the user to load a pre-taught or manually created network file into the
@@ -1175,7 +1175,7 @@ The format of the file is described in an earlier section,
 
 This directive can't be used with the $-c$ directive.
 
-\ssssec Default
+\paragraph{3.1.5.2.3. Default}
 
 There is no default file loaded.
 If neither $-c$ or $-n$ is specified, the user is queried via the
@@ -1183,7 +1183,7 @@ screen and keyboard for the appropriate parameter values.
 
 \subsubsection{3.1.5.3. Using the Network File}
 
-\ssssec $-e$ (execute) flag
+\paragraph{3.1.5.3.1. $-e$ (execute) flag}
 
 The $-e$ flag is used after the $-n\langle{\rm name}\rangle$
 directive to tell the simulator to execute the network with the data
@@ -1192,7 +1192,7 @@ The network will {\sl not} continue to be trained.
 
 The $-e$ flag can't be used with the $-t$ flag.
 
-\ssssec $-t$ (teach) flag
+\paragraph{3.1.5.3.2. $-t$ (teach) flag}
 
 The $-t$ flag is used after the $-n\langle{\rm name}\rangle$
 directive to tell the simulator to continue teaching the network
@@ -1203,7 +1203,7 @@ name of which is also in the network file,) will occur.
 
 The $-t$ flag can't be used with the $-e$ flag.
 
-\ssssec Default
+\paragraph{3.1.5.3.3. Default}
 
 If neither the $-e$ or $-t$ flags are used with the $-n$ directive,
 an error occurs.
@@ -1212,7 +1212,7 @@ network file!
 
 \subsubsection{3.1.5.4. Saving the Network File}
 
-\ssssec $-s$ (store ``taught'' network) flag
+\paragraph{3.1.5.4.1. $-s$ (store ``taught'' network) flag}
 
 The $-s$ flag tells the program to store the network after it is
 taught.
@@ -1225,7 +1225,7 @@ The format of the saved file is specified in an earlier section,
 This flag can't be used with the $-e$ (execute) flag, or the $-d$ or
 $-x$ flags (see below).
 
-\ssssec $-d$ (don't store network) flag
+\paragraph{3.1.5.4.2. $-d$ (don't store network) flag}
 
 The $-d$ flag indicates that once the network is taught, it will not
 be stored.
@@ -1236,7 +1236,7 @@ from the execution is.
 This flag can't be used with the $-s$ or $-x$ save flags. If it is
 used with the $-e$ flag it is ignored.
 
-\ssssec $-x$ (store learning information and time) flag
+\paragraph{3.1.5.4.3. $-x$ (store learning information and time) flag}
 
 The $-x$ flag is intended primarily for experimental use of the
 program.
@@ -1253,7 +1253,7 @@ learning speed.
 This flag can't be used with the $-s$ or $-d$ save flags, or the
 $-e$ execute flag.
 
-\ssssec Default
+\paragraph{3.1.5.4.4. Default}
 
 If none of the save flags is specified, the user is queried via the
 screen and keboard. The choices available are akin to the $-s$ and
@@ -1265,7 +1265,7 @@ The package fishNET offers two ways to calculate $\partial E \over
 \partial w$ and $\Delta w(t)$, both enumerated in algorithmic form
 in the previous chapter.
 
-\ssssec $-1$ (each) mode
+\paragraph{3.1.5.5.1. $-1$ (each) mode}
 
 When the $-1$ flag is set, the program will calculate and apply
 $\Delta w(t)$ for each I/O case.
@@ -1275,7 +1275,7 @@ previous chapter).
 
 The $-1$ flag can't be used with the $-a$ flag.
 
-\ssssec $-a$ (all) mode
+\paragraph{3.1.5.5.2. $-a$ (all) mode}
 
 If the $-a$ flag is specified, the calculation of $\Delta w(t)$ is
 once per sweep (presentation) of all I/O cases.
@@ -1287,7 +1287,7 @@ This is the most commonly used mode.
 
 The $-a$ flag can't be used with the $-1$ flag.
 
-\ssssec Default
+\paragraph{3.1.5.5.3. Default}
 
 If neither the $-1$ or $-a$ flags are specified, the $-a$ mode is
 assumed.
@@ -1296,7 +1296,7 @@ effect.
 
 \subsubsection{3.1.5.6. Printing the Help Message}
 
-\ssssec $-?$, $-h$ (help) flags
+\paragraph{3.1.5.6.1. $-?$, $-h$ (help) flags}
 
 If the $-?$ or $-h$ flags are specified, the program doesn't run and
 a help message is displayed.

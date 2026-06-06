@@ -51,11 +51,28 @@ Supervisor: Dr Peter Nickolls
       - [3.1.4.2. Output Data File Format](#3142-output-data-file-format)
     - [3.1.5. Command Line Options](#315-command-line-options)
       - [3.1.5.1. Screen Input/Output Control](#3151-screen-inputoutput-control)
+        - [3.1.5.1.1. $-v$ (verbose) flag](#31511--v-verbose-flag)
+        - [3.1.5.1.2. $-q$ (quiet) flag](#31512--q-quiet-flag)
+        - [3.1.5.1.3. Default](#31513-default)
       - [3.1.5.2. Loading Configuration and Network Files from Disk](#3152-loading-configuration-and-network-files-from-disk)
+        - [3.1.5.2.1. $-c$ (load configuration file) directive](#31521--c-load-configuration-file-directive)
+        - [3.1.5.2.2. $-n$ (load network file) directive](#31522--n-load-network-file-directive)
+        - [3.1.5.2.3. Default](#31523-default)
       - [3.1.5.3. Using the Network File](#3153-using-the-network-file)
+        - [3.1.5.3.1. $-e$ (execute) flag](#31531--e-execute-flag)
+        - [3.1.5.3.2. $-t$ (teach) flag](#31532--t-teach-flag)
+        - [3.1.5.3.3. Default](#31533-default)
       - [3.1.5.4. Saving the Network File](#3154-saving-the-network-file)
+        - [3.1.5.4.1. $-s$ (store "taught" network) flag](#31541--s-store-taught-network-flag)
+        - [3.1.5.4.2. $-d$ (don't store network) flag](#31542--d-dont-store-network-flag)
+        - [3.1.5.4.3. $-x$ (store learning information and time) flag](#31543--x-store-learning-information-and-time-flag)
+        - [3.1.5.4.4. Default](#31544-default)
       - [3.1.5.5. Calculation of Δw(t)](#3155-calculation-of-wt)
+        - [3.1.5.5.1. $-1$ (each) mode](#31551--1-each-mode)
+        - [3.1.5.5.2. $-a$ (all) mode](#31552--a-all-mode)
+        - [3.1.5.5.3. Default](#31553-default)
       - [3.1.5.6. Printing the Help Message](#3156-printing-the-help-message)
+        - [3.1.5.6.1. $-?$, $-h$ (help) flags](#31561----h-help-flags)
       - [3.1.5.7. Unrecognised Options](#3157-unrecognised-options)
       - [3.1.5.8. Default (no options set)](#3158-default-no-options-set)
   - [3.2. Operations Performed](#32-operations-performed)
@@ -69,8 +86,8 @@ Supervisor: Dr Peter Nickolls
       - [4.1.1.3. Layer](#4113-layer)
       - [4.1.1.4. Network](#4114-network)
     - [4.1.2. Structures Used in Back-Propagation Calculations](#412-structures-used-in-back-propagation-calculations)
-      - [4.1.2.1. Temporary Values of $\partial E \over \partial x$](#4121-temporary-values-of-partial-e-over-partial-x)
-      - [4.1.2.2. Temporary Values of $\partial E \over \partial y$](#4122-temporary-values-of-partial-e-over-partial-y)
+      - [4.1.2.1. Temporary Values of ∂E/∂x](#4121-temporary-values-of-ex)
+      - [4.1.2.2. Temporary Values of ∂E/∂y](#4122-temporary-values-of-ey)
     - [4.1.3. Input/Output Data Structures](#413-inputoutput-data-structures)
       - [4.1.3.1. Neuron's Input/Output Value](#4131-neurons-inputoutput-value)
       - [4.1.3.2. Input/Output Cases](#4132-inputoutput-cases)
@@ -704,7 +721,7 @@ $$
 
 The procedure outlined above can be repeated
 for every layer below the output layer, computing
-$\partial E \over \partial w$ as we go.
+∂E/∂w as we go.
 
 This brings us to the philosophies that can be employed to modify the
 weights.
@@ -714,17 +731,16 @@ weights.
 The simplest scheme of weight modification is to modify them as we go
 for every input/output pair. (To change $w$, modify by $\Delta w =
 {\partial E \over \partial w}.$) This method doesn't require
-$\partial E \over \partial w$ to be stored for each pass.
+∂E/∂w to be stored for each pass.
 
 Another method, used by Rumelhart et al. \[20\] is to accumulate
-$\partial E \over \partial w$ over all the input/output pairs before
+∂E/∂w over all the input/output pairs before
 changing the weights. The simplest version of this method is to make
 $$
 \Delta w = - \varepsilon {\partial E \over \partial w}, \qquad\text{(11)}
 $$
 where ε is a constant of proportionality
-and $\partial E \over
-\partial w$ has been accumulated over all cases. An alternative version
+and ∂E/∂w has been accumulated over all cases. An alternative version
 which apparently offers speed improvements is to use a proportion of the
 previous $\Delta w$,
 $$
@@ -742,17 +758,17 @@ network.
 From all this mathematics, we can now explain the back-propagation model
 algorithmically. Two algorithms are presented. I have found the first to
 cause networks to converge faster, but the second may prove useful in
-some circumstances. In the first algorithm $\partial E \over \partial w$
+some circumstances. In the first algorithm ∂E/∂w
 is accumulated over all cases, and Δw(t) is calculated after all
 input/output cases have been presented. In the second
-algorithm, $\partial E \over \partial w$ is used to
+algorithm, ∂E/∂w is used to
 calculate Δw(t) after every input/output case.
 
 The first algorithm is:
 
 1.  Set up random weights between neurons.
 
-2.  Set $\sum {\partial E \over \partial w}$ to zero, and set
+2.  Set Σ∂E/∂w to zero, and set
     $E_{\rm TOTAL}$ to zero.
 
 3.  Input data sample and compare output with expected answer. For all
@@ -760,18 +776,17 @@ The first algorithm is:
     than 0.2, increment $E_{\rm TOTAL}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate $\partial E \over \partial y$ from $(4)$. Otherwise,
-    calculate $\partial E \over \partial y$ from $(10)$.
+    calculate ∂E/∂y from $(4)$. Otherwise,
+    calculate ∂E/∂y from $(10)$.
 
-5.  Calculate $\partial E \over \partial x$ from $(7)$.
+5.  Calculate ∂E/∂x from $(7)$.
 
-6.  Calculate $\partial E \over \partial w$ from $(8)$ and add
-    to $\sum {\partial E \over \partial w}$.
+6.  Calculate ∂E/∂w from $(8)$ and add
+    to Σ∂E/∂w.
 
 7.  If there are more input/output data pairs, go to 3. again.
 
-8.  Calculate Δw(t) from $(12)$, and save $\Delta
-    w(t)$ as $\Delta w(t-1)$ for next pass.
+8.  Calculate Δw(t) from $(12)$, and save Δw(t) as Δw(t-1) for next pass.
 
 9.  Apply Δw(t) to change weights, $w$.
 
@@ -790,15 +805,14 @@ The second (alternative) algorithm is:
     than 0.2, increment $E_{\rm TOTAL}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate $\partial E \over \partial y$ from $(4)$. Otherwise,
-    calculate $\partial E \over \partial y$ from $(10)$.
+    calculate ∂E/∂y from $(4)$. Otherwise,
+    calculate ∂E/∂y from $(10)$.
 
-5.  Calculate $\partial E \over \partial x$ from $(7)$.
+5.  Calculate ∂E/∂x from $(7)$.
 
-6.  Calculate $\partial E \over \partial w$ from $(8)$.
+6.  Calculate ∂E/∂w from $(8)$.
 
-7.  Calculate Δw(t) from $(12)$, and save $\Delta
-    w(t)$ as $\Delta w(t-1)$ for next pass.
+7.  Calculate Δw(t) from $(12)$, and save Δw(t) as Δw(t-1) for next pass.
 
 8.  Apply Δw(t) to change weights, $w$.
 
@@ -1075,9 +1089,9 @@ To reduce keyboard input and increase the facility for repeated
 (automated) testing of program behaviour, all directives and flags used
 by the program can be set from the command line. Each flag or directive
 is selected by typing
-$$
-{\rm fishNET\ } \{-flag_0\}\{-\}\{flag_1\}\ldots\quad.
-$$
+
+<div align="center"><code>fishNET {-flag₀}{-}{flag₁}….</code></div>
+
 
 For example,
 to specify the flags $-x$ and $-v$ (the meaning of these two flags will
@@ -1086,16 +1100,16 @@ ${\rm fishNET\ } -x {\rm \thinspace} -v$ or ${\rm fishNET\ } -xv$. The
 exception to this method are the $-c$ and $-n$ flags, which can only
 appear at the end of a "$-$" list or by themselves. This is because they
 refer to file names. For example,
-$$
-\text{fishNET\ $-n\langle{\rm netfile}\rangle$\ $-q$.}
-$$
+
+<div align="center"><code>fishNET -n<netfile> -q.</code></div>
+
 
 A full explanation of each flag and directive appears below categorised
 by function.
 
 #### 3.1.5.1. Screen Input/Output Control
 
-$-v$ (verbose) flag
+##### 3.1.5.1.1. $-v$ (verbose) flag
 
 The $-v$ flag causes the program to produce verbose runtime information
 about the present status of the network. It displays the expected output
@@ -1105,7 +1119,7 @@ speed by the amount of time taken for screen output.
 
 This flag cannot be used with the $-q$ flag.
 
-$-q$ (quiet) flag
+##### 3.1.5.1.2. $-q$ (quiet) flag
 
 The $-q$ flag causes suppression of all runtime messages. This flag is
 good for batch mode processing, and of course gives the fastest
@@ -1113,7 +1127,7 @@ execution speed by virtue of minimal screen output.
 
 This flag cannot be used with the $-v$ flag.
 
-Default
+##### 3.1.5.1.3. Default
 
 If neither the $-q$ or $-v$ flags are set, the default mode is used.
 This mode causes fishNET to print rudimentary information about loading
@@ -1122,7 +1136,7 @@ is running.
 
 #### 3.1.5.2. Loading Configuration and Network Files from Disk
 
-$-c$ (load configuration file) directive
+##### 3.1.5.2.1. $-c$ (load configuration file) directive
 
 The $-c\{{\rm path}\}\langle{\rm file name}\rangle$ directive lets the
 user load a configuration file of parameters into the simulator. The
@@ -1131,7 +1145,7 @@ format of the file is described in an earlier section entitled
 
 This directive can't be used with the $-n$ directive.
 
-$-n$ (load network file) directive
+##### 3.1.5.2.2. $-n$ (load network file) directive
 
 The $-n\{{\rm path}\}\langle{\rm file name}\rangle$ directive enables
 the user to load a pre-taught or manually created network file into the
@@ -1140,7 +1154,7 @@ simulator. The format of the file is described in an earlier section,
 
 This directive can't be used with the $-c$ directive.
 
-Default
+##### 3.1.5.2.3. Default
 
 There is no default file loaded. If neither $-c$ or $-n$ is specified,
 the user is queried via the screen and keyboard for the appropriate
@@ -1148,7 +1162,7 @@ parameter values.
 
 #### 3.1.5.3. Using the Network File
 
-$-e$ (execute) flag
+##### 3.1.5.3.1. $-e$ (execute) flag
 
 The $-e$ flag is used after the $-n\langle{\rm name}\rangle$ directive
 to tell the simulator to execute the network with the data files whose
@@ -1157,7 +1171,7 @@ to be trained.
 
 The $-e$ flag can't be used with the $-t$ flag.
 
-$-t$ (teach) flag
+##### 3.1.5.3.2. $-t$ (teach) flag
 
 The $-t$ flag is used after the $-n\langle{\rm name}\rangle$ directive
 to tell the simulator to continue teaching the network with the sample
@@ -1167,7 +1181,7 @@ which is also in the network file,) will occur.
 
 The $-t$ flag can't be used with the $-e$ flag.
 
-Default
+##### 3.1.5.3.3. Default
 
 If neither the $-e$ or $-t$ flags are used with the $-n$ directive, an
 error occurs. In other words, you must tell the program what you want to
@@ -1175,7 +1189,7 @@ do with a network file!
 
 #### 3.1.5.4. Saving the Network File
 
-$-s$ (store "taught" network) flag
+##### 3.1.5.4.1. $-s$ (store "taught" network) flag
 
 The $-s$ flag tells the program to store the network after it is taught.
 If this flag is set, once the errors drop below the threshold, the
@@ -1186,7 +1200,7 @@ specified in an earlier section, 3.1.2.1. Network file format.
 This flag can't be used with the $-e$ (execute) flag, or the $-d$ or
 $-x$ flags (see below).
 
-$-d$ (don't store network) flag
+##### 3.1.5.4.2. $-d$ (don't store network) flag
 
 The $-d$ flag indicates that once the network is taught, it will not be
 stored. If this flag is set, execution begins immediately after the
@@ -1196,7 +1210,7 @@ output from the execution is.
 This flag can't be used with the $-s$ or $-x$ save flags. If it is used
 with the $-e$ flag it is ignored.
 
-$-x$ (store learning information and time) flag
+##### 3.1.5.4.3. $-x$ (store learning information and time) flag
 
 The $-x$ flag is intended primarily for experimental use of the program.
 When this flag is set, the program will teach or continue to teach the
@@ -1210,7 +1224,7 @@ and data's effects on learning speed.
 This flag can't be used with the $-s$ or $-d$ save flags, or the $-e$
 execute flag.
 
-Default
+##### 3.1.5.4.4. Default
 
 If none of the save flags is specified, the user is queried via the
 screen and keboard. The choices available are akin to the $-s$ and $-d$
@@ -1218,11 +1232,10 @@ flags (there is no equivalent $-x$ option).
 
 #### 3.1.5.5. Calculation of Δw(t)
 
-The package fishNET offers two ways to calculate $\partial E \over
-\partial w$ and Δw(t), both enumerated in algorithmic form in
+The package fishNET offers two ways to calculate ∂E/∂w and Δw(t), both enumerated in algorithmic form in
 the previous chapter.
 
-$-1$ (each) mode
+##### 3.1.5.5.1. $-1$ (each) mode
 
 When the $-1$ flag is set, the program will calculate and apply
 Δw(t) for each I/O case. This mode is only included for
@@ -1231,18 +1244,18 @@ second algorithm in the previous chapter).
 
 The $-1$ flag can't be used with the $-a$ flag.
 
-$-a$ (all) mode
+##### 3.1.5.5.2. $-a$ (all) mode
 
 If the $-a$ flag is specified, the calculation of Δw(t) is once
-per sweep (presentation) of all I/O cases. $\partial E \over \partial w$
+per sweep (presentation) of all I/O cases. ∂E/∂w
 values are calculated for each I/O case and added together.
 Δw(t) is calculated at the end of each sweep from the
-accumulated $\partial E \over \partial w$ value. This is the most
+accumulated ∂E/∂w value. This is the most
 commonly used mode.
 
 The $-a$ flag can't be used with the $-1$ flag.
 
-Default
+##### 3.1.5.5.3. Default
 
 If neither the $-1$ or $-a$ flags are specified, the $-a$ mode is
 assumed. Unless $-q$ (quiet) has been set, a message is issued to this
@@ -1250,7 +1263,7 @@ effect.
 
 #### 3.1.5.6. Printing the Help Message
 
-$-?$, $-h$ (help) flags
+##### 3.1.5.6.1. $-?$, $-h$ (help) flags
 
 If the $-?$ or $-h$ flags are specified, the program doesn't run and a
 help message is displayed. The help message contains information on
@@ -1260,9 +1273,9 @@ implementations of the program.
 #### 3.1.5.7. Unrecognised Options
 
 If any other option is specified, the program displays the message
-$$
-\text{``try typing `fishNET $-?$' for help''.}
-$$
+
+<div align="center"><code>“try typing `fishNET -?' for help”.</code></div>
+
 
 #### 3.1.5.8. Default (no options set)
 
@@ -1365,7 +1378,7 @@ of pointers to pointers to structures.
 
 Weights are stored in a `struct` of type `WEIGHT`. Contained in `WEIGHT`
 are fields for: weight or connection strength, `double w`;
-$\partial E \over \partial w$, `double dE_dw`; and $\Delta w(t-1)$,
+∂E/∂w, `double dE_dw`; and Δw(t-1),
 `double old_delta_w`.
 
 #### 4.1.1.2. Neurons
@@ -1392,14 +1405,14 @@ Large numbers of intermediate variables are necessary during
 calculations using the back-propagation method. All are stored as
 dynamic arrays.
 
-#### 4.1.2.1. Temporary Values of $\partial E \over \partial x$
+#### 4.1.2.1. Temporary Values of ∂E/∂x
 
-Temporary values of $\partial E \over \partial x$ are stored in an array
+Temporary values of ∂E/∂x are stored in an array
 of type `double`.
 
-#### 4.1.2.2. Temporary Values of $\partial E \over \partial y$
+#### 4.1.2.2. Temporary Values of ∂E/∂y
 
-Temporary values of $\partial E \over \partial y$ are stored in an array
+Temporary values of ∂E/∂y are stored in an array
 of type `double`.
 
 ### 4.1.3. Input/Output Data Structures
@@ -1574,20 +1587,18 @@ is initialised and so the first running of `apply_delta_w` does nothing.
 
 The routine `operate` is detailed in the next part, The neural 'engine'.
 
-`Back_propagate` calculates the error $\partial E \over
-\partial w$ for each case and adds it to the total kept in memory for
+`Back_propagate` calculates the error ∂E/∂w for each case and adds it to the total kept in memory for
 every weight. The error is calculated by comparing the output with the
 expected output, and is described earlier.
 
-`Apply_delta_w` is used to calculate and then add $\Delta
-w(t)$ for every weight in the network.
+`Apply_delta_w` is used to calculate and then add Δw(t) for every weight in the network.
 
 If the second algorithm is used (the $-1$ flag was used), the functions
 called are slightly different. First, `learn` calls `operate`, then a
 function called `back­_propagate­_apply­_delta­_w`. This routine is a
 combination of the two like--named routines described above,
 `back­_propagate` and `apply­_delta­_w`. It operates by calculating
-$\partial E \over \partial w$ for every case and using this to calculate
+∂E/∂w for every case and using this to calculate
 Δw(t) and apply it for every case. This appears to make the
 network converge much more slowly, but is included for experimental
 purposes.
@@ -1894,7 +1905,7 @@ The next facet to consider is space used during calculations. Arrays of
 type `double` are used during back-propagation calculations (in the
 functions `back­_propagate` and `back­_propagate­_apply­_delta­_w` as
 described in the previous chapter) to store values of
-$\partial E \over \partial x$ and $\partial E \over \partial y$. The
+∂E/∂x and ∂E/∂y. The
 arrays refer to different layers of neurons at a time, but for the rule
 of thumb we will invent a worst case. The worst case is where we have
 two big layers of the same size next to each other, so

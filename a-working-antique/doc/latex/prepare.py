@@ -46,39 +46,44 @@ POSTAMBLE = r"""
 
 
 # --- Heading numbering state (reset in main() before processing) ---
-_cnt = {'part': -1, 'chap': -1, 'sec': 0, 'ssec': 0, 'sssec': 0,
+_cnt = {'part': -1, 'chap': -1, 'sec': 0, 'ssec': 0, 'sssec': 0, 'ssssec': 0,
         'app_ltr': '', 'sapp': 0, 'ssapp': 0}
 
 def _reset_cnt():
-    _cnt.update({'part': -1, 'chap': -1, 'sec': 0, 'ssec': 0, 'sssec': 0,
+    _cnt.update({'part': -1, 'chap': -1, 'sec': 0, 'ssec': 0, 'sssec': 0, 'ssssec': 0,
                  'app_ltr': '', 'sapp': 0, 'ssapp': 0})
 
 def _sub_heading(m):
-    r"""Single-pass handler for \sssec / \ssec / \sec / \chap in document order.
+    r"""Single-pass handler for \ssssec / \sssec / \ssec / \sec / \chap in document order.
 
-    Groups: 1=sssec title, 2=ssec title, 3=sec title, 4=chap title.
+    Groups: 1=ssssec title, 2=sssec title, 3=ssec title, 4=sec title, 5=chap title.
     Using one re.sub call guarantees counters are updated in document order —
     separate passes would let e.g. all \sec fire before any \ssec, making
     _cnt['sec'] already at its final value when the first \ssec is reached.
     """
-    if m.group(4) is not None:          # \chap
+    if m.group(5) is not None:          # \chap
         _cnt['chap'] += 1
-        _cnt['sec'] = _cnt['ssec'] = _cnt['sssec'] = 0
-        return r'\chapter{Chapter ' + str(_cnt['chap']) + ': ' + m.group(4).strip() + '}'
-    if m.group(3) is not None:          # \sec
+        _cnt['sec'] = _cnt['ssec'] = _cnt['sssec'] = _cnt['ssssec'] = 0
+        return r'\chapter{Chapter ' + str(_cnt['chap']) + ': ' + m.group(5).strip() + '}'
+    if m.group(4) is not None:          # \sec
         _cnt['sec'] += 1
-        _cnt['ssec'] = _cnt['sssec'] = 0
+        _cnt['ssec'] = _cnt['sssec'] = _cnt['ssssec'] = 0
         n = f'{_cnt["chap"]}.{_cnt["sec"]}'
-        return r'\section{' + n + '. ' + m.group(3).strip() + '}'
-    if m.group(2) is not None:          # \ssec
+        return r'\section{' + n + '. ' + m.group(4).strip() + '}'
+    if m.group(3) is not None:          # \ssec
         _cnt['ssec'] += 1
-        _cnt['sssec'] = 0
+        _cnt['sssec'] = _cnt['ssssec'] = 0
         n = f'{_cnt["chap"]}.{_cnt["sec"]}.{_cnt["ssec"]}'
-        return r'\subsection{' + n + '. ' + m.group(2).strip() + '}'
-    # \sssec (group 1)
-    _cnt['sssec'] += 1
-    n = f'{_cnt["chap"]}.{_cnt["sec"]}.{_cnt["ssec"]}.{_cnt["sssec"]}'
-    return r'\subsubsection{' + n + '. ' + m.group(1).strip() + '}'
+        return r'\subsection{' + n + '. ' + m.group(3).strip() + '}'
+    if m.group(2) is not None:          # \sssec
+        _cnt['sssec'] += 1
+        _cnt['ssssec'] = 0
+        n = f'{_cnt["chap"]}.{_cnt["sec"]}.{_cnt["ssec"]}.{_cnt["sssec"]}'
+        return r'\subsubsection{' + n + '. ' + m.group(2).strip() + '}'
+    # \ssssec (group 1)
+    _cnt['ssssec'] += 1
+    n = f'{_cnt["chap"]}.{_cnt["sec"]}.{_cnt["ssec"]}.{_cnt["sssec"]}.{_cnt["ssssec"]}'
+    return r'\paragraph{' + n + '. ' + m.group(1).strip() + '}'
 
 def _sub_app(m):
     ltr = m.group(1).strip()
@@ -339,9 +344,9 @@ def process(text: str) -> str:
     text = re.sub(r'\{\\tt\s+', r'\\texttt{', text)
 
     # Structure macros — single combined pass so counters update in document order.
-    # Groups: 1=\sssec, 2=\ssec, 3=\sec, 4=\chap  (most-specific first)
+    # Groups: 1=\ssssec, 2=\sssec, 3=\ssec, 4=\sec, 5=\chap  (most-specific first)
     text = re.sub(
-        r'^\\sssec\s+(.+)$|^\\ssec\s+(.+)$|^\\sec\s+(.+)$|^\\chap\s+(.+)$',
+        r'^\\ssssec\s+(.+)$|^\\sssec\s+(.+)$|^\\ssec\s+(.+)$|^\\sec\s+(.+)$|^\\chap\s+(.+)$',
         _sub_heading, text, flags=re.MULTILINE,
     )
 
@@ -786,9 +791,72 @@ def fix_inline_math_symbols(text: str) -> str:
     text = re.sub(r'\$\\varepsilon\$', 'ε', text)
     # $\alpha$ → α
     text = re.sub(r'\$\\alpha\$', 'α', text)
-    # $\Delta w(t)$ → Δw(t)
-    text = re.sub(r'\$\\Delta w\(t\)\$', 'Δw(t)', text)
+    # $\Delta w(t)$ and multiline variant $\Delta\n    w(t)$ → Δw(t)
+    # $\Delta w(t-1)$ → Δw(t-1)
+    text = re.sub(r'\$\\Delta\s+w\(t\)\$', 'Δw(t)', text)
+    text = re.sub(r'\$\\Delta w\(t-1\)\$', 'Δw(t-1)', text)
+    # $\partial E \over \partial X$ (possibly multiline) → ∂E/∂X
+    text = re.sub(r'\$\\partial E \\over\s+\\partial (\w+)\$', r'∂E/∂\1', text)
+    # $\sum {\partial E \over \partial X}$ → Σ∂E/∂X
+    text = re.sub(r'\$\\sum \{?\\partial E \\over\s+\\partial (\w+)\}?\$', r'Σ∂E/∂\1', text)
     return text
+
+
+def fix_display_command_blocks(text: str) -> str:
+    """Convert $$...$$ display blocks containing command-line text to centred HTML.
+
+    In the original TeX, usage synopses and program messages are set in display
+    math using \\hbox / \\text{} or {\\rm ...} with literal-brace markup (\\{...\\}).
+    GitHub's KaTeX cannot render these; convert to a centred <code> block.
+    Pure maths display blocks are left untouched.
+
+    Discriminator:
+      - Block starts with \\text{  → always a command/message display.
+      - Block starts with {\\rm   → command only when it also contains \\{ (literal
+        curly braces indicating flag syntax).  Blocks that use {\\rm} purely for
+        subscript labels in equations do not contain \\{.
+    """
+    def _is_command_body(body: str) -> bool:
+        s = body.lstrip()
+        return s.startswith(r'\text{') or (s.startswith(r'{\rm ') and r'\{' in body)
+
+    def _clean_body(body: str) -> str:
+        body = body.strip()
+        # Unwrap top-level \text{...}
+        m = re.fullmatch(r'\\text\{(.*)\}', body, re.DOTALL)
+        if m:
+            body = m.group(1)
+        # {\rm text} or {\rm text\ } → text  (roman-font text nodes)
+        body = re.sub(
+            r'\{\\rm\s+((?:[^{}]|\{[^{}]*\})*?)\}',
+            lambda mm: re.sub(r'\\[ \\]$', '', mm.group(1)).strip(),
+            body,
+        )
+        # Inline $...$ → strip and clean content
+        def _math(mm):
+            c = mm.group(1)
+            c = c.replace(r'\langle', '<').replace(r'\rangle', '>')
+            c = re.sub(r'\{\\rm\s+(.*?)\}', r'\1', c)
+            return c
+        body = re.sub(r'\$(.*?)\$', _math, body)
+        body = body.replace(r'\{', '{').replace(r'\}', '}')
+        body = re.sub(r'_(\d)', lambda mm: '₀₁₂₃₄₅₆₇₈₉'[int(mm.group(1))], body)
+        body = body.replace(r'\ldots', '…')
+        body = re.sub(r'\\quad(\.)', r'\1', body)   # \quad. → . (sentence-end period)
+        body = re.sub(r'\\(?:quad|thinspace|,|;)', ' ', body)
+        body = re.sub(r'\\ ', ' ', body)
+        body = body.replace('``', '“').replace("''", '”')
+        body = re.sub(r'  +', ' ', body).strip()
+        return body
+
+    def _replace(m):
+        body = m.group(1)
+        if _is_command_body(body):
+            cmd = _clean_body(body)
+            return f'\n<div align="center"><code>{cmd}</code></div>\n'
+        return m.group(0)
+
+    return re.sub(r'\$\$\n(.*?)\n\$\$', _replace, text, flags=re.DOTALL)
 
 
 def _gfm_anchor(text: str) -> str:
@@ -821,7 +889,7 @@ def generate_toc(text: str) -> str:
 
     entries = []
     for line in lines:
-        m = re.match(r'^(#{1,4}) (.+)$', line)
+        m = re.match(r'^(#{1,5}) (.+)$', line)
         if m:
             entries.append((len(m.group(1)), m.group(2).strip()))
 
@@ -890,8 +958,9 @@ def main():
     md = fix_display_math(md)        # normalise $$ spacing first
     md = replace_vbox_tables(md)     # then convert \vbox tables
     md = strip_heading_attrs(md)     # remove {#id .unnumbered} noise
-    md = fix_inline_math_symbols(md) # unwrap bare-number $N$, Greek letters, Δw(t)
-    md = generate_toc(md)            # insert TOC after front matter
+    md = fix_inline_math_symbols(md)       # unwrap bare-number $N$, Greek letters, Δw(t)
+    md = fix_display_command_blocks(md)   # $${\rm fishNET...}$$ → centred <code>
+    md = generate_toc(md)                 # insert TOC after front matter
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")
 
