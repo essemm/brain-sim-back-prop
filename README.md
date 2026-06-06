@@ -29,7 +29,7 @@ This is recovered and revived as an ancient artifact of where neural networks st
 
 I used a service to extract the contents of the disks. Surprisingly, the contents came straight off, and they are uploaded here unchanged. Then, I used an LLM to modernise the old K&R code that also had these fabulous relics like `#ifndef MSDOS`, from my old IBM PC XT. It did make me a tad nostalgic. For a moment.
 
-Lastly, the repo and the project have different names. Calling the project `fishNET` was suggested by my (acknowledged) friend, and is an unfortunate reminder of my undergraduate humour. It may have been decided in a pub, it may not, I don't remember but that is <del>probable</del> possible. Anyway, apologies.
+Lastly, the repo and the project have different names. Calling the project `fishNET` was suggested by my friend (who is listed in the acknowledgements), and is an unfortunate reminder of my undergraduate humour. It may have been decided in a pub, it may not, I don't remember but that is <del>probable</del> possible. Anyway, apologies.
 
 ## Repo structure
 There are two directories:

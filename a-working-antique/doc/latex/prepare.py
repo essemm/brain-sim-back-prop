@@ -796,17 +796,16 @@ def fix_inline_math_symbols(text: str) -> str:
     text = re.sub(r'\$\\alpha\$', 'α', text)
 
     # ── Δw expressions (before single-letter $w$ rule) ───────────────────────
-    text = re.sub(r'\$\\Delta\s+w\(t\)\$', 'Δw(t)', text)
-    text = re.sub(r'\$\\Delta w\(t-1\)\$', 'Δw(t-1)', text)
-    # Multiline: $\Delta w = {\partial E \over \partial w}.$ → Δw = ∂E/∂w.
+    text = re.sub(r'\$\\Delta\s+w\(t\)\$', r'$\\Delta w(t)$', text)
+    text = re.sub(r'\$\\Delta w\(t-1\)\$', r'$\\Delta w(t-1)$', text)
+    # Multiline: $\Delta w = {\partial E \over \partial w}.$ → inline LaTeX
     text = re.sub(r'\$\\Delta w =\s+\{\\partial E \\over \\partial w\}\.\$',
-                  'Δw = ∂E/∂w.', text, flags=re.DOTALL)
-    # Standalone $\Delta w$ → Δw
-    text = re.sub(r'\$\\Delta w\$', 'Δw', text)
+                  r'$\\Delta w = \\partial E/\\partial w.$', text, flags=re.DOTALL)
+    # Standalone $\Delta w$ passes through as-is (no rule needed)
 
     # ── Partial derivatives ──────────────────────────────────────────────────
-    text = re.sub(r'\$\\partial E \\over\s+\\partial (\w+)\$', r'∂E/∂\1', text)
-    text = re.sub(r'\$\\sum \{?\\partial E \\over\s+\\partial (\w+)\}?\$', r'Σ∂E/∂\1', text)
+    text = re.sub(r'\$\\partial E \\over\s+\\partial (\w+)\$', r'$\\partial E/\\partial \1$', text)
+    text = re.sub(r'\$\\sum \{?\\partial E \\over\s+\\partial (\w+)\}?\$', r'$\\sum \\partial E/\\partial \1$', text)
 
     # ── Command-line flags ───────────────────────────────────────────────────
     # Flag with brace-arg and angle-bracket arg: $-c\{{\rm path}\}\langle{\rm file name}\rangle$
@@ -825,13 +824,13 @@ def fix_inline_math_symbols(text: str) -> str:
     text = re.sub(r'\$(-[a-zA-Z0-9?!]+)\$', lambda m: f'`{m.group(1)}`', text)
 
     # ── E_TOTAL (before single-letter $E$ rule) ──────────────────────────────
-    text = re.sub(r'\$E_\{\\rm TOTAL\}\s*=\s*0\$', 'E_TOTAL = 0', text)
-    text = re.sub(r'\$E_\{\\rm TOTAL\}\$', 'E_TOTAL', text)
+    text = re.sub(r'\$E_\{\\rm TOTAL\}\s*=\s*0\$', r'$E_{\\text{TOTAL}} = 0$', text)
+    text = re.sub(r'\$E_\{\\rm TOTAL\}\$', r'$E_{\\text{TOTAL}}$', text)
 
     # ── Other specific complex expressions ───────────────────────────────────
-    text = re.sub(r'\$n_\{\\rm layer\\ 1\}\s*=\s*15\$', 'n_layer_1 = 15', text)
-    text = re.sub(r'\$y_\{\\text\{bias\}\} = 1,\$', 'y_bias = 1,', text)
-    text = re.sub(r'\$w_\{j,\\text\{bias\}\}\$', 'w_j,bias', text)
+    text = re.sub(r'\$n_\{\\rm layer\\ 1\}\s*=\s*15\$', r'$n_{\\text{layer 1}} = 15$', text)
+    text = re.sub(r'\$y_\{\\text\{bias\}\} = 1,\$', r'$y_{\\text{bias}} = 1,$', text)
+    text = re.sub(r'\$w_\{j,\\text\{bias\}\}\$', r'$w_{j,\\text{bias}}$', text)
 
     # ── Scientific notation and powers (before single-letter rules) ──────────
     text = re.sub(r'\$(\d+(?:\.\d+)?)\\times10\^\{?(\d+)\}?\$', r'\1×10^\2', text)
@@ -864,7 +863,7 @@ def fix_inline_math_symbols(text: str) -> str:
 
     # ── Greek letter assignments / comparisons ────────────────────────────────
     text = re.sub(r'\$\\alpha\s*=\s*([0-9.]+)\$', r'α = \1', text)
-    text = re.sub(r'\$\\alpha e\^\{-t\}\s*\\Delta w\(t-1\)\$', 'αe^{-t}Δw(t-1)', text)
+    text = re.sub(r'\$\\alpha e\^\{-t\}\s*\\Delta w\(t-1\)\$', r'$\\alpha e^{-t}\\Delta w(t-1)$', text)
     text = re.sub(r'\$\\varepsilon\s*([><=!]+)\s*([^$\n]+)\$', r'ε \1 \2', text)
     text = re.sub(
         r'\$\\lambda\s*=\s*\{(\d+)\\over([\d\\,]+)\}\$',
@@ -876,7 +875,10 @@ def fix_inline_math_symbols(text: str) -> str:
         lambda m: 'μ = ' + m.group(1) + '/' + m.group(2),
         text,
     )
-    text = re.sub(r'\$\\theta_\{\\rm\s+([^}]+)\}\$', r'θ_\1', text)
+    text = re.sub(r'\$\\theta_\{\\rm\s+([^}]+)\}\$',
+                  lambda m: f'$\\theta_{{\\text{{{m.group(1).strip()}}}}}$', text)
+    # θ_word: clean_tex_text() pre-converts \theta→θ and strips $...$ in table cells
+    text = re.sub(r'θ_(\w+)', lambda m: f'$\\theta_{{\\text{{{m.group(1)}}}}}$', text)
 
     # ── Variable = value (possibly multiline) ────────────────────────────────
     text = re.sub(r'\$([a-zA-Z])\s*=\s*(\d+(?:\.\d+)?)\$', r'\1 = \2', text, flags=re.DOTALL)
@@ -901,7 +903,8 @@ def fix_inline_math_symbols(text: str) -> str:
     text = re.sub(r'\$_\{([^{}]+)\}\$', r'_\1', text)
 
     # ── Subscript with \rm (before generic subscript rules) ─────────────────
-    text = re.sub(r'\$([a-zA-Z])_\{\\rm\s+([^}]+)\}\$', r'\1_\2', text)
+    text = re.sub(r'\$([a-zA-Z])_\{\\rm\s+([^}]+)\}\$',
+                  lambda m: f'${m.group(1)}_{{\\text{{{m.group(2).strip()}}}}}$', text)
 
     # ── n:G notation ─────────────────────────────────────────────────────────
     text = re.sub(r'\$([a-zA-Z]):([a-zA-Z])\$', r'\1:\2', text)

@@ -67,7 +67,7 @@ Supervisor: Dr Peter Nickolls
         - [3.1.5.4.2. `-d` (don't store network) flag](#31542--d-dont-store-network-flag)
         - [3.1.5.4.3. `-x` (store learning information and time) flag](#31543--x-store-learning-information-and-time-flag)
         - [3.1.5.4.4. Default](#31544-default)
-      - [3.1.5.5. Calculation of Δw(t)](#3155-calculation-of-wt)
+      - [3.1.5.5. Calculation of $\Delta w(t)$](#3155-calculation-of-delta-wt)
         - [3.1.5.5.1. -1 (each) mode](#31551--1-each-mode)
         - [3.1.5.5.2. `-a` (all) mode](#31552--a-all-mode)
         - [3.1.5.5.3. Default](#31553-default)
@@ -86,8 +86,8 @@ Supervisor: Dr Peter Nickolls
       - [4.1.1.3. Layer](#4113-layer)
       - [4.1.1.4. Network](#4114-network)
     - [4.1.2. Structures Used in Back-Propagation Calculations](#412-structures-used-in-back-propagation-calculations)
-      - [4.1.2.1. Temporary Values of ∂E/∂x](#4121-temporary-values-of-ex)
-      - [4.1.2.2. Temporary Values of ∂E/∂y](#4122-temporary-values-of-ey)
+      - [4.1.2.1. Temporary Values of $\partial E/\partial x$](#4121-temporary-values-of-partial-epartial-x)
+      - [4.1.2.2. Temporary Values of $\partial E/\partial y$](#4122-temporary-values-of-partial-epartial-y)
     - [4.1.3. Input/Output Data Structures](#413-inputoutput-data-structures)
       - [4.1.3.1. Neuron's Input/Output Value](#4131-neurons-inputoutput-value)
       - [4.1.3.2. Input/Output Cases](#4132-inputoutput-cases)
@@ -652,8 +652,8 @@ $$
 
 Extra input or "bias" can be added to a neuron, say *j*, equivalent to a
 threshold of the opposite sign of its weight, assuming the input is 1.
-The bias is treated just like any other *y*, ie y_bias = 1,
-but w_j,bias gives the negative threshold for *j*.
+The bias is treated just like any other *y*, ie $y_{\text{bias}} = 1,$
+but $w_{j,\text{bias}}$ gives the negative threshold for *j*.
 
 Each neuron *j* has a non-integral output y_j, which is a non-linear
 function of its input x_j:
@@ -721,7 +721,7 @@ $$
 
 The procedure outlined above can be repeated
 for every layer below the output layer, computing
-∂E/∂w as we go.
+$\partial E/\partial w$ as we go.
 
 This brings us to the philosophies that can be employed to modify the
 weights.
@@ -729,19 +729,19 @@ weights.
 ## 2.2. Modification of Weights
 
 The simplest scheme of weight modification is to modify them as we go
-for every input/output pair. (To change *w*, modify by Δw = ∂E/∂w.) This method doesn't require
-∂E/∂w to be stored for each pass.
+for every input/output pair. (To change *w*, modify by $\Delta w = \partial E/\partial w.$) This method doesn't require
+$\partial E/\partial w$ to be stored for each pass.
 
 Another method, used by Rumelhart et al. \[20\] is to accumulate
-∂E/∂w over all the input/output pairs before
+$\partial E/\partial w$ over all the input/output pairs before
 changing the weights. The simplest version of this method is to make
 $$
 \Delta w = - \varepsilon {\partial E \over \partial w}, \qquad\text{(11)}
 $$
 where ε is a constant of proportionality
-and ∂E/∂w has been accumulated over all cases. An alternative version
+and $\partial E/\partial w$ has been accumulated over all cases. An alternative version
 which apparently offers speed improvements is to use a proportion of the
-previous Δw,
+previous $\Delta w$,
 $$
 \Delta w(t) = -\varepsilon {\partial E \over \partial w(t)} + \alpha
             \Delta w(t-1), \qquad\text{(12)}
@@ -757,39 +757,39 @@ network.
 From all this mathematics, we can now explain the back-propagation model
 algorithmically. Two algorithms are presented. I have found the first to
 cause networks to converge faster, but the second may prove useful in
-some circumstances. In the first algorithm ∂E/∂w
-is accumulated over all cases, and Δw(t) is calculated after all
+some circumstances. In the first algorithm $\partial E/\partial w$
+is accumulated over all cases, and $\Delta w(t)$ is calculated after all
 input/output cases have been presented. In the second
-algorithm, ∂E/∂w is used to
-calculate Δw(t) after every input/output case.
+algorithm, $\partial E/\partial w$ is used to
+calculate $\Delta w(t)$ after every input/output case.
 
 The first algorithm is:
 
 1.  Set up random weights between neurons.
 
-2.  Set Σ∂E/∂w to zero, and set
-    E_TOTAL to zero.
+2.  Set $\sum \partial E/\partial w$ to zero, and set
+    $E_{\text{TOTAL}}$ to zero.
 
 3.  Input data sample and compare output with expected answer. For all
     output neurons, if output differs from the expected value by more
-    than 0.2, increment E_TOTAL.
+    than 0.2, increment $E_{\text{TOTAL}}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate ∂E/∂y from (4). Otherwise,
-    calculate ∂E/∂y from (10).
+    calculate $\partial E/\partial y$ from (4). Otherwise,
+    calculate $\partial E/\partial y$ from (10).
 
-5.  Calculate ∂E/∂x from (7).
+5.  Calculate $\partial E/\partial x$ from (7).
 
-6.  Calculate ∂E/∂w from (8) and add
-    to Σ∂E/∂w.
+6.  Calculate $\partial E/\partial w$ from (8) and add
+    to $\sum \partial E/\partial w$.
 
 7.  If there are more input/output data pairs, go to 3. again.
 
-8.  Calculate Δw(t) from (12), and save Δw(t) as Δw(t-1) for next pass.
+8.  Calculate $\Delta w(t)$ from (12), and save $\Delta w(t)$ as $\Delta w(t-1)$ for next pass.
 
-9.  Apply Δw(t) to change weights, *w*.
+9.  Apply $\Delta w(t)$ to change weights, *w*.
 
-10. If E_TOTAL = 0, we are finished and the network has
+10. If $E_{\text{TOTAL}} = 0$, we are finished and the network has
     "learnt". Otherwise, go back to 2. and repeat the procedure for
     the full set of data pairs.
 
@@ -797,27 +797,27 @@ The second (alternative) algorithm is:
 
 1.  Set up random weights between neurons.
 
-2.  Set E_TOTAL to zero.
+2.  Set $E_{\text{TOTAL}}$ to zero.
 
 3.  Input data sample and compare output with expected answer. For all
     output neurons, if output differs from the expected value by more
-    than 0.2, increment E_TOTAL.
+    than 0.2, increment $E_{\text{TOTAL}}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate ∂E/∂y from (4). Otherwise,
-    calculate ∂E/∂y from (10).
+    calculate $\partial E/\partial y$ from (4). Otherwise,
+    calculate $\partial E/\partial y$ from (10).
 
-5.  Calculate ∂E/∂x from (7).
+5.  Calculate $\partial E/\partial x$ from (7).
 
-6.  Calculate ∂E/∂w from (8).
+6.  Calculate $\partial E/\partial w$ from (8).
 
-7.  Calculate Δw(t) from (12), and save Δw(t) as Δw(t-1) for next pass.
+7.  Calculate $\Delta w(t)$ from (12), and save $\Delta w(t)$ as $\Delta w(t-1)$ for next pass.
 
-8.  Apply Δw(t) to change weights, *w*.
+8.  Apply $\Delta w(t)$ to change weights, *w*.
 
 9.  If there are more input/output data pairs, go to 3. again.
 
-10. If E_TOTAL = 0, we are finished and the network has
+10. If $E_{\text{TOTAL}} = 0$, we are finished and the network has
     "learnt". Otherwise, go back to 2. and repeat the procedure for
     the full set of data pairs.
 
@@ -1229,15 +1229,15 @@ If none of the save flags is specified, the user is queried via the
 screen and keboard. The choices available are akin to the `-s` and `-d`
 flags (there is no equivalent `-x` option).
 
-#### 3.1.5.5. Calculation of Δw(t)
+#### 3.1.5.5. Calculation of $\Delta w(t)$
 
-The package fishNET offers two ways to calculate ∂E/∂w and Δw(t), both enumerated in algorithmic form in
+The package fishNET offers two ways to calculate $\partial E/\partial w$ and $\Delta w(t)$, both enumerated in algorithmic form in
 the previous chapter.
 
 ##### 3.1.5.5.1. -1 (each) mode
 
 When the -1 flag is set, the program will calculate and apply
-Δw(t) for each I/O case. This mode is only included for
+$\Delta w(t)$ for each I/O case. This mode is only included for
 experimental purposes (for a description of the algorithm used, see the
 second algorithm in the previous chapter).
 
@@ -1245,11 +1245,11 @@ The -1 flag can't be used with the `-a` flag.
 
 ##### 3.1.5.5.2. `-a` (all) mode
 
-If the `-a` flag is specified, the calculation of Δw(t) is once
-per sweep (presentation) of all I/O cases. ∂E/∂w
+If the `-a` flag is specified, the calculation of $\Delta w(t)$ is once
+per sweep (presentation) of all I/O cases. $\partial E/\partial w$
 values are calculated for each I/O case and added together.
-Δw(t) is calculated at the end of each sweep from the
-accumulated ∂E/∂w value. This is the most
+$\Delta w(t)$ is calculated at the end of each sweep from the
+accumulated $\partial E/\partial w$ value. This is the most
 commonly used mode.
 
 The `-a` flag can't be used with the -1 flag.
@@ -1377,7 +1377,7 @@ of pointers to pointers to structures.
 
 Weights are stored in a `struct` of type `WEIGHT`. Contained in `WEIGHT`
 are fields for: weight or connection strength, `double w`;
-∂E/∂w, `double dE_dw`; and Δw(t-1),
+$\partial E/\partial w$, `double dE_dw`; and $\Delta w(t-1)$,
 `double old_delta_w`.
 
 #### 4.1.1.2. Neurons
@@ -1404,14 +1404,14 @@ Large numbers of intermediate variables are necessary during
 calculations using the back-propagation method. All are stored as
 dynamic arrays.
 
-#### 4.1.2.1. Temporary Values of ∂E/∂x
+#### 4.1.2.1. Temporary Values of $\partial E/\partial x$
 
-Temporary values of ∂E/∂x are stored in an array
+Temporary values of $\partial E/\partial x$ are stored in an array
 of type `double`.
 
-#### 4.1.2.2. Temporary Values of ∂E/∂y
+#### 4.1.2.2. Temporary Values of $\partial E/\partial y$
 
-Temporary values of ∂E/∂y are stored in an array
+Temporary values of $\partial E/\partial y$ are stored in an array
 of type `double`.
 
 ### 4.1.3. Input/Output Data Structures
@@ -1586,19 +1586,19 @@ is initialised and so the first running of `apply_delta_w` does nothing.
 
 The routine `operate` is detailed in the next part, The neural 'engine'.
 
-`Back_propagate` calculates the error ∂E/∂w for each case and adds it to the total kept in memory for
+`Back_propagate` calculates the error $\partial E/\partial w$ for each case and adds it to the total kept in memory for
 every weight. The error is calculated by comparing the output with the
 expected output, and is described earlier.
 
-`Apply_delta_w` is used to calculate and then add Δw(t) for every weight in the network.
+`Apply_delta_w` is used to calculate and then add $\Delta w(t)$ for every weight in the network.
 
 If the second algorithm is used (the -1 flag was used), the functions
 called are slightly different. First, `learn` calls `operate`, then a
 function called `back­_propagate­_apply­_delta­_w`. This routine is a
 combination of the two like--named routines described above,
 `back­_propagate` and `apply­_delta­_w`. It operates by calculating
-∂E/∂w for every case and using this to calculate
-Δw(t) and apply it for every case. This appears to make the
+$\partial E/\partial w$ for every case and using this to calculate
+$\Delta w(t)$ and apply it for every case. This appears to make the
 network converge much more slowly, but is included for experimental
 purposes.
 
@@ -1718,7 +1718,7 @@ For simplicity's sake, consider the application of the back-propagation
 algorithm to a weight as a single operation. Then, it is possible to
 calculate the learning speed by measuring the length of time taken for a
 single application of the back-propagation algorithm and the application
-of Δw(t), then dividing by the number of I/O cases and dividing
+of $\Delta w(t)$, then dividing by the number of I/O cases and dividing
 by the number of weights. (For more accuracy, several dozen sweeps were
 timed and the result divided by the number of sweeps.)
 
@@ -1878,7 +1878,7 @@ $$
 \texttt{NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
     (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
 $$
-where n_layer is the number or layers, etc.
+where $n_{\text{layer}}$ is the number or layers, etc.
 
 Memory required for teaching and execution data depends upon the number
 of neurons in the input and output layers, and the number of I/O cases.
@@ -1904,7 +1904,7 @@ The next facet to consider is space used during calculations. Arrays of
 type `double` are used during back-propagation calculations (in the
 functions `back­_propagate` and `back­_propagate­_apply­_delta­_w` as
 described in the previous chapter) to store values of
-∂E/∂x and ∂E/∂y. The
+$\partial E/\partial x$ and $\partial E/\partial y$. The
 arrays refer to different layers of neurons at a time, but for the rule
 of thumb we will invent a worst case. The worst case is where we have
 two big layers of the same size next to each other, so
@@ -2128,7 +2128,7 @@ The two learning calculation variables, α and ε, can
 have a wide range of values. Just *how* wide appears to depend largely
 upon the problem. For all experiments examined here, α was set
 to 0.9. This doesn't pose a problem, because beyond values of a few
-tens of *t* the equation αe^{-t}Δw(t-1) drops to almost
+tens of *t* the equation $\alpha e^{-t}\Delta w(t-1)$ drops to almost
 zero. Hence α is not really a significant factor in the
 calculations beyond the very beginning, and most authors
 set α = 0.9.
@@ -2273,12 +2273,12 @@ error than those which converge quickly to a solution. An explanation
 for this follows. Faster converging solutions from the back-propagation
 algorithm are more likely to settle in non-optimal minima in the
 solution space. This is because the network will be "coarser" due to the
-obviously larger values of Δw(t) that were added during
+obviously larger values of $\Delta w(t)$ that were added during
 back-propagation calculations. Because these values were larger, the
 network would probably not be as finely tuned as one which took longer
-to converge from smaller Δw(t)s. (Another way of thinking of
+to converge from smaller $\Delta w(t)$s. (Another way of thinking of
 this is to try to imagine that the required solution is some symmetrical
-pattern of weights. If the values of Δw(t) are bigger, the
+pattern of weights. If the values of $\Delta w(t)$ are bigger, the
 network may satisfy the error criteria but still not be particularly
 symmetric.) Hence slower trained networks are more likely to accurately
 generalise the problem, and produce fewer errors.
@@ -2333,7 +2333,7 @@ The approach taken involved selection of a network, then damaging the
 network and examining its behaviour for the same data set used in the
 last chapter. The network selected had the largest ε used,
 ε = 1.0, and the smallest number of middle layer neurons,
-n_layer_1 = 15. This combination was chosen because it had the
+$n_{\text{layer 1}} = 15$. This combination was chosen because it had the
 lowest error rate out of any of the networks examined previously, and
 because it was easiest to edit, with only a small number of middle layer
 neurons.
@@ -2399,7 +2399,7 @@ or 4/20 cases at 20 to 30% casualties, to 15/20 by 40%
 casualties.)
 
 From this data, we draw the conclusion that our ε = 1.0 and
-n_layer_1 = 15 network can sustain random injuries in up to
+$n_{\text{layer 1}} = 15$ network can sustain random injuries in up to
 between 20% and 30% of weights, and still function satisfactorily. This
 is quite incredible.
 
@@ -2482,7 +2482,7 @@ where the notation is explained as
 | n | number of nominally identical units |
 | --- | --- |
 | k | minimum number of operating units for system to operate successfully |
-| θ_sys | mean (successful operating) time between system failures |
+| $\theta_{\text{sys}}$ | mean (successful operating) time between system failures |
 | τ | mean time to repair an individual unit |
 | θ | mean time to failure for an individual unit |
 | λ | failure rate for an individual unit, λ1/θ |
@@ -2502,7 +2502,7 @@ and have almost no effect on network behaviour. Assume that we have some
 method of knowing that any individual neuron (op-amp) has malfunctioned
 and can replace it within 1 hour. Also assume that the mean time to
 failure for each op-amp is 10,000 hours of continuous operation.
-Then, MTBF (θ_sys) for this network is 7.337004×10^8
+Then, MTBF ($\theta_{\text{sys}}$) for this network is 7.337004×10^8
 hours, or 83,756 years. Quite a long time. (These figures come
 from n = 15, k = 13, λ = 1/10,000, and μ = 1/1.)
 
