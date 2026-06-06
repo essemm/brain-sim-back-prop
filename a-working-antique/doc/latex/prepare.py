@@ -722,6 +722,55 @@ def fix_display_math(text: str) -> str:
     return '\n'.join(out)
 
 
+def _gfm_anchor(text: str) -> str:
+    """Compute the GitHub-Flavored Markdown heading anchor for a heading string."""
+    s = text.lower()
+    s = re.sub(r'[^a-z0-9 -]', '', s)
+    s = s.strip()
+    s = re.sub(r'\s+', '-', s)
+    return s
+
+
+def generate_toc(text: str) -> str:
+    """Insert a Table of Contents after the front-matter block.
+
+    Scans all headings (levels 1–4) and builds a nested link list placed
+    between the last '---' rule of the front matter and the first heading.
+    Display text preserves the heading exactly (including section numbers
+    with dots); anchors follow the GFM algorithm (lowercase, strip
+    non-alphanumeric except hyphens, spaces → hyphens).
+    """
+    lines = text.split('\n')
+
+    # Find the last '---' before the first '#' heading — end of front matter
+    last_rule = 0
+    for i, line in enumerate(lines):
+        if re.match(r'^#{1,6} ', line):
+            break
+        if line.strip() == '---':
+            last_rule = i
+
+    entries = []
+    for line in lines:
+        m = re.match(r'^(#{1,4}) (.+)$', line)
+        if m:
+            entries.append((len(m.group(1)), m.group(2).strip()))
+
+    if not entries:
+        return text
+
+    toc = ['## Table of Contents', '']
+    for level, title in entries:
+        indent = '  ' * (level - 1)
+        anchor = _gfm_anchor(title)
+        toc.append(f'{indent}- [{title}](#{anchor})')
+    toc.append('')
+
+    before = lines[:last_rule + 1]
+    after  = lines[last_rule + 1:]
+    return '\n'.join(before + [''] + toc + after)
+
+
 def strip_heading_attrs(text: str) -> str:
     r"""Remove pandoc's {#id .class} attribute blocks from heading lines.
 
@@ -772,8 +821,32 @@ def main():
     md = fix_display_math(md)        # normalise $$ spacing first
     md = replace_vbox_tables(md)     # then convert \vbox tables
     md = strip_heading_attrs(md)     # remove {#id .unnumbered} noise
+    md = generate_toc(md)            # insert TOC after front matter
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")
+
+    # Generate PDF — strip the manually-inserted Markdown TOC first; pandoc --toc
+    # generates its own correct TOC internally, and the GFM anchor links in our
+    # manual TOC produce only "undefined reference" warnings in the LaTeX pass.
+    pdf_out = HERE.parent / "thesis.pdf"
+    md_for_pdf = re.sub(
+        r'^## Table of Contents\n.*?(?=^# )',
+        '', md, flags=re.MULTILINE | re.DOTALL,
+    )
+    result = subprocess.run(
+        ["pandoc", "-", "-o", str(pdf_out),
+         "--pdf-engine=/usr/local/texlive/2026basic/bin/universal-darwin/xelatex",
+         "-V", "mainfont=Palatino",
+         "--toc"],
+        input=md_for_pdf,
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        print(result.stderr, file=sys.stderr)
+        sys.exit(result.returncode)
+    if result.stderr:
+        print(result.stderr, file=sys.stderr)
+    print(f"PDF written: {pdf_out}")
 
 
 if __name__ == "__main__":
