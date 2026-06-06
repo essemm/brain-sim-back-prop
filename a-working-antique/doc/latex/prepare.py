@@ -1103,6 +1103,7 @@ def main():
 
     # Post-process the markdown
     md = md_out.read_text(encoding="utf-8")
+    md = md.replace('\xa0', ' ')           # TeX ~ ties → plain spaces (GitHub math needs ASCII space before $)
     md = FRONT_MATTER_NOISE_RE.sub(FRONT_MATTER, md)
     md = fix_display_math(md)        # normalise $$ spacing first
     md = replace_vbox_tables(md)     # then convert \vbox tables

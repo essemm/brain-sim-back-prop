@@ -214,7 +214,7 @@ independent software specification for a software model.
 ## 1.1. Definition of Terms
 
 Before I begin this discussion of neural networks, definition of a few
-terms will aid clarity \[1\].
+terms will aid clarity \[1\].
 
 A *connection* is a signal pathway between processing elements (or
 neurons), that correspond to the axons and synapses of biological
@@ -239,7 +239,7 @@ A neural network is a collection of graded response neurons (processing
 elements), representing an approximation to biological neurons, in some
 kind of feedforward/feedback network.
 
-There are many different kinds of neural networks (Hecht-Nielsen \[1\]
+There are many different kinds of neural networks (Hecht-Nielsen \[1\]
 suggests that there are 13 main types), with the most common (or
 important) being the Hopfield, back-propagation (Rumelhart et al.),
 "improved" neocognitron (Fukushima), and adaptive resonance theorem or
@@ -248,11 +248,11 @@ tasks, and some have weak points. They vary considerably in complexity
 and power.
 
 Neural networks are often described as a network of "collective
-decision" \[2\] circuits. They gain their power the same way the human
+decision" \[2\] circuits. They gain their power the same way the human
 brain does: many (many many) simple analog devices computing at the same
 time, while connected in parallel and continuously communicating with
 each other. The human brain has, by most estimates, 10^11 neurons
-(100 billion!) with up to 10,000 interconnections per neuron.
+(100 billion!) with up to 10,000 interconnections per neuron.
 Imitating the performance of a human "biological neural network" with an
 artificial one is not and may never be feasible. However, some of the
 characteristics of the brain, such as the ability to learn or be taught
@@ -262,21 +262,21 @@ possible solutions to a problem, with varying degrees of certainty.
 Artificial neural networks can do this. And both man and neural networks
 can infer the original from an image that is noisy, or showing only
 parts of the whole. Figure 1. Classic neural circuit. Figure 2. I/O
-response of simulated neurons. Figure 1 shows the classic feedforward
-and feedback neural circuit, and figure 2 demonstrates the sigmoid
+response of simulated neurons. Figure 1 shows the classic feedforward
+and feedback neural circuit, and figure 2 demonstrates the sigmoid
 output response of a simulated neuron. These diagrams are referred to in
 a later section, "Why and how do neural networks solve problems?"
 
 Simulations of neural networks involve several important simplifications
 to the behaviour of the individual neurons. It has been shown that
 analog neurons perform better than earlier two-state (binary neuron)
-attempts \[2,17\], but many features evident in biological neurons (much
-chemistry is discussed in \[3\]) are simply ignored in the most commonly
+attempts \[2,17\], but many features evident in biological neurons (much
+chemistry is discussed in \[3\]) are simply ignored in the most commonly
 used models of neurons, and analogies are made to voltages and currents.
 The model I will use for neurons is simple also, with the transfer
-function shown in figure 2 being the output from the inputs times the
+function shown in figure 2 being the output from the inputs times the
 weights and summed. The relationship of the simple model to biology is
-shown in \[4\].
+shown in \[4\].
 
 ## 1.3. Neurological Relevance
 
@@ -293,40 +293,40 @@ then the parts of the brain corresponding to the model are easily
 identified. Both methods, by dealing with small parts of the brain at a
 time, have yielded very good results.
 
-Parts of the brain, specifically area 7a of the posterior parietal
+Parts of the brain, specifically area 7a of the posterior parietal
 cortex in monkeys, have been successfully modelled by Zipser and
-Andersen \[5\] using back-propagation \[20\] learning in a feed-forward
+Andersen \[5\] using back-propagation \[20\] learning in a feed-forward
 neural network, similar in form to the one intended for this project.
 The neurons respond to the location of the stimulus with respect to the
 eye and the position of the eyes to calculate the location of external
 objects. Even though the authors admit that there is no way that the
 back-propagation method is the only method used in the brain, it is very
-likely that a combination of Hebb-like \[6,18\] learning and the feeding
+likely that a combination of Hebb-like \[6,18\] learning and the feeding
 back of errors would generate similar results. (Hebb was the first to
 suggest a biologically plausible method of learning. It is described in
 a later section.) They note also that all cortical connections in the
 brain have reciprocal feedback pathways, presumably for the feeding back
 of error signals.
 
-Bear, Cooper and Ebner \[3\] have used neural networks in the reverse
+Bear, Cooper and Ebner \[3\] have used neural networks in the reverse
 direction to study the primary visual cortex area 17 in adult cats. They
 used a neural network, determined theoretically how the neurons could
 behave, and compared this with the actual data. The theoretical model,
 then, enabled the researchers to sort out which of the possible
 hypotheses of brain function was most correct by experiment.
 
-Frohn, Geiger and Singer \[7\] have used a model based not on rigorous
+Frohn, Geiger and Singer \[7\] have used a model based not on rigorous
 maths, but, rather, neurological data, to account for the features in a
-mammal's visual system. They arrived at a 5 layer model, trained by a
-Hebb-like rule \[6,18\] that teaches itself. This allowed the authors to
+mammal's visual system. They arrived at a 5 layer model, trained by a
+Hebb-like rule \[6,18\] that teaches itself. This allowed the authors to
 conclude that "the internal representation of a stimulus is the spatial
 activity pattern of a reciprocally coupled population of neurons,"
-i.e. the knowledge of patterns in the visual system is distributed. Sun,
+i.e. the knowledge of patterns in the visual system is distributed. Sun,
 Chen and Lee \[19\] also give a mathematical description of Hebbian
 learning of stereopsis in a neural network.
 
 The importance of motion to the perception of structure in mammals has
-been simulated \[8\] with a three-layer back-propagation neural network,
+been simulated \[8\] with a three-layer back-propagation neural network,
 and the performance of the model was almost identical to that of man and
 monkey. The first and third layers of the model are designed to simulate
 neurons in a particular area of the brain, while it has not been
@@ -335,7 +335,7 @@ accurately determined where the middle layer could lie.
 Some models of neural networks, such as ART (due largely to Grossberg),
 are strongly based on structures found in certain parts of the brain. In
 fact, experiments with ART networks have led to a number of important
-predictions \[9\] of human brain structures that have been proven
+predictions \[9\] of human brain structures that have been proven
 correct. Needless to say ART is an extremely complex form of network.
 
 Other authors such as Lyon and Mead \[21\] have taken an entirely
@@ -350,13 +350,13 @@ form (cybernetics) in the future.
 
 As mentioned earlier, neural networks gain their power from the
 connection of simple analog devices in parallel. The human brain has
-roughly 10^11 neurons, and each neuron can have up to 10,000
+roughly 10^11 neurons, and each neuron can have up to 10,000
 interconnections. Each connection can be an excitatory or inhibitory
 input or feedback, or an output connection to other neurons.
 
 At present, it seems the largest neurocomputer[^1] built to date
-has 10^6 neurons and interconnections totalling 1.5×10^6 in
-total \[1\]. This is, of course, far from the complexity of the human
+has 10^6 neurons and interconnections totalling 1.5×10^6 in
+total \[1\]. This is, of course, far from the complexity of the human
 brain, but as we shall see it still offers a great deal of power in
 solving problems.
 
@@ -374,19 +374,19 @@ given input, even though we cannot write down a fixed algorithm on how
 to do it.
 
 But neural networks, without being programmed with an algorithm but
-taught instead, can already perform many of these tasks with 95%
-accuracy. For example, Kohonen \[10\] has built a phonetic typewriter,
-Fukushima \[11\] has used his "improved"[^2] neocognitron model to
+taught instead, can already perform many of these tasks with 95%
+accuracy. For example, Kohonen \[10\] has built a phonetic typewriter,
+Fukushima \[11\] has used his "improved"[^2] neocognitron model to
 recognise Chinese characters, and many authors have shown the ability of
 neural networks to remove noise and recognize
-patterns \[7,11,12,23,24,25\]. Many other implementations of this new
+patterns \[7,11,12,23,24,25\]. Many other implementations of this new
 non-algorithmic neural network programming are being carried out. A very
 good example is using neural networks as a signal analyser to detect
 subtle patterns in neuroelectric signals from brian data with "highly
 dimensioned noise" \[26\].
 
 To understand how neural networks solve problems, we'll first try to get
-an intuitive feel for how they work, compared to a digital or Von Neuman
+an intuitive feel for how they work, compared to a digital or Von Neuman
 machine that we are all, no doubt, familiar with already.
 
 A digital machine takes an input, such as programs and data, and goes
@@ -396,17 +396,17 @@ data. On the other hand, neural networks or collective decision
 circuits, take inputs and move to minimize some function of the
 "computational energy" of the inputs, based upon the dynamic weights of
 the connections between the neurons. Some authors, notably Hopfield and
-Tank \[2\][^3]and recognized in \[13\] as relating to other physical
+Tank \[2\][^3]and recognized in \[13\] as relating to other physical
 systems as well, notably spin glasses, see neural networks as an energy
 reducing machine: imagine an *n*-dimensional surface of hills and
 valleys, with the computation beginning at some high point on the
 surface. As the computation procedes it will move to a valley, downhill
-(i.e.  minimizing "computational energy"), until it is stable. The final
+(i.e.  minimizing "computational energy"), until it is stable. The final
 answer then appears at the output neurons.
 
-Consider figure 1 again. It contains several types of neurons, namely
+Consider figure 1 again. It contains several types of neurons, namely
 what we can call "principal" and "inhibitory" neurons (labelled by 'P'
-and 'IN' respectively). Looking at figure 2, imagine the response of the
+and 'IN' respectively). Looking at figure 2, imagine the response of the
 'P' neurons follows the solid line, and the response of the 'IN' neurons
 follows the dotted line. Then, the response of the circuit to an input
 will depend upon the weights on the connections between neurons. As you
@@ -422,7 +422,7 @@ trivial, and can't be written as a serial algorithm.
 There are many different types of neural networks. Some are particularly
 suited to some types of problem, some are suitable for many types of
 problem. Some can "learn" without supervision, others require a teacher.
-Most of these neural models are grounded upon Donald Hebb's \[6\] theory
+Most of these neural models are grounded upon Donald Hebb's \[6\] theory
 of synapse modification. He indicated that a plausible explanation for
 learning would be for connections between neurons to strengthen if the
 activity of both ends of the connection increased (ie., reinforce the
@@ -435,12 +435,12 @@ networks appear below.
 
 ### 1.5.1. The Hopfield Network
 
-The Hopfield network shown in figure 3 is the simplest type of network,
+The Hopfield network shown in figure 3 is the simplest type of network,
 yet it is suprisingly powerful.
 
 **Figure 3:** Hopfield network It has a feedback structure, and it
 cannot learn (although a technique for teaching feedback networks has
-been suggested by Atiya \[14\]). The selection of weights depends upon
+been suggested by Atiya \[14\]). The selection of weights depends upon
 the problem at hand, for example classic computer science problems such
 as the Travelling Salesman Problem (TSP), the book stacking problem, and
 a symmetry detector. All these problems can be computed after the
@@ -453,11 +453,11 @@ solution to the serial solution shows some staggering results!
 
 Let's see the difference between a brute force approach, a good serial
 algorithm, and a Hopfield neural network solution. Based upon estimates
-from \[15\], probably 10^30 comparisons would be needed for a brute
+from \[15\], probably 10^30 comparisons would be needed for a brute
 force approach. This is obviously not computable. An excellent serial
-algorithmic estimation approach would require roughly 1,500
+algorithmic estimation approach would require roughly 1,500
 comparisons in the best case (but probably many more). But a Hopfield
-neural network, it has been found, will select one of the best 10^7
+neural network, it has been found, will select one of the best 10^7
 solutions (and this is as good as or better than the algorithmic
 approach described above) in a single convergence of the network, or
 several time-constants of the ciruit of figure 3. Quite a difference.
@@ -466,7 +466,7 @@ several time-constants of the ciruit of figure 3. Quite a difference.
 
 This is another "classic" neural network, along with the one described
 above (they appear to be the most commonly implemented in neurological
-experiments). The inventors and main developers \[1\] are considered to
+experiments). The inventors and main developers \[1\] are considered to
 be Werbos, Parker and Rumelhart. It has a feedforward structure, as
 shown in figure 4.
 
@@ -503,14 +503,14 @@ into that category of neural networks that are more neurologically sound
 in their design. They both contain more complex neurons, with complex
 feedforward and feedback connections.
 
-Fukushima \[11\] has used his model to recognise Chinese characters, a
-task that is readily performed by over 1 billion Chinese every day but
+Fukushima \[11\] has used his model to recognise Chinese characters, a
+task that is readily performed by over 1 billion Chinese every day but
 was yet to be done reliably by machine. It is largely immune to those
 bugbears of artificial neural networks, namely rotation, translation,
 and changes in scale. One of the most astounding properties of this
 model is its ability to shift "attention", just like a human, from one
 pattern to another for an input that contains several recognisable
-patterns at the same time. (See \[11\], which has examples.)
+patterns at the same time. (See \[11\], which has examples.)
 
 **Figure 5:** An example of an "improved" neocognitron
 
@@ -532,7 +532,7 @@ available, so this is as thoroughly as it will be discussed.
 ### 1.5.4. The Adaptive Resonance Theory Model
 
 The Adaptive Resonance Theory (or ART) model is the most complex one
-discussed here \[9\].
+discussed here \[9\].
 
 ART systems belong to a group of neural networks which fall into a
 category of "competitive learning" models. It has been used for visual
@@ -551,7 +551,7 @@ levels.
 
 As explained earlier, neurons have a graded response. Hence it is
 possible to simulate a neuron with a transfer function like that of
-figure 2 as an amplifier with a similar response. It would be possible,
+figure 2 as an amplifier with a similar response. It would be possible,
 if one stretched one's imagination a little, to build a huge
 multi-million neuron "brain" from op-amps and resistors, similar in
 structure to the network shown in figure 1. However, this is not a
@@ -560,7 +560,7 @@ automatically? (Who twiddles the knobs on the variable resistor as the
 network learns?) For *small* problems, this technique could be used.
 
 **Figure 6:** A special machine for the TSP For example Hopfield and
-Tank \[2\] devised such a contraption shown in figure 6 using a Hopfield
+Tank \[2\] devised such a contraption shown in figure 6 using a Hopfield
 network that could solve the TSP for however many cities it was wired
 for (I don't think they actually built it). The output is indicated by a
 globe lit for the appropriate city (column) in the appropriate order
@@ -570,7 +570,7 @@ that example the discrete approach to neural networks is not
 particularly popular.
 
 There have been some attempts at analog ICs with variable internal
-weights (one such is described in \[2\]). The ones built have functioned
+weights (one such is described in \[2\]). The ones built have functioned
 successfully as associative memorys. However the density and accuracy of
 VLSI analog ICs is low, so this approach has not been terribly fruitful.
 
@@ -584,7 +584,7 @@ nothing. This technique is still in the experimental stage at the date
 of publication, but it could prove possible to efficiently perform
 significant calculations in this way in hardware.
 
-Another novel approach is described by Vidal \[22\]. He proposes a
+Another novel approach is described by Vidal \[22\]. He proposes a
 neural network implemented in programmable logic, using purely digital
 techniques, and argues that possibly digital (Boolean) techniques offer
 a good solution to network problems. This is an example of how varied
@@ -606,7 +606,7 @@ this.
 ## 1.7. Simulating Neural Networks in Software
 
 As I stated at the start of this chapter, this project is intended to
-produce a working neural network of the back-propagation model \[20\].
+produce a working neural network of the back-propagation model \[20\].
 Simulation of the parallel activity of the neurons is possible by
 imagining the operations occuring in discrete time steps, and
 calculating one row of neurons at a time. Of course, this technique
@@ -620,7 +620,7 @@ difficult: possibly requiring calculations of layers with smaller time
 steps due to the more complex interactions between layers.
 
 The next chapter describes the mathematics behind the back-propagation
-algorithm to be implemented, based largely on \[20\] by Rumelhart,
+algorithm to be implemented, based largely on \[20\] by Rumelhart,
 Hinton and Williams.
 
 # Chapter 2: The Back-Propagation Model
@@ -635,14 +635,14 @@ referred to as neurons.
 
 ## 2.1. The Maths Behind the Model
 
-Based upon figure 7, which shows a feedforward neural network, the
+Based upon figure 7, which shows a feedforward neural network, the
 following mathematics holds:
 
 **Figure 7:** A feedforward neural network
 
-Consider two neurons, *i* and *j*, with neuron *i* being a lower layer
-(that is closer to the input) than neuron *j*. Let the inputs to a
-neuron *j* be $x_j$, and the outputs of a neuron *i* be $y_i$. Let the
+Consider two neurons, *i* and *j*, with neuron *i* being a lower layer
+(that is closer to the input) than neuron *j*. Let the inputs to a
+neuron *j* be $x_j$, and the outputs of a neuron *i* be $y_i$. Let the
 weight of the connection between *i* and *j* be $w_{ji}$. Then the total
 input $x_j$ into a neuron *j* is a linear function of the outputs $y_i$
 of the units connected to *j* and of the weights $w_{ji}$:
@@ -651,8 +651,8 @@ $$
 x_j = \sum_i y_i w_{ji}.\qquad\text{(1)}
 $$
 
-Extra input or "bias" can be added to a neuron, say *j*, equivalent to a
-threshold of the opposite sign of its weight, assuming the input is 1.
+Extra input or "bias" can be added to a neuron, say *j*, equivalent to a
+threshold of the opposite sign of its weight, assuming the input is 1.
 The bias is treated just like any other *y*, ie $y_{\text{bias}} = 1,$
 but $w_{j,\text{bias}}$ gives the negative threshold for *j*.
 
@@ -674,7 +674,7 @@ $$
 E = {1 \over 2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2. \qquad\text{(3)}
 $$
 
-The whole aim of this technique is to minimize the error, ie. make the
+The whole aim of this technique is to minimize the error, ie. make the
 expected and actual outputs more similar. To minimize *E* by gradient
 descent, we need the partial derivative of *E* with respect to each
 weight in the network. So from (3),
@@ -739,28 +739,28 @@ weights.
 ## 2.2. Modification of Weights
 
 The simplest scheme of weight modification is to modify them as we go
-for every input/output pair. (To change *w*, modify by $\Delta w = \partial E/\partial w.$) This method doesn't require
+for every input/output pair. (To change *w*, modify by $\Delta w = \partial E/\partial w.$) This method doesn't require
 $\partial E/\partial w$ to be stored for each pass.
 
-Another method, used by Rumelhart et al. \[20\] is to accumulate
+Another method, used by Rumelhart et al. \[20\] is to accumulate
 $\partial E/\partial w$ over all the input/output pairs before
 changing the weights. The simplest version of this method is to make
 
 $$
 \Delta w = - \varepsilon {\partial E \over \partial w}, \qquad\text{(11)}
 $$
-where ε is a constant of proportionality
-and $\partial E/\partial w$ has been accumulated over all cases. An alternative version
+where ε is a constant of proportionality
+and $\partial E/\partial w$ has been accumulated over all cases. An alternative version
 which apparently offers speed improvements is to use a proportion of the
-previous $\Delta w$,
+previous $\Delta w$,
 
 $$
 \Delta w(t) = -\varepsilon {\partial E \over \partial w(t)} + \alpha
             \Delta w(t-1), \qquad\text{(12)}
 $$
 
-where *t* is a count of the number of times all input/output pairs have
-been presented and α is an exponential decay factor. This is the
+where *t* is a count of the number of times all input/output pairs have
+been presented and α is an exponential decay factor. This is the
 method that I will use in the software model of the back-propagation
 network.
 
@@ -769,68 +769,68 @@ network.
 From all this mathematics, we can now explain the back-propagation model
 algorithmically. Two algorithms are presented. I have found the first to
 cause networks to converge faster, but the second may prove useful in
-some circumstances. In the first algorithm $\partial E/\partial w$
-is accumulated over all cases, and $\Delta w(t)$ is calculated after all
+some circumstances. In the first algorithm $\partial E/\partial w$
+is accumulated over all cases, and $\Delta w(t)$ is calculated after all
 input/output cases have been presented. In the second
-algorithm, $\partial E/\partial w$ is used to
-calculate $\Delta w(t)$ after every input/output case.
+algorithm, $\partial E/\partial w$ is used to
+calculate $\Delta w(t)$ after every input/output case.
 
 The first algorithm is:
 
 1.  Set up random weights between neurons.
 
-2.  Set $\sum \partial E/\partial w$ to zero, and set
+2.  Set $\sum \partial E/\partial w$ to zero, and set
     $E_{\text{TOTAL}}$ to zero.
 
 3.  Input data sample and compare output with expected answer. For all
     output neurons, if output differs from the expected value by more
-    than 0.2, increment $E_{\text{TOTAL}}$.
+    than 0.2, increment $E_{\text{TOTAL}}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate $\partial E/\partial y$ from (4). Otherwise,
-    calculate $\partial E/\partial y$ from (10).
+    calculate $\partial E/\partial y$ from (4). Otherwise,
+    calculate $\partial E/\partial y$ from (10).
 
-5.  Calculate $\partial E/\partial x$ from (7).
+5.  Calculate $\partial E/\partial x$ from (7).
 
-6.  Calculate $\partial E/\partial w$ from (8) and add
-    to $\sum \partial E/\partial w$.
+6.  Calculate $\partial E/\partial w$ from (8) and add
+    to $\sum \partial E/\partial w$.
 
-7.  If there are more input/output data pairs, go to 3. again.
+7.  If there are more input/output data pairs, go to 3. again.
 
-8.  Calculate $\Delta w(t)$ from (12), and save $\Delta w(t)$ as $\Delta w(t-1)$ for next pass.
+8.  Calculate $\Delta w(t)$ from (12), and save $\Delta w(t)$ as $\Delta w(t-1)$ for next pass.
 
-9.  Apply $\Delta w(t)$ to change weights, *w*.
+9.  Apply $\Delta w(t)$ to change weights, *w*.
 
-10. If $E_{\text{TOTAL}} = 0$, we are finished and the network has
-    "learnt". Otherwise, go back to 2. and repeat the procedure for
+10. If $E_{\text{TOTAL}} = 0$, we are finished and the network has
+    "learnt". Otherwise, go back to 2. and repeat the procedure for
     the full set of data pairs.
 
 The second (alternative) algorithm is:
 
 1.  Set up random weights between neurons.
 
-2.  Set $E_{\text{TOTAL}}$ to zero.
+2.  Set $E_{\text{TOTAL}}$ to zero.
 
 3.  Input data sample and compare output with expected answer. For all
     output neurons, if output differs from the expected value by more
-    than 0.2, increment $E_{\text{TOTAL}}$.
+    than 0.2, increment $E_{\text{TOTAL}}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate $\partial E/\partial y$ from (4). Otherwise,
-    calculate $\partial E/\partial y$ from (10).
+    calculate $\partial E/\partial y$ from (4). Otherwise,
+    calculate $\partial E/\partial y$ from (10).
 
-5.  Calculate $\partial E/\partial x$ from (7).
+5.  Calculate $\partial E/\partial x$ from (7).
 
-6.  Calculate $\partial E/\partial w$ from (8).
+6.  Calculate $\partial E/\partial w$ from (8).
 
-7.  Calculate $\Delta w(t)$ from (12), and save $\Delta w(t)$ as $\Delta w(t-1)$ for next pass.
+7.  Calculate $\Delta w(t)$ from (12), and save $\Delta w(t)$ as $\Delta w(t-1)$ for next pass.
 
-8.  Apply $\Delta w(t)$ to change weights, *w*.
+8.  Apply $\Delta w(t)$ to change weights, *w*.
 
-9.  If there are more input/output data pairs, go to 3. again.
+9.  If there are more input/output data pairs, go to 3. again.
 
-10. If $E_{\text{TOTAL}} = 0$, we are finished and the network has
-    "learnt". Otherwise, go back to 2. and repeat the procedure for
+10. If $E_{\text{TOTAL}} = 0$, we are finished and the network has
+    "learnt". Otherwise, go back to 2. and repeat the procedure for
     the full set of data pairs.
 
 The next part, Software, deals with the implemented software for the
@@ -852,8 +852,8 @@ program after an error message is printed.
 
 The specification as it is presented here has been fully implemented in
 the software package, called fishNET. The design used to implement this
-specification is described in Chapter 4: Construction, and its behaviour
-is examined in Chapter 5: Performance.
+specification is described in Chapter 4: Construction, and its behaviour
+is examined in Chapter 5: Performance.
 
 ## 3.1. The User Interface
 
@@ -886,7 +886,7 @@ The information needed to run the program is:
 
 - The name of the file where the network is to be saved.
 
-- The learning parameters α and ε.
+- The learning parameters α and ε.
 
 - The nominal output width of the output layer of neurons for output
   formatting.
@@ -906,12 +906,12 @@ after typing the parameter being considered.
 #### 3.1.1.2. Configuration File Format
 
 The format of a configuration file is described below. The
-symbols <> are used to delimit user required data. All
+symbols <> are used to delimit user required data. All
 information in double quotes "" are tokens and must be inserted
 *exactly* as they appear otherwise an error will occur. (The error
 message is 'appropriate token not found'.) All tokens and data must also
 appear in the order shown below. The exception is any piece of data
-which is surrounded by {} brackets. These data items are optional.
+which is surrounded by {} brackets. These data items are optional.
 If they are used, however, please note the quoted and bracketed tokens
 and data items necessary.
 
@@ -931,14 +931,14 @@ and data items necessary.
 | "max sweeps" | < q> |
 Simply place the desired value next to the appropriate token. Tokens
 must be in order. For the "neurons" token, the order of the
-numbers a_0 to a_n-1 is taken as the number of neurons in the
-layers 0 to n-1. Hence the example
+numbers a_0 to a_n-1 is taken as the number of neurons in the
+layers 0 to n-1. Hence the example
 | layers | 3 |  |  |
 | --- | --- | --- | --- |
 | neurons | 13 | 20 | 5 |
-means that there are 13 neurons on the input (layer 0), 20 in
-the intermediate layer (layer 1), and 5 in the output layer
-(layer 2).
+means that there are 13 neurons on the input (layer 0), 20 in
+the intermediate layer (layer 1), and 5 in the output layer
+(layer 2).
 The tokens "alpha" and "epsilon" refer to the learning parameters
 α and ε.
 The file name following the "sample in" token is the file used as
@@ -957,15 +957,15 @@ network is completely taught,) the network is saved and execution
 begins.
 Formats of data files are shown below.
 Command line options used to specify a configuration file instead of
-keyboard entry are found in section 3.1.5. Command line options.
+keyboard entry are found in section 3.1.5. Command line options.
 ### 3.1.2. Using a Pre-Made Network
 The user is able to load a network file which contains all the data
 necessary (especially weights) for operation of the network, or
 continued teaching, or both. The code is designed so that if it is
 halted (a Ctrl-c in MSDOS, or a BREAK or DEL in Unix) the network's
-present status and elapsed *t* are stored into a network file. The
+present status and elapsed *t* are stored into a network file. The
 network is also saved when it has been fully taught, or the maximum time
-has elapsed (depending upon flags set, so see 3.1.5. Command line
+has elapsed (depending upon flags set, so see 3.1.5. Command line
 options).
 #### 3.1.2.1. Network File Format
 The format of a network file is described below. The symbol format is
@@ -989,14 +989,14 @@ the same as the previously described configuration file format
 Place the desired value next to the appropriate token. Tokens must be in
 order. For the "neurons" token, the order of the numbers
 a_0 to a_n-1 is taken as the same as the number of neurons in the
-layers 0 to n-1. Data following the "weights" token behaves
-identically: if there are $a_0$ neurons in layer 0, and $a_1$ in
-layer 1, then there will be a_0 × a_1 weights between layer 0
-and layer 1. The first $a_1$ weights are the strengths of connections
-between the first neuron in layer 0 and the neurons in the layer
+layers 0 to n-1. Data following the "weights" token behaves
+identically: if there are $a_0$ neurons in layer 0, and $a_1$ in
+layer 1, then there will be a_0 × a_1 weights between layer 0
+and layer 1. The first $a_1$ weights are the strengths of connections
+between the first neuron in layer 0 and the neurons in the layer
 above. The second $a_1$ weights apply to the second neuron's connections
 to the layer above, etc., until the $a_0$th $a_1$ weights apply to the
-last neuron in layer 0. The pattern is repeated for all layers (note
+last neuron in layer 0. The pattern is repeated for all layers (note
 that there are no weights associated with the output n-1th layer).
 
 For example, consider the following fragment of a network file:
@@ -1006,12 +1006,12 @@ For example, consider the following fragment of a network file:
 | "neurons" | 1 | 2 | 3 |  |  |  |  |  |
 | "weights" | w_1,1 | w_1,2 | w_2,1 | w_2,2 | w_2,3 | w_2,4 | w_2,5 | w_2,6 |
 
-Here there are 3 layers; the input layer contains 1 neuron, the
-middle layer contains 2 neurons, and the top layer 3 neurons. The
+Here there are 3 layers; the input layer contains 1 neuron, the
+middle layer contains 2 neurons, and the top layer 3 neurons. The
 weights $w_{1,1}$ and $w_{1,2}$ connect the single input neuron to the
-first and second of the 2 second layer neurons respectively. The
+first and second of the 2 second layer neurons respectively. The
 weights w_2,1 to w_2,3 connect the first neuron in the second
-layer with the neurons 1 to 3 in the top layer, etc.
+layer with the neurons 1 to 3 in the top layer, etc.
 
 The token "start time" marks the value of *t* that the network will
 start learning from, if the user desires continued teaching of the
@@ -1025,7 +1025,7 @@ at if the user desires continued teaching of the network.
 
 Command line options used to specify a network file and what is to be
 done with it (that is continued teaching or execution) are found in
-section 3.1.5. Command line options.
+section 3.1.5. Command line options.
 
 ### 3.1.3. Teaching Data
 
@@ -1074,21 +1074,21 @@ Configuration and network files, and keyboard input, contain the tokens
 "execute in" and "execute out". The file names after these tokens refers
 to the files used as input and output for the network after it is
 trained. The "execute in" file contains data for the inputs of the
-bottom (layer 0) neurons, and the "execute out" file is used to store
-the output from the top (layer n-1) neurons for each case presented to
+bottom (layer 0) neurons, and the "execute out" file is used to store
+the output from the top (layer n-1) neurons for each case presented to
 the bottom layer. Any previous contents of the "execute out" file are
 overwritten by the new input cases' outputs.
 
 #### 3.1.4.1. Test Data File Format
 
-Format is identical to 3.1.3.1. Teaching data file format. Once again,
+Format is identical to 3.1.3.1. Teaching data file format. Once again,
 if there is too much data the excess for each input cases is ignored
 (and a warning is issued), and if there is too little data an error
 occurs.
 
 #### 3.1.4.2. Output Data File Format
 
-The "execute out" file output format is similar to 3.1.3.2. Expected
+The "execute out" file output format is similar to 3.1.3.2. Expected
 data file format. The only difference is that the length of the stored
 output line is modulated by the parameter following the token "output
 width", which is entered from the keyboard, or network or configuration
@@ -1154,7 +1154,7 @@ is running.
 The `-c{path}<file name>` directive lets the
 user load a configuration file of parameters into the simulator. The
 format of the file is described in an earlier section entitled
-3.1.1.2. Configuration file format.
+3.1.1.2. Configuration file format.
 
 This directive can't be used with the `-n` directive.
 
@@ -1163,7 +1163,7 @@ This directive can't be used with the `-n` directive.
 The `-n{path}<file name>` directive enables
 the user to load a pre-taught or manually created network file into the
 simulator. The format of the file is described in an earlier section,
-3.1.2.1. Network file format.
+3.1.2.1. Network file format.
 
 This directive can't be used with the `-c` directive.
 
@@ -1208,7 +1208,7 @@ The `-s` flag tells the program to store the network after it is taught.
 If this flag is set, once the errors drop below the threshold, the
 network is automatically stored in the file named through the keyboard,
 network, or configuration files. The format of the saved file is
-specified in an earlier section, 3.1.2.1. Network file format.
+specified in an earlier section, 3.1.2.1. Network file format.
 
 This flag can't be used with the `-e` (execute) flag, or the `-d` or
 `-x` flags (see below).
@@ -1228,8 +1228,8 @@ with the `-e` flag it is ignored.
 The `-x` flag is intended primarily for experimental use of the program.
 When this flag is set, the program will teach or continue to teach the
 network but when it is "taught" only the necessary parameters are saved
-to disk. These parameters are the weight modification factors α
-and ε, the number of layers and neurons in those layers, I/O
+to disk. These parameters are the weight modification factors α
+and ε, the number of layers and neurons in those layers, I/O
 files and time required to teach the network. This saves time and disk
 space for users of fishNET who are experimenting with the parameters'
 and data's effects on learning speed.
@@ -1307,7 +1307,7 @@ shape of the network is flexible and specifiable by the user, and as
 many parameters as possible are easily modifiable.
 
 The most important parameters are the network shape and size, and the
-initial values of α and ε. These values are user
+initial values of α and ε. These values are user
 specifiable, and used during learning.
 
 Input and sample output files are user specifiable and used for
@@ -1352,7 +1352,7 @@ especially as an aid to someone wishing to enhance the code. This
 section also details some important features of the code.
 
 A printout of the C source code appears in toto in Appendix A. The
-source, include, object and executable files (as well as the TeX source
+source, include, object and executable files (as well as the TeX source
 for this document) are also on a diskette inside the back cover of this
 work.
 
@@ -1364,9 +1364,9 @@ available memory of the particular implementation. Because of this
 constraint, all allocation of space for the network (neurons and
 connections) is completely dynamic. The final result is a dynamically
 allocated structure that has no limits of size except that it must have
-fewer than 8 layers. This is not an unreasonable constraint, as even
-during testing no more than 4 layer networks were ever used, and some
-authors suggest that there need never be more than 4 layers for *any*
+fewer than 8 layers. This is not an unreasonable constraint, as even
+during testing no more than 4 layer networks were ever used, and some
+authors suggest that there need never be more than 4 layers for *any*
 problem.
 
 In all sections following, the makeup of the individual C structures
@@ -1379,7 +1379,7 @@ network.
 
 ### 4.1.1. Network Structure
 
-A back-propagation network can be divided into 3 parts. A network is
+A back-propagation network can be divided into 3 parts. A network is
 made up of layers. Each layer contains neurons. And each neuron has
 connections (weights) to the layer above. The most important constraint
 to the problem of a data structure for a network is the fact that it
@@ -1404,7 +1404,7 @@ weights for this neuron's connection to the layer above, `WEIGHT *w`.
 #### 4.1.1.3. Layer
 
 Layers are stored in a `struct` of type `LAYER`. A `LAYER` is made up of
-fields for: a pointer to an array of neurons for that level,
+fields for: a pointer to an array of neurons for that level,
 `NEURON *neuron`.
 
 #### 4.1.1.4. Network
@@ -1437,7 +1437,7 @@ data for operation is read in at once when it is needed.
 
 #### 4.1.3.1. Neuron's Input/Output Value
 
-Every neuron's input value for layer 0 neurons and every neuron's
+Every neuron's input value for layer 0 neurons and every neuron's
 expected output for top layer neurons is stored in `struct`s of type
 `OP_DATA`. Contained in `OP_DATA` is a field `double x`, which is the
 value of input or output for the neuron in question. For each I/O case
@@ -1565,13 +1565,13 @@ The function takes as its arguments the name of the network file, and
 returns a pointer to a structure which contains: a pointer to a
 structure which holds the parameters; a pointer to a network, with the
 values read from the file as the weights; and an integer value of the
-time *t* the network is to start learning at. For more information about
-the data structures used see 4.1. Data structure design.
+time *t* the network is to start learning at. For more information about
+the data structures used see 4.1. Data structure design.
 
 #### 4.2.1.3. Loading the Expected Data
 
 Once the network has been allocated, the data is read in and stored in
-the structure previously described in 4.1.3. Input/Output data
+the structure previously described in 4.1.3. Input/Output data
 structures. The function call returns a pointer to an array of type
 `I_O`, that is `I_O *`. The call is
 
@@ -1592,7 +1592,7 @@ $$
 This function
 uses the information in the variable `parameter`, which is actually a
 pointer to a structure of type `QUESTION`, to modify the network, which
-is pointed to by `LAYER *network`. The initial value of *t* used by the
+is pointed to by `LAYER *network`. The initial value of *t* used by the
 routine is `int start_time`. The algorithms are explained in Chapter 2,
 and are implemented exactly as documented there.
 
@@ -1626,7 +1626,7 @@ purposes.
 
 #### 4.2.1.5. Saving the Network
 
-Once the network is fully 'taught', or the maximum value of *t* is
+Once the network is fully 'taught', or the maximum value of *t* is
 reached, the action depends upon the setting of the command line options
 `-d`, `-s`, and `-x`.
 
@@ -1688,7 +1688,7 @@ speed, not lack of memory. Long before available memory with a PC runs
 short, patience inevitably does. Lack of memory has actually only
 happened once, and this was a deliberate experiment to see how large a
 network could be. In reality, the time taken to learn (in physical
-seconds, not internal learning time *t*) becomes so large that it is
+seconds, not internal learning time *t*) becomes so large that it is
 nearly pointless continuing. Just how large is feasible? Hopefully with
 the help of this chapter the reader can calculate how long it will take
 and maybe rethink network size and shape. Thus it is execution speed,
@@ -1703,22 +1703,22 @@ with follows:
 ### 5.1.1. The (almost) Standard IBM-PC
 
 As mentioned above, fishNET's development was undertaken entirely on a
-1985 vintage true-blue IBM-PC. The 4.77 MHz intel 8088 has
-been replaced by a National V20 workalike processor, which is
-marginally faster with screen and disk I/O and up to 5 times faster
+1985 vintage true-blue IBM-PC. The 4.77 MHz intel 8088 has
+been replaced by a National V20 workalike processor, which is
+marginally faster with screen and disk I/O and up to 5 times faster
 for some processor operations. The speed improvement, however, is only
-about 20% in general. The machine has 640 k of RAM.
+about 20% in general. The machine has 640 k of RAM.
 
 ### 5.1.2. The Turbo-Charging 8087
 
 After finding that learning times for small networks was several hours,
-the IBM-PC above was fitted with a genuine intel 8087. The speed
-improvement was in the order of a factor of 12.
+the IBM-PC above was fitted with a genuine intel 8087. The speed
+improvement was in the order of a factor of 12.
 
 ### 5.1.3. The Pyramid Super-Mini
 
 This machine literally turned days into minutes. It is a Pyramid
-model 9810, which has 16 Mbytes of actual and 200 Mbytes of virtual
+model 9810, which has 16 Mbytes of actual and 200 Mbytes of virtual
 memory with a RISC architecture, so fishNET simulations of painful size
 for the PC were not much of a burden. Really.
 
@@ -1734,7 +1734,7 @@ execution time which involved the complete running of the program from
 invocation to termination, not just the different phases such as learing
 and execution. However, the case chosen for calculations had a
 reasonably large number of learning iterations, so the result is
-accurate to within a factor of 1.5.
+accurate to within a factor of 1.5.
 
 ### 5.2.1. Learning Speed
 
@@ -1810,7 +1810,7 @@ $$
 $$
 
 These values are very approximate. However, they still
-show an interesting trend. Assuming that the Pyramid is at least 37
+show an interesting trend. Assuming that the Pyramid is at least 37
 times faster than the PC_8087, we find
 
 $$
@@ -1820,7 +1820,7 @@ $$
 \end{aligned}
 $$
 
-So for a typical problem with 3 layers, (195 neurons
+So for a typical problem with 3 layers, (195 neurons
 in the input layer, 30 in the middle layer, and 5 in the output
 layer, or 6000 weights in total,) the expected execution times are
 
@@ -1837,8 +1837,8 @@ These are close to the roughly measured times.
 As you can see, the fact that there are so many more weights than
 neurons means that calculations involving weights consume the most
 significant part of the time, even though the execution speed of a
-neuron is typically 3 to 12 times slower. In these calculations,
-memory addressing time has been ignored, as it is 100 to 1000 times
+neuron is typically 3 to 12 times slower. In these calculations,
+memory addressing time has been ignored, as it is 100 to 1000 times
 faster than floating point operations.
 
 ## 5.3. Memory Used
@@ -1905,7 +1905,7 @@ $$
 \texttt{NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
     (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
 $$
-where $n_{\text{layer}}$ is the number or layers, etc.
+where $n_{\text{layer}}$ is the number or layers, etc.
 
 Memory required for teaching and execution data depends upon the number
 of neurons in the input and output layers, and the number of I/O cases.
@@ -1977,18 +1977,18 @@ The human brain has been dubbed 'wetware' by some authors. How does
 wetware compare with a single processor software simulation of the
 brain? Consider a very, very simple example.
 
-According to Feldman et. al. \[12\], the "execution" time for a human
-neuron to produce an output from its inputs is in the order of 5
+According to Feldman et. al. \[12\], the "execution" time for a human
+neuron to produce an output from its inputs is in the order of 5
 milliseconds. However, *all* neurons work at the same time (within a
-layer, say) so a 3 layer network should produce an output in 15
+layer, say) so a 3 layer network should produce an output in 15
 milliseconds. Considering the gross simplifications here, let us
 increase this estimate by an order of magnitude, and say that for a
-simple perceptual problem, wetware produces an answer in 200
+simple perceptual problem, wetware produces an answer in 200
 milliseconds. Assume we used a tiny fraction of the brain,
-say 300,000 neurons. Assume again that we have only 5,000
-connections per neuron. Then if the 300,000 are equally divided in 3
-layers, we have 1×10^9 weights. And it can produce an answer
-in 200 milliseconds.
+say 300,000 neurons. Assume again that we have only 5,000
+connections per neuron. Then if the 300,000 are equally divided in 3
+layers, we have 1×10^9 weights. And it can produce an answer
+in 200 milliseconds.
 
 A Pyramid would require ≈7.7 × 10^3 seconds = 2 hours 9
 minutes to do the same calculation, and a plain PC would take ≈41
@@ -2032,10 +2032,10 @@ behaviour, and the effect of casualties within the network.
 ## 6.1. The First Test --- O and X Recogniser
 
 The first piece of test data that was created and run on the network was
-a simple O and X recogniser. There were 9 neurons (bits) on the input,
-6 to 9 neurons in the middle layer, and 2 output neurons (bits),
+a simple O and X recogniser. There were 9 neurons (bits) on the input,
+6 to 9 neurons in the middle layer, and 2 output neurons (bits),
 each one of which signalled either a O or a X. The network converged to
-a solution in about 100 learning iterations for 7 intermediate layer
+a solution in about 100 learning iterations for 7 intermediate layer
 neurons; the speed of learning versus number of intermediate neurons
 will be discussed later.
 
@@ -2068,20 +2068,20 @@ The input and output data is shown below
 Figure 8. Two simple input/output case pairs.
 
 To test if the network generalised, even for such a simple case, input
-data not used for training was input (such as 0.5s being used to
-replace some of the 1s in the shapes). The network produced the
+data not used for training was input (such as 0.5s being used to
+replace some of the 1s in the shapes). The network produced the
 correct results.
 
 ## 6.2. A More Ambitious Test --- Shadow Encoding
 
-Burr \[25\] discusses the use of a 13 segment shadow encoder as a
+Burr \[25\] discusses the use of a 13 segment shadow encoder as a
 means of describing hand written data for input to a neural network. He
 aimed to be able to recognise the alphabet as written by a particular
-writer. He took 8 samples of the alphabet written over a period of
-time, and then trained the network on 4 of the samples, using the
-other 4 as test data to see if the network could successfully recognise
+writer. He took 8 samples of the alphabet written over a period of
+time, and then trained the network on 4 of the samples, using the
+other 4 as test data to see if the network could successfully recognise
 them. His approach was remarkably fruitful, with a recognition rate of
-up to 99%. The example given here was not that large.
+up to 99%. The example given here was not that large.
 
 Shadow encoding can be illustrated by figure 9, from Burr \[25\].
 
@@ -2090,9 +2090,9 @@ Shadow encoding can be illustrated by figure 9, from Burr \[25\].
 Several attempts were made at using this shadow encoded alphabet with
 fishNET. Initially, 5 letters were encoded and the network was trained
 to recognise them within a hundred or so learning iterations. However,
-when the 5 letters were replaced by the full alphabet, the computational
+when the 5 letters were replaced by the full alphabet, the computational
 time per learning iteration of the network rose by a factor of more
-than 7 (since 5 times as many input/output cases, plus more neurons in
+than 7 (since 5 times as many input/output cases, plus more neurons in
 the middle layer). Hence this network was never fully allowed to
 converge to a solution. Possible methods of speeding convergence are
 dealt with in a later chapter.
@@ -2111,13 +2111,13 @@ Various sizes (geometries) of the input layer were tried, and to make
 symmetric letters easier to encode an odd number of neurons was always
 used in both dimensions. The number of neurons in the bottom layer was
 increased as the processing speed increased due to the addition of the
-floating point processor (8087). First attempts were for a 5×7
+floating point processor (8087). First attempts were for a 5×7
 grid of input neurons, but this was too small for reasonable test data
 to be generated. 9×11 was also tried, before finally
-selecting 13×15. This rather large number of neurons, (195 in
+selecting 13×15. This rather large number of neurons, (195 in
 the bottom layer,) gives a dot matrix encoded letter that is of
 reasonable quality, while still being easily computable in a network on
-a PC with an 8087.
+a PC with an 8087.
 
 This example is extensively discussed in the next chapter, and is used
 throughout the thesis for experimental purposes.
@@ -2127,46 +2127,46 @@ throughout the thesis for experimental purposes.
 In this chapter, the dot matrix encoding of English language characters
 will be considered in detail. There are two important facets to consider
 in these experiments: learning time, and error rate. Learning time is
-the length of time in machine (or algorithm) time units *t* which is
+the length of time in machine (or algorithm) time units *t* which is
 required for the network to produce results which are sufficiently
-accurate. Error rate is calculated as the total error, or *E*, which is
+accurate. Error rate is calculated as the total error, or *E*, which is
 the sum of the square of the difference between the expected output and
 actual output of the network.
 
 Two variables tend to govern both the learning time and the error rate.
-These variables are the learning calculation parameter ε and
+These variables are the learning calculation parameter ε and
 the number of neurons in the middle layer. Both are analysed in detail
 below.
 
-For the rest of this thesis, we will consider only 3 layer networks. In
+For the rest of this thesis, we will consider only 3 layer networks. In
 neural network problems, the fourth layer is usually used to remove
 rotational and translational problems with pattern recognition: as the
 behaviour of this 3 layer network will be examined for behaviour with
 rotated and other data, no fourth layer will be considered. As well, the
-error threshold level was fixed at 0.2. That is, a neuron which is
-supposed to have an output of 1 or 0 is not flagged as being in error if
-its output is greater than or equal to 0.8, or less than or equal
-to 0.2, respectively. Some authors drive their networks to 0.9
-and 0.1, but the extra computational effort for a PC implementation
-would be considerable (in many cases, most neurons were within 0.1 of
-their desired value, with only a few being as far as 0.2 away). The
+error threshold level was fixed at 0.2. That is, a neuron which is
+supposed to have an output of 1 or 0 is not flagged as being in error if
+its output is greater than or equal to 0.8, or less than or equal
+to 0.2, respectively. Some authors drive their networks to 0.9
+and 0.1, but the extra computational effort for a PC implementation
+would be considerable (in many cases, most neurons were within 0.1 of
+their desired value, with only a few being as far as 0.2 away). The
 final invariant used here is the spread of the initial weights. They
-were each randomly set to a value between +0.3 and -0.3.
+were each randomly set to a value between +0.3 and -0.3.
 
-The two learning calculation variables, α and ε, can
+The two learning calculation variables, α and ε, can
 have a wide range of values. Just *how* wide appears to depend largely
 upon the problem. For all experiments examined here, α was set
-to 0.9. This doesn't pose a problem, because beyond values of a few
-tens of *t* the equation $\alpha e^{-t}\Delta w(t-1)$ drops to almost
-zero. Hence α is not really a significant factor in the
+to 0.9. This doesn't pose a problem, because beyond values of a few
+tens of *t* the equation $\alpha e^{-t}\Delta w(t-1)$ drops to almost
+zero. Hence α is not really a significant factor in the
 calculations beyond the very beginning, and most authors
-set α = 0.9.
+set α = 0.9.
 
-So all learning equation parameter variations refer to ε.
-The number of neurons in the second layer (referred to as layer 1, since
-counting starts at 0,) was also widely varied during experimentation. We
+So all learning equation parameter variations refer to ε.
+The number of neurons in the second layer (referred to as layer 1, since
+counting starts at 0,) was also widely varied during experimentation. We
 examine below the effects of these parameters' variations on learning
-time *t* and error rate *E*. A summary is included at the end of this
+time *t* and error rate *E*. A summary is included at the end of this
 chapter.
 
 ## 7.1. Variation of Learning Time with Parameters
@@ -2175,14 +2175,14 @@ This experiment dealt with the length of time taken to fully train the
 network with the error criteria set above. However, there is a subtle
 difference to most authors approach to this problem.
 
-As initial weights varied randomly from +0.3 to -0.3, most
-experiments here were run 4 times in order to get more statistical
-accuracy. Just under 80 simulations were performed, and the averages and
+As initial weights varied randomly from +0.3 to -0.3, most
+experiments here were run 4 times in order to get more statistical
+accuracy. Just under 80 simulations were performed, and the averages and
 standard deviations calculated. Both parameters of interest,
 ε and neurons in the middle layer, were varied.
-ε values were set at 0.3, 0.5, 0.9, and 1.0.
-Configurations of layer 1 neurons that were used are 15, 20, 35,
-50, and 70. Up to 4 tests were carried out with each one.
+ε values were set at 0.3, 0.5, 0.9, and 1.0.
+Configurations of layer 1 neurons that were used are 15, 20, 35,
+50, and 70. Up to 4 tests were carried out with each one.
 
 The results are tabulated and graphed below. Where possible, (and it as
 in all but one case due to a lack of data,) means and standard
@@ -2203,66 +2203,66 @@ Figure 10. Table of mean learning times and standard deviations.
 
 **Figure 11:** Mean learning time versus number of neurons
 
-From the graph and table in figures 10 and 11, some trends become clear:
-an increase in ε does not necessarily make the network
-converge to a solution any faster. In fact, as ε increases
-beyond about 0.5, the network begins to become unstable during
+From the graph and table in figures 10 and 11, some trends become clear:
+an increase in ε does not necessarily make the network
+converge to a solution any faster. In fact, as ε increases
+beyond about 0.5, the network begins to become unstable during
 learning.
 
 This phenomenon can be observed with the `-v` option set in fishNET.
-With large ε, some output neurons converge quickly towards
+With large ε, some output neurons converge quickly towards
 the desired result. However, the others tend to move in the opposite
-direction to the one desired. After several tens of *t*, the outputs
+direction to the one desired. After several tens of *t*, the outputs
 suddenly begin to "swap", and the neurons that had an output very close
-to the desired output (some will be less than 0.05 away) begin to move
+to the desired output (some will be less than 0.05 away) begin to move
 away from the desired result, and the outputs which were the opposite
 tend to moves towards the correct output. This see-saw effect can
-continue for several hundred *t*, until usually it will decrease in
+continue for several hundred *t*, until usually it will decrease in
 oscillation size, and all outputs will move slowly toward the desired
 result.
 
 Before the final set of experiments quoted here were run, a previous set
-of ε values was tried. In this group were the values 1.2,
-1.5, and 2.0. None of these values converged systematically in less
-than t = 5000, which is the default limiting value. This fact, and the standard
+of ε values was tried. In this group were the values 1.2,
+1.5, and 2.0. None of these values converged systematically in less
+than t = 5000, which is the default limiting value. This fact, and the standard
 deviations of the learning times examined below, tends to indicate
-that ε = 1.0 is near the boundary of stable learning for
+that ε = 1.0 is near the boundary of stable learning for
 this particular problem.
 
 The oscillatory effect also seems to get worse with more neurons. The
-network appears to have trouble learning for both a large ε
+network appears to have trouble learning for both a large ε
 and a large number of intermediate layer neurons, and the huge standard
 deviations in these cases point this out. In fact, for the case
-where ε = 1.0, and middle layer neurons numbered 70, the
-learning time varied from between t = 361 and t = 838. This is a very
-different result to the ε = 0.3 or ε = 0.5
+where ε = 1.0, and middle layer neurons numbered 70, the
+learning time varied from between t = 361 and t = 838. This is a very
+different result to the ε = 0.3 or ε = 0.5
 standard deviations. A graph of standard deviation versus neurons in
-layer 1 for all ε values is shown in figure 12. In general,
-for ε > 0.5, the standard deviation of learning time (and
+layer 1 for all ε values is shown in figure 12. In general,
+for ε > 0.5, the standard deviation of learning time (and
 hence the instability during learning) increases as a function of
-both ε and neurons in the middle layer.
+both ε and neurons in the middle layer.
 
 **Figure 12:** Standard deviation versus number of neurons
 
-The effect of ε and neurons in layer 1 on error rate will be
+The effect of ε and neurons in layer 1 on error rate will be
 examined in the next section.
 
 ## 7.2. Variation of Error Rate with Parameters
 
 The experiment detailed here entailed taking a random sample of each of
-the ε and middle layer values used in the previous
+the ε and middle layer values used in the previous
 experiment and calculating the total error for a constant set of input
-data. Hence there are 20 values of total error.
+data. Hence there are 20 values of total error.
 
-The input data used is shown in the appendices. It involves 4 sets of
-data for each of the 5 letters, including noisy and distorted shapes.
+The input data used is shown in the appendices. It involves 4 sets of
+data for each of the 5 letters, including noisy and distorted shapes.
 None of the data used for testing had been used to train the network, so
 the experiment was a good one to test the network's level of
 generalisation. Due to the large number of computations necessary, and
 the disk space needed to store the networks, (training was done on the
-Pyramid 9810, but all analysis, that is execution, was done on the
+Pyramid 9810, but all analysis, that is execution, was done on the
 PC_8087,) only one of each category was tested. This means that the
-shape of the graph of total error versus neurons should be viewed only
+shape of the graph of total error versus neurons should be viewed only
 for trends and may not itself be overly statistically accurate. The data
 appears below:
 
@@ -2280,7 +2280,7 @@ Figure 13. Table of total errors.
 
 **Figure 14:** Total error versus neurons
 
-Figure 14 shows a graph of the data. Interesting details can be drawn
+Figure 14 shows a graph of the data. Interesting details can be drawn
 from it. Firstly, the total error doesn't decrease as the number of
 neurons in the intermediate layer grows larger. Some authors suggest
 that the network fails to generalise when the number of neurons grows
@@ -2288,24 +2288,24 @@ too large. The data sample here is too small to confirm or deny this,
 but there seems to be a slight decrease, then increase in total error,
 from left to right.
 
-More interesting still is the effect of ε upon the network.
+More interesting still is the effect of ε upon the network.
 Due to computational constraints, only a reasonably small data sample
 was used, but it still appears that the error is a maximum for some
-value of ε between about 0.3 and 0.5, and probably gets
-smaller as ε gets smaller than 0.5 and also smaller
-as ε gets larger than 0.5. (Note again that the network
-would not reliably converge for values of ε above 1.0.)
+value of ε between about 0.3 and 0.5, and probably gets
+smaller as ε gets smaller than 0.5 and also smaller
+as ε gets larger than 0.5. (Note again that the network
+would not reliably converge for values of ε above 1.0.)
 
-Comparing the graphs in figures 11 and 14 yields even more important
+Comparing the graphs in figures 11 and 14 yields even more important
 results. Networks that take longer to teach (converge) produce a smaller
 error than those which converge quickly to a solution. An explanation
 for this follows. Faster converging solutions from the back-propagation
 algorithm are more likely to settle in non-optimal minima in the
 solution space. This is because the network will be "coarser" due to the
-obviously larger values of $\Delta w(t)$ that were added during
+obviously larger values of $\Delta w(t)$ that were added during
 back-propagation calculations. Because these values were larger, the
 network would probably not be as finely tuned as one which took longer
-to converge from smaller $\Delta w(t)$s. (Another way of thinking of
+to converge from smaller $\Delta w(t)$s. (Another way of thinking of
 this is to try to imagine that the required solution is some symmetrical
 pattern of weights. If the values of $\Delta w(t)$ are bigger, the
 network may satisfy the error criteria but still not be particularly
@@ -2318,8 +2318,8 @@ had been seen by the network, the number of actual errors (that is
 incorrectly recognised letters) *was always the same for all cases
 above*, and was a very small portion of the data. (One can tell the
 selected pattern, even though the output for the selected pattern's
-appropriate neuron is much less than the desired 0.8, by looking for
-the most active neuron of the 5 output neurons.) In fact only the most
+appropriate neuron is much less than the desired 0.8, by looking for
+the most active neuron of the 5 output neurons.) In fact only the most
 distorted "letters" generated actual errors (see the appendices), so
 total error was used to get some spread between the various cases.
 
@@ -2331,21 +2331,21 @@ upon its performance.
 The results presented in this chapter highlight some features of
 learning with this problem. There can be large variations in the
 learning time for a particular problem, depending upon the values
-of ε and the number of middle layer neurons. In general,
-learning time is shortest for values of ε of between 0.3
-and 0.5. ε values within this range cause networks to
+of ε and the number of middle layer neurons. In general,
+learning time is shortest for values of ε of between 0.3
+and 0.5. ε values within this range cause networks to
 learn faster as the number of neurons in the middle layer increases.
-However, for larger values of ε (of between 0.9
-and 1.0), the learning time *increases* as the number of neurons gets
+However, for larger values of ε (of between 0.9
+and 1.0), the learning time *increases* as the number of neurons gets
 bigger. A very large variance in learning times was observed for these
-values. This was especially true for ε = 1.0, which to be on
-the outer limits of convergence for large numbers of layer 1 neurons.
+values. This was especially true for ε = 1.0, which to be on
+the outer limits of convergence for large numbers of layer 1 neurons.
 
 From looking at the error rate, we can make statements on the effect of
 learning time on errors. The error is slightly smaller for networks that
 take longer to teach, and an explanation for this has been proposed.
 There is not a dramatic difference in error rate between the
-different ε and neuron values (about 20% variation at most).
+different ε and neuron values (about 20% variation at most).
 
 # Chapter 8: Effects of casualties
 
@@ -2360,7 +2360,7 @@ provide an important insight into general network behaviour.
 
 The approach taken involved selection of a network, then damaging the
 network and examining its behaviour for the same data set used in the
-last chapter. The network selected had the largest ε used,
+last chapter. The network selected had the largest ε used,
 ε = 1.0, and the smallest number of middle layer neurons,
 $n_{\text{layer 1}} = 15$. This combination was chosen because it had the
 lowest error rate out of any of the networks examined previously, and
@@ -2370,14 +2370,14 @@ neurons.
 Casualties in the network took two forms. First, random weights were
 damaged (set to zero) to simulate the destruction of connections between
 neurons. Various percentages of total connections were removed,
-namely 2.5%, 5%, 10%, 20%, 30%, and finally 40%. The total error, (as
+namely 2.5%, 5%, 10%, 20%, 30%, and finally 40%. The total error, (as
 before, *E*, the sum of the square of the difference between actual and
 expected outputs,) and actual error (the number of cases where the
 output layer neurons chose the wrong pattern,) were calculated.
 
 Second, individual neurons in the middle layer were "damaged," that is
 all the connections between their outputs and the top (output) layer
-were set to zero. The effect of the removal of between 1 and 7 out of 15
+were set to zero. The effect of the removal of between 1 and 7 out of 15
 possible neurons was examined, with total and actual error again being
 used.
 
@@ -2390,7 +2390,7 @@ FishNET, the neural network simulator package used in this thesis,
 stores networks as ASCII files. Hence, generating casualties in the
 network is a simple matter of randomly picking a weight and setting it
 to zero. This procedure was followed several hundred times, to produce
-weight casualty rates of 0%, 2.5%, 5%, 10%, 20%, 30%, and 40%. The
+weight casualty rates of 0%, 2.5%, 5%, 10%, 20%, 30%, and 40%. The
 results of this damage appear in the table below. Actual and total error
 are given for each percentage group.
 
@@ -2407,30 +2407,30 @@ These figures are graphed in figure 16.
 
 **Figure 16:** Total and actual error versus % weight casualties
 
-Some very interesting features emerge from this data. With 2.5%
+Some very interesting features emerge from this data. With 2.5%
 casualties, there is no appreciable difference in actual or total error.
-Once the number of casualties is doubled to 5%, the total error
-increases by 20% and the actual error rate by 25% (but as we shall see,
+Once the number of casualties is doubled to 5%, the total error
+increases by 20% and the actual error rate by 25% (but as we shall see,
 this is not an overly relevant figure). However, for a further doubling
-of casualties to 10%, there is only an 8% increase in total error, and
+of casualties to 10%, there is only an 8% increase in total error, and
 doubling the damage again causes a *decrease* in actual error,
 indicating that there is some random variation in actual error results
-(so the previous increasing figure can be neglected). From 0% to 20%,
-there is only a 37% increase in total error, and *no* increase in actual
+(so the previous increasing figure can be neglected). From 0% to 20%,
+there is only a 37% increase in total error, and *no* increase in actual
 error. So it appears that network behaviour is not greatly modified at
-casualty rates of up to 20%. By the time casualties reach 30%, total and
+casualty rates of up to 20%. By the time casualties reach 30%, total and
 actual error are rapidly on the increase.
 
 Looking at the graph, we see that the error starts to increase rapidly
-beyond casualty rates around 30%. Error rates of both kinds become
+beyond casualty rates around 30%. Error rates of both kinds become
 exponentially worse, and the network can be said to be no longer able to
-recognize patterns meaningfully. (Actual error has risen from 3/20
-or 4/20 cases at 20 to 30% casualties, to 15/20 by 40%
+recognize patterns meaningfully. (Actual error has risen from 3/20
+or 4/20 cases at 20 to 30% casualties, to 15/20 by 40%
 casualties.)
 
 From this data, we draw the conclusion that our ε = 1.0 and
 $n_{\text{layer 1}} = 15$ network can sustain random injuries in up to
-between 20% and 30% of weights, and still function satisfactorily. This
+between 20% and 30% of weights, and still function satisfactorily. This
 is quite incredible.
 
 Larger networks (with larger intermediate layers) probably behave in
@@ -2444,10 +2444,10 @@ In this experiment, various numbers of middle layer neurons were
 disabled, by setting the connecting weights between these neurons and
 the output layer to zero. This simulates the destruction of the
 individual processing elements. Here the effect of the removal of
-between 0 and 7 out of 15 middle layer neurons is examined.
+between 0 and 7 out of 15 middle layer neurons is examined.
 
 A table containing total and actual error data for a varying number of
-neurons removed is shown in figure 17.
+neurons removed is shown in figure 17.
 
 <table border="1">
 <tr><th align="center"></th><th colspan="8" align="center">Number of Casualties (neurons)</th></tr>
@@ -2458,31 +2458,31 @@ neurons removed is shown in figure 17.
 
 Figure 17. Table of total and actual errors.
 
-These figures are graphed in figure 18.
+These figures are graphed in figure 18.
 
 **Figure 18:** Total and actual errors versus number of layer 1 neuron
 casualties
 
 Another lot of interesting results comes from the table and graph. With
-up to 2 neurons removed, there is no appreciable increase in actual or
-total error. With more than 2 removed, the actual error doubles and
+up to 2 neurons removed, there is no appreciable increase in actual or
+total error. With more than 2 removed, the actual error doubles and
 continues to increase as more neurons are removed. As the graph shows,
 the network rapidly decreases in usefulness as the number of damaged
 neurons increases.
 
 The data, then, shows us that the removal of a neuron has a more
 dramatic effect as a straight percentage of neurons in the middle layer
-than weight damage has. If more than about 13% (2/15) are
+than weight damage has. If more than about 13% (2/15) are
 damaged the network can't really be used. It is possible as well to look
 at the removal of neurons as a form of weight damage. By looking at it
 in this way, some remarkable conclusions can be drawn about the
 representation of knowledge in the network, without even having to
 examine the distribution of weight patterns in the network.
 
-If one neuron out of 15 is damaged, then this is equivalent to the
-systematic (instead of random) removal of 1/15th of the total
+If one neuron out of 15 is damaged, then this is equivalent to the
+systematic (instead of random) removal of 1/15th of the total
 neurons in the network. Once the number of systematically removed
-weights reaches more than 13%, the performance degrades rapidly. This
+weights reaches more than 13%, the performance degrades rapidly. This
 fact reveals some important aspects of network behaviour. Even though
 the percentage of weights damaged systematically is lower, the effect is
 much greater than random weight damage.
@@ -2528,15 +2528,15 @@ $$
 
 Imagine that a neural network is made up of individual, replaceable
 elements in a hardware simulation, with a structure identical to the one
-used in this and the previous chapter (3 layers, 195, 15, and 5
-neurons). So 2 out of the 15 neurons in the middle layer can be damaged
+used in this and the previous chapter (3 layers, 195, 15, and 5
+neurons). So 2 out of the 15 neurons in the middle layer can be damaged
 and have almost no effect on network behaviour. Assume that we have some
 method of knowing that any individual neuron (op-amp) has malfunctioned
-and can replace it within 1 hour. Also assume that the mean time to
+and can replace it within 1 hour. Also assume that the mean time to
 failure for each op-amp is 10,000 hours of continuous operation.
-Then, MTBF ($\theta_{\text{sys}}$) for this network is 7.337004×10^8
-hours, or 83,756 years. Quite a long time. (These figures come
-from n = 15, k = 13, λ = 1/10,000, and μ = 1/1.)
+Then, MTBF ($\theta_{\text{sys}}$) for this network is 7.337004×10^8
+hours, or 83,756 years. Quite a long time. (These figures come
+from n = 15, k = 13, λ = 1/10,000, and μ = 1/1.)
 
 ## 8.4. Summary
 
@@ -2545,7 +2545,7 @@ representation of knowledge in back-propagation neural networks, as well
 as showing just how fault tolerant neural networks are.
 
 Random removal of weights has shown that the network is quite immune to
-failures of this kind. In fact, between 20% and 30% of weights can be
+failures of this kind. In fact, between 20% and 30% of weights can be
 set to zero, with very little effect upon the operation of the network.
 This implies that the knowledge of all patterns learnt is spread over
 all the weights in the network.
@@ -2603,21 +2603,21 @@ English characters was studied in considerable detail.
 
 The results of these investigations showed that there can be large
 variations in learning times, depending upon the learning
-parameter ε and the number of neurons in the middle layer.
-In summary, learning time is shortest for values of ε of
-between 0.3 and 0.5. Also, for these ε values, the
+parameter ε and the number of neurons in the middle layer.
+In summary, learning time is shortest for values of ε of
+between 0.3 and 0.5. Also, for these ε values, the
 learning time decreases slightly as the number of middle layer neurons
-increases. However, for larger values of ε (of between 0.9
+increases. However, for larger values of ε (of between 0.9
 and 1.0), the learning time *increases* as the number of neurons in
 the intermediate layer gets larger, and a very wide range of learning
 times was experienced between runs for these values. This was especially
-true for ε = 1.0, which appears to be on the boundary of
+true for ε = 1.0, which appears to be on the boundary of
 convergence for large numbers of middle layer neurons.
 
-Error rate was also found to be partly dependent upon ε and
+Error rate was also found to be partly dependent upon ε and
 neurons in the middle layer, although not as strongly as learning time.
 In fact, for all the experiments with parameter variation, variance in
-error rate was only about 20%. However, larger values of ε
+error rate was only about 20%. However, larger values of ε
 showed lower error rates, and this seems to be a function of the
 learning time being longer in these cases. Longer learning times
 logically should return smaller errors, and this was indeed shown to be
@@ -2626,13 +2626,13 @@ the case.
 Other important discoveries of network behaviour came from introducing
 casualties of two types and varying severity into the network. First,
 random damage to connections (weights) had almost no appreciable impact
-for casualty rates up to between 20% and 30% of the total weight
-population. Errors increased exponentially beyond 30% casualties. This
+for casualty rates up to between 20% and 30% of the total weight
+population. Errors increased exponentially beyond 30% casualties. This
 shows that the knowledge of any pattern is distributed amongst weights
 in the network.
 
 Second, random removal of middle layer neurons, or the systematic
-removal of weights, had more dramatic effects. When 2 out of 15 middle
+removal of weights, had more dramatic effects. When 2 out of 15 middle
 layer neurons were disabled, performance was still very good. However,
 once another neuron was removed, performance degraded rapidly. Since the
 number of weights systematically removed in this way was still much
@@ -2653,10 +2653,10 @@ write fishNET, there is still a lot of work that could be done using the
 developed software tool. Some ideas for potential enhancements, and
 further work, are listed below.
 
-With fishNET itself, a faster processor such as an 80286/7 or  80386/7
-with still a reasonably small memory (say under 2 Mbytes) would make
+With fishNET itself, a faster processor such as an 80286/7 or  80386/7
+with still a reasonably small memory (say under 2 Mbytes) would make
 much larger simulations possible. To save space, all variables of type
-`double` could be changed to `float`, to save almost 50% from memory
+`double` could be changed to `float`, to save almost 50% from memory
 usage. This wasn't done because there was no point for this first
 version, where for reasonably small simulations, speed, not space, was
 the limiting factor.
@@ -2836,7 +2836,7 @@ Computer* March 1988, 105--117.
 
 \[19\] A paper by G. Z. Sun, H. H. Chen, and Y. C. Lee, "Learning
 Stereopsis with Neural Networks," Laboratory for Plasma and Fusion
-Energy Studies, Dept. of Physics and Astronomy, and Inst. for Advanced
+Energy Studies, Dept. of Physics and Astronomy, and Inst. for Advanced
 Computer Studies, all University of Maryland, College Park MD 20742 ---
 no other publishing data.
 
@@ -2896,7 +2896,7 @@ for providing the computer, and for feeding me.
 
 Thanks to the programmers at Bain and Company's Fixed Interest division,
 (Jodi, Phil who came to the seminar, and Monique,) but especially
-Dr Keith Brinck and Robert Gambi for so kindly letting me use their
+Dr Keith Brinck and Robert Gambi for so kindly letting me use their
 Pyramid. Without those facilities, I would certainly have gone mad
 waiting for network convergence, and would not have so many experimental
 results. Thanks also for helping me set up in your installation, and for
@@ -2910,12 +2910,12 @@ Thank you Andrew Joyner for thinking of the name fishNET for the
 package, without which it wouldn't have been the same.
 
 And finally, thanks to my brother Alastair, who kept me ideologically
-sound during all those 2 a.m. tea breaks.
+sound during all those 2 a.m. tea breaks.
 
 [^1]: Dedicated machines built to run models of neural networks appear
     to have acquired the jargonistic term "neurocomputers".
 
-[^2]: In the latest writings I possess \[11\], Fukushima refers to the
+[^2]: In the latest writings I possess \[11\], Fukushima refers to the
     model he is working on as an improved version of his slightly older
     neocognitron model (circa 1984). Hence I have dubbed it an
     "improved" neocognitron, as no other official term was used in
