@@ -776,17 +776,17 @@ The first algorithm is:
     than 0.2, increment $E_{\rm TOTAL}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate ∂E/∂y from $(4)$. Otherwise,
-    calculate ∂E/∂y from $(10)$.
+    calculate ∂E/∂y from (4). Otherwise,
+    calculate ∂E/∂y from (10).
 
-5.  Calculate ∂E/∂x from $(7)$.
+5.  Calculate ∂E/∂x from (7).
 
-6.  Calculate ∂E/∂w from $(8)$ and add
+6.  Calculate ∂E/∂w from (8) and add
     to Σ∂E/∂w.
 
 7.  If there are more input/output data pairs, go to 3. again.
 
-8.  Calculate Δw(t) from $(12)$, and save Δw(t) as Δw(t-1) for next pass.
+8.  Calculate Δw(t) from (12), and save Δw(t) as Δw(t-1) for next pass.
 
 9.  Apply Δw(t) to change weights, $w$.
 
@@ -805,14 +805,14 @@ The second (alternative) algorithm is:
     than 0.2, increment $E_{\rm TOTAL}$.
 
 4.  If dealing with the weights for the top layer,
-    calculate ∂E/∂y from $(4)$. Otherwise,
-    calculate ∂E/∂y from $(10)$.
+    calculate ∂E/∂y from (4). Otherwise,
+    calculate ∂E/∂y from (10).
 
-5.  Calculate ∂E/∂x from $(7)$.
+5.  Calculate ∂E/∂x from (7).
 
-6.  Calculate ∂E/∂w from $(8)$.
+6.  Calculate ∂E/∂w from (8).
 
-7.  Calculate Δw(t) from $(12)$, and save Δw(t) as Δw(t-1) for next pass.
+7.  Calculate Δw(t) from (12), and save Δw(t) as Δw(t-1) for next pass.
 
 8.  Apply Δw(t) to change weights, $w$.
 

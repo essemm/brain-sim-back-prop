@@ -785,6 +785,8 @@ def fix_inline_math_symbols(text: str) -> str:
     text = re.sub(r'\$(\d+)\\,(\d+)\$', r'\1,\2', text)
     # $0.5$  $3.$  $100$ → plain number (decimal or integer, optional trailing dot)
     text = re.sub(r'\$(\d+(?:\.\d*)?)\$', r'\1', text)
+    # $(4)$  $(12)$ → (4)  (12)  (equation-reference cross-links)
+    text = re.sub(r'\$\((\d+)\)\$', r'(\1)', text)
     # $\varepsilon = 1.0$ → ε = 1.0
     text = re.sub(r'\$\\varepsilon\s*=\s*(\d+(?:\.\d+)?)\$', r'ε = \1', text)
     # $\varepsilon$ → ε  (standalone Greek letter)
