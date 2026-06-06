@@ -769,15 +769,20 @@ def fix_display_math(text: str) -> str:
             pass  # drop blank lines inside $$...$$
         else:
             out.append(line)
-    # GitHub requires a blank line before every opening $$ — add one where missing.
+    # GitHub requires blank lines before every opening $$ and after every closing $$.
     out2 = []
     in_math2 = False
-    for line in out:
+    for i, line in enumerate(out):
         if line.rstrip() == '$$':
             if not in_math2 and out2 and out2[-1].strip() != '':
                 out2.append('')
             in_math2 = not in_math2
-        out2.append(line)
+            out2.append(line)
+            # After closing $$, insert blank line if next line is immediate prose.
+            if not in_math2 and i + 1 < len(out) and out[i + 1].strip():
+                out2.append('')
+        else:
+            out2.append(line)
     return '\n'.join(out2)
 
 
@@ -1251,11 +1256,12 @@ def main():
     md = md_out.read_text(encoding="utf-8")
     md = md.replace('\xa0', ' ')           # TeX ~ ties → plain spaces (GitHub math needs ASCII space before $)
     md = FRONT_MATTER_NOISE_RE.sub(FRONT_MATTER, md)
-    md = fix_display_math(md)        # normalise $$ spacing first
-    # The bare NETWORK_space display equation has no \begin{aligned} — KaTeX needs it
+    md = fix_display_math(md)        # normalise $$ spacing (blank lines before/after)
+    # NETWORK_space is a bare $$ block (no \eqalign in the LaTeX), so pandoc emits
+    # no \begin{aligned}.  Add it after fix_display_math has normalised the delimiters.
     md = re.sub(
-        r'\$\$\n(\\texttt\{NETWORK\}_\{\\rm space\} = .*?),\n\$\$',
-        r'$$\n\\begin{aligned}\n\1,\n\\end{aligned}\n$$',
+        r'(\$\$\n)(\\texttt\{NETWORK\}_\{\\rm space\} = .*?),(\n\$\$)',
+        r'\1\\begin{aligned}\n\2,\n\\end{aligned}\3',
         md, flags=re.DOTALL,
     )
     md = replace_vbox_tables(md)     # then convert \vbox tables

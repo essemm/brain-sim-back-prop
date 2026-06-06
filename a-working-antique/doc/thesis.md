@@ -720,6 +720,7 @@ From (2),
 $$
 {\partial y_j \over \partial x_j} = y_j(1-y_j).\qquad\text{(6)}
 $$
+
 Hence
 
 $$
@@ -774,6 +775,7 @@ changing the weights. The simplest version of this method is to make
 $$
 \Delta w = - \varepsilon {\partial E \over \partial w}, \qquad\text{(11)}
 $$
+
 where ε is a constant of proportionality
 and $\partial E/\partial w$ has been accumulated over all cases. An alternative version
 which apparently offers speed improvements is to use a proportion of the
@@ -1931,6 +1933,7 @@ $$
     (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
 \end{aligned}
 $$
+
 where $n_{\text{layer}}$ is the number or layers, etc.
 
 Memory required for teaching and execution data depends upon the number
@@ -2547,6 +2550,7 @@ $$
     {\displaystyle{\sum_{i=0}^{n-k} {n\choose i} (\lambda/\mu)^i}\over
         \displaystyle{k\lambda {n\choose k} (\lambda/\mu)^{(n-k)}}},
 $$
+
 where the notation is explained as
 
 | n | number of nominally identical units |
