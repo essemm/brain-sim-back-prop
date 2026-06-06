@@ -978,7 +978,10 @@ def fix_display_command_blocks(text: str) -> str:
     """
     def _is_command_body(body: str) -> bool:
         s = body.lstrip()
-        if s.startswith(r'\text{') or s.startswith(r'\texttt{'):
+        if s.startswith(r'\text{'):
+            return True
+        # \texttt must wrap the ENTIRE body — not just a label prefix on a math equation
+        if re.fullmatch(r'\\texttt\{.*\}', s, re.DOTALL):
             return True
         if s.startswith(r'{\rm ') and r'\{' in body:
             return True
@@ -1084,6 +1087,73 @@ def link_references(text: str) -> str:
     return pre + ref_marker + post
 
 
+def insert_figures(text: str) -> str:
+    """Insert figure images before each figure caption in the markdown.
+
+    Figures 8, 10, 13, 15, 17 are text tables already in the document.
+    The remaining hand-drawn figures need PNG images inserted from doc/figures/.
+    """
+    def _img(n: int, caption: str) -> str:
+        return f'![Figure {n}: {caption}](figures/figure-{n:02d}.png)\n\n'
+
+    # Figures 1 & 2: originally a side-by-side \midinsert block, now embedded inline.
+    # Split the paragraph and insert each image with its caption.
+    text = re.sub(
+        r'(parts of the whole\.) '
+        r'Figure 1\. Classic neural circuit\. Figure 2\. I/O\s+response of simulated neurons\. '
+        r'(Figure 1 shows)',
+        r'\1\n\n'
+        + _img(1, 'Classic neural circuit')
+        + '**Figure 1:** Classic neural circuit\n\n'
+        + _img(2, 'I/O response of simulated neurons')
+        + r'**Figure 2:** I/O response of simulated neurons\n\n\2',
+        text,
+    )
+
+    # Figures 3, 4, 6: caption runs directly into body text with no paragraph break.
+    # Split at the word boundary between caption and body text.
+    text = text.replace(
+        '**Figure 3:** Hopfield network It',
+        _img(3, 'Hopfield network')
+        + '**Figure 3:** Hopfield network\n\nIt',
+    )
+    text = text.replace(
+        '**Figure 4:** A typical back-propagtion network This',
+        _img(4, 'A typical back-propagtion network')
+        + '**Figure 4:** A typical back-propagtion network\n\nThis',
+    )
+    text = text.replace(
+        '**Figure 6:** A special machine for the TSP For',
+        _img(6, 'A special machine for the TSP')
+        + '**Figure 6:** A special machine for the TSP\n\nFor',
+    )
+
+    # Figures 5, 7, 9, 11, 12, 14, 16: caption already isolated, just prepend image.
+    for n, caption in [
+        (5,  'An example of an "improved" neocognitron'),
+        (7,  'A feedforward neural network'),
+        (9,  "Shadow encoding of the letter 'S'"),
+        (11, 'Mean learning time versus number of neurons'),
+        (12, 'Standard deviation versus number of neurons'),
+        (14, 'Total error versus neurons'),
+        (16, 'Total and actual error versus % weight casualties'),
+    ]:
+        text = text.replace(
+            f'**Figure {n}:** {caption}',
+            _img(n, caption) + f'**Figure {n}:** {caption}',
+        )
+
+    # Figure 18: caption wraps across two lines.
+    text = re.sub(
+        r'\*\*Figure 18:\*\* Total and actual errors versus number of layer 1 neuron\s+casualties',
+        _img(18, 'Total and actual errors versus number of layer 1 neuron casualties')
+        + '**Figure 18:** Total and actual errors versus number of layer 1 neuron\ncasualties',
+        text,
+    )
+
+    return text
+
+
 def _gfm_anchor(text: str) -> str:
     """Compute the GitHub-Flavored Markdown heading anchor for a heading string."""
     s = text.lower()
@@ -1182,11 +1252,18 @@ def main():
     md = md.replace('\xa0', ' ')           # TeX ~ ties → plain spaces (GitHub math needs ASCII space before $)
     md = FRONT_MATTER_NOISE_RE.sub(FRONT_MATTER, md)
     md = fix_display_math(md)        # normalise $$ spacing first
+    # The bare NETWORK_space display equation has no \begin{aligned} — KaTeX needs it
+    md = re.sub(
+        r'\$\$\n(\\texttt\{NETWORK\}_\{\\rm space\} = .*?),\n\$\$',
+        r'$$\n\\begin{aligned}\n\1,\n\\end{aligned}\n$$',
+        md, flags=re.DOTALL,
+    )
     md = replace_vbox_tables(md)     # then convert \vbox tables
     md = strip_heading_attrs(md)     # remove {#id .unnumbered} noise
     md = fix_display_command_blocks(md)    # $${\rm fishNET...}$$ → centred <code> (before inline)
     md = fix_inline_math_symbols(md)       # unwrap bare-number $N$, Greek letters, etc.
     md = link_references(md)             # anchor ref entries; hyperlink \[N\] citations
+    md = insert_figures(md)              # insert PNG images before figure captions
     md = generate_toc(md)                 # insert TOC after front matter
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")
@@ -1202,6 +1279,7 @@ def main():
     result = subprocess.run(
         ["pandoc", "-", "-o", str(pdf_out),
          "--pdf-engine=/usr/local/texlive/2026basic/bin/universal-darwin/xelatex",
+         "--resource-path", str(HERE.parent),
          "-V", "mainfont=Palatino",
          "--toc"],
         input=md_for_pdf,

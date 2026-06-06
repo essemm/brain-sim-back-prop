@@ -261,8 +261,17 @@ require a teacher) can be achieved. The brain often returns several
 possible solutions to a problem, with varying degrees of certainty.
 Artificial neural networks can do this. And both man and neural networks
 can infer the original from an image that is noisy, or showing only
-parts of the whole. Figure 1. Classic neural circuit. Figure 2. I/O
-response of simulated neurons. Figure 1 shows the classic feedforward
+parts of the whole.
+
+![Figure 1: Classic neural circuit](figures/figure-01.png)
+
+**Figure 1:** Classic neural circuit
+
+![Figure 2: I/O response of simulated neurons](figures/figure-02.png)
+
+**Figure 2:** I/O response of simulated neurons
+
+Figure 1 shows the classic feedforward
 and feedback neural circuit, and figure 2 demonstrates the sigmoid
 output response of a simulated neuron. These diagrams are referred to in
 a later section, "Why and how do neural networks solve problems?"
@@ -438,7 +447,11 @@ networks appear below.
 The Hopfield network shown in figure 3 is the simplest type of network,
 yet it is suprisingly powerful.
 
-**Figure 3:** Hopfield network It has a feedback structure, and it
+![Figure 3: Hopfield network](figures/figure-03.png)
+
+**Figure 3:** Hopfield network
+
+It has a feedback structure, and it
 cannot learn (although a technique for teaching feedback networks has
 been suggested by Atiya [[14]](#ref-14)). The selection of weights depends upon
 the problem at hand, for example classic computer science problems such
@@ -470,7 +483,11 @@ experiments). The inventors and main developers [[1]](#ref-1) are considered to
 be Werbos, Parker and Rumelhart. It has a feedforward structure, as
 shown in figure 4.
 
-**Figure 4:** A typical back-propagtion network This network can be
+![Figure 4: A typical back-propagtion network](figures/figure-04.png)
+
+**Figure 4:** A typical back-propagtion network
+
+This network can be
 taught [[20]](#ref-20), ie strengths of connections may be varied within a
 rigidly defined set of rules called a "learning algorithm", rather than
 being set by hand. The next chapter explains the back-propagation
@@ -511,6 +528,8 @@ and changes in scale. One of the most astounding properties of this
 model is its ability to shift "attention", just like a human, from one
 pattern to another for an input that contains several recognisable
 patterns at the same time. (See [[11]](#ref-11), which has examples.)
+
+![Figure 5: An example of an "improved" neocognitron](figures/figure-05.png)
 
 **Figure 5:** An example of an "improved" neocognitron
 
@@ -559,7 +578,11 @@ particularly sensible aim, for instance how do the weights change
 automatically? (Who twiddles the knobs on the variable resistor as the
 network learns?) For *small* problems, this technique could be used.
 
-**Figure 6:** A special machine for the TSP For example Hopfield and
+![Figure 6: A special machine for the TSP](figures/figure-06.png)
+
+**Figure 6:** A special machine for the TSP
+
+For example Hopfield and
 Tank [[2]](#ref-2) devised such a contraption shown in figure 6 using a Hopfield
 network that could solve the TSP for however many cities it was wired
 for (I don't think they actually built it). The output is indicated by a
@@ -637,6 +660,8 @@ referred to as neurons.
 
 Based upon figure 7, which shows a feedforward neural network, the
 following mathematics holds:
+
+![Figure 7: A feedforward neural network](figures/figure-07.png)
 
 **Figure 7:** A feedforward neural network
 
@@ -1900,10 +1925,12 @@ $$
 
 So the equation for memory usage by a network becomes
 
-
-<div align="center"><code>\texttt{NETWORK}_space = (n_layer \times 4) + </code><br>
-<code> (n_neuron \times 12) + (n_weight \times 24),</code></div>
-
+$$
+\begin{aligned}
+\texttt{NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
+    (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
+\end{aligned}
+$$
 where $n_{\text{layer}}$ is the number or layers, etc.
 
 Memory required for teaching and execution data depends upon the number
@@ -2084,6 +2111,8 @@ up to 99%. The example given here was not that large.
 
 Shadow encoding can be illustrated by figure 9, from Burr [[25]](#ref-25).
 
+![Figure 9: Shadow encoding of the letter 'S'](figures/figure-09.png)
+
 **Figure 9:** Shadow encoding of the letter 'S'
 
 Several attempts were made at using this shadow encoded alphabet with
@@ -2200,6 +2229,8 @@ deviations (SD) are shown.
 
 Figure 10. Table of mean learning times and standard deviations.
 
+![Figure 11: Mean learning time versus number of neurons](figures/figure-11.png)
+
 **Figure 11:** Mean learning time versus number of neurons
 
 From the graph and table in figures 10 and 11, some trends become clear:
@@ -2241,6 +2272,8 @@ for ε > 0.5, the standard deviation of learning time (and
 hence the instability during learning) increases as a function of
 both ε and neurons in the middle layer.
 
+![Figure 12: Standard deviation versus number of neurons](figures/figure-12.png)
+
 **Figure 12:** Standard deviation versus number of neurons
 
 The effect of ε and neurons in layer 1 on error rate will be
@@ -2276,6 +2309,8 @@ appears below:
 </table>
 
 Figure 13. Table of total errors.
+
+![Figure 14: Total error versus neurons](figures/figure-14.png)
 
 **Figure 14:** Total error versus neurons
 
@@ -2404,6 +2439,8 @@ Figure 15. Table of total and actual errors.
 
 These figures are graphed in figure 16.
 
+![Figure 16: Total and actual error versus % weight casualties](figures/figure-16.png)
+
 **Figure 16:** Total and actual error versus % weight casualties
 
 Some very interesting features emerge from this data. With 2.5%
@@ -2458,6 +2495,8 @@ neurons removed is shown in figure 17.
 Figure 17. Table of total and actual errors.
 
 These figures are graphed in figure 18.
+
+![Figure 18: Total and actual errors versus number of layer 1 neuron casualties](figures/figure-18.png)
 
 **Figure 18:** Total and actual errors versus number of layer 1 neuron
 casualties
