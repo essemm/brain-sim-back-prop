@@ -642,10 +642,11 @@ following mathematics holds:
 
 Consider two neurons, *i* and *j*, with neuron *i* being a lower layer
 (that is closer to the input) than neuron *j*. Let the inputs to a
-neuron *j* be x_j, and the outputs of a neuron *i* be y_i. Let the
-weight of the connection between *i* and *j* be w_ji. Then the total
-input x_j into a neuron *j* is a linear function of the outputs y_i
-of the units connected to *j* and of the weights w_ji:
+neuron *j* be $x_j$, and the outputs of a neuron *i* be $y_i$. Let the
+weight of the connection between *i* and *j* be $w_{ji}$. Then the total
+input $x_j$ into a neuron *j* is a linear function of the outputs $y_i$
+of the units connected to *j* and of the weights $w_{ji}$:
+
 $$
 x_j = \sum_i y_i w_{ji}.\qquad\text{(1)}
 $$
@@ -655,8 +656,9 @@ threshold of the opposite sign of its weight, assuming the input is 1.
 The bias is treated just like any other *y*, ie $y_{\text{bias}} = 1,$
 but $w_{j,\text{bias}}$ gives the negative threshold for *j*.
 
-Each neuron *j* has a non-integral output y_j, which is a non-linear
-function of its input x_j:
+Each neuron *j* has a non-integral output $y_j$, which is a non-linear
+function of its input $x_j$:
+
 $$
 y_j = {1 \over 1 + \text{e}^{-x_j}}.\qquad\text{(2)}
 $$
@@ -667,6 +669,7 @@ non-linear function with a bounded derivative will do.
 Let *c* be an index of cases, *j* be an index of output neurons, *y* be
 the actual state of an output neuron, and let *d* be the desired state
 (or expected answer). The total error, *E*, is defined as
+
 $$
 E = {1 \over 2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2. \qquad\text{(3)}
 $$
@@ -675,21 +678,25 @@ The whole aim of this technique is to minimize the error, ie. make the
 expected and actual outputs more similar. To minimize *E* by gradient
 descent, we need the partial derivative of *E* with respect to each
 weight in the network. So from (3),
+
 $$
 {\partial E \over \partial y_j} = y_j - d_j. \qquad\text{(4)}
 $$
 
 And
+
 $$
 {\partial E \over \partial x_j} = {\partial E \over \partial y_j}
     {\partial y_j \over \partial x_j}. \qquad\text{(5)}
 $$
 
 From (2),
+
 $$
 {\partial y_j \over \partial x_j} = y_j(1-y_j).\qquad\text{(6)}
 $$
 Hence
+
 $$
 {\partial E \over \partial x_j} = {\partial E \over \partial y_j}
     y_j(1-y_j).\qquad\text{(7)}
@@ -700,6 +707,7 @@ input *x* to an output neuron will affect the error. However, the input
 to an output layer neuron is a linear combination of the outputs from
 the lower layers and their weights. So we can compute what the effect on
 the error would be for changes in lower states and weights:
+
 $$
 {\partial E \over \partial w_{ji}} = {\partial E \over \partial x_j}
     {\partial x_j \over \partial w_{ji}} = {\partial E \over
@@ -707,6 +715,7 @@ $$
 $$
 
 Then
+
 $$
 {\partial E \over \partial x_j} {\partial x_j \over \partial y_i}
     = {\partial E \over \partial x_j} w_{ji},\qquad\text{(9)}
@@ -714,6 +723,7 @@ $$
 
 and
 taking into account all connections from *i*,
+
 $$
 {\partial E \over \partial y_i} = \sum_j {\partial E \over \partial x_j}
 w_{ji}.\qquad\text{(10)}
@@ -735,6 +745,7 @@ $\partial E/\partial w$ to be stored for each pass.
 Another method, used by Rumelhart et al. \[20\] is to accumulate
 $\partial E/\partial w$ over all the input/output pairs before
 changing the weights. The simplest version of this method is to make
+
 $$
 \Delta w = - \varepsilon {\partial E \over \partial w}, \qquad\text{(11)}
 $$
@@ -742,6 +753,7 @@ where ε is a constant of proportionality
 and $\partial E/\partial w$ has been accumulated over all cases. An alternative version
 which apparently offers speed improvements is to use a proportion of the
 previous $\Delta w$,
+
 $$
 \Delta w(t) = -\varepsilon {\partial E \over \partial w(t)} + \alpha
             \Delta w(t-1), \qquad\text{(12)}
@@ -978,12 +990,12 @@ Place the desired value next to the appropriate token. Tokens must be in
 order. For the "neurons" token, the order of the numbers
 a_0 to a_n-1 is taken as the same as the number of neurons in the
 layers 0 to n-1. Data following the "weights" token behaves
-identically: if there are a_0 neurons in layer 0, and a_1 in
+identically: if there are $a_0$ neurons in layer 0, and $a_1$ in
 layer 1, then there will be a_0 × a_1 weights between layer 0
-and layer 1. The first a_1 weights are the strengths of connections
+and layer 1. The first $a_1$ weights are the strengths of connections
 between the first neuron in layer 0 and the neurons in the layer
-above. The second a_1 weights apply to the second neuron's connections
-to the layer above, etc., until the a_0th a_1 weights apply to the
+above. The second $a_1$ weights apply to the second neuron's connections
+to the layer above, etc., until the $a_0$th $a_1$ weights apply to the
 last neuron in layer 0. The pattern is repeated for all layers (note
 that there are no weights associated with the output n-1th layer).
 
@@ -996,7 +1008,7 @@ For example, consider the following fragment of a network file:
 
 Here there are 3 layers; the input layer contains 1 neuron, the
 middle layer contains 2 neurons, and the top layer 3 neurons. The
-weights w_1,1 and w_1,2 connect the single input neuron to the
+weights $w_{1,1}$ and $w_{1,2}$ connect the single input neuron to the
 first and second of the 2 second layer neurons respectively. The
 weights w_2,1 to w_2,3 connect the first neuron in the second
 layer with the neurons 1 to 3 in the top layer, etc.
@@ -1089,6 +1101,7 @@ To reduce keyboard input and increase the facility for repeated
 by the program can be set from the command line. Each flag or directive
 is selected by typing
 
+
 <div align="center"><code>fishNET {-flag₀}{-}{flag₁}….</code></div>
 
 
@@ -1099,6 +1112,7 @@ be explained in detail below,) you could type
 exception to this method are the `-c` and `-n` flags, which can only
 appear at the end of a "-" list or by themselves. This is because they
 refer to file names. For example,
+
 
 <div align="center"><code>fishNET -n<netfile> -q.</code></div>
 
@@ -1272,6 +1286,7 @@ implementations of the program.
 #### 3.1.5.7. Unrecognised Options
 
 If any other option is specified, the program displays the message
+
 
 <div align="center"><code>“try typing `fishNET -?' for help”.</code></div>
 
@@ -1480,6 +1495,7 @@ separately performed. Once the program has been given the necessary
 dimensions and parameters for the network, it will teach it. Given the
 network that you want executed, it will apply the required data to the
 input, calculate, then save the output. Hence, the program looks like:
+
 ```
 expected data,  neural
 configuration data  →  teacher  →  `operator'  →  output
@@ -1500,6 +1516,7 @@ appropriate subroutine and its functions will be examined.
 
 The action taken here depends upon the command line options set. If
 there are no options set, the program calls
+
 $$
 \texttt{parameter = input\_parameters();}
 $$
@@ -1509,6 +1526,7 @@ a structure containing the important parameters of network operation,
 read from the keyboard.
 
 If the `-c` option was used, the program instead calls
+
 $$
 \texttt{parameter = finput\_parameters(config\_file);}
 $$
@@ -1526,6 +1544,7 @@ allocating space for the network.
 
 If the network is to be trained from the start (that is, no network is
 pre-loaded), the program allocates space for it by
+
 $$
 \texttt{network = allocate(parameter);}
 $$
@@ -1537,6 +1556,7 @@ desired size, and returns a pointer to it (`LAYER *`).
 If the network is to be loaded from disk (the `-n` command line
 directive was used), fishNET reads the parameters and allocates space
 for the network by
+
 $$
 \texttt{net\_and\_param = load\_network\_and\_parameters(netfile);}
 $$
@@ -1554,6 +1574,7 @@ Once the network has been allocated, the data is read in and stored in
 the structure previously described in 4.1.3. Input/Output data
 structures. The function call returns a pointer to an array of type
 `I_O`, that is `I_O *`. The call is
+
 $$
 \begin{aligned}\texttt{input} &\texttt{= get\_data(parameter->sample\_in);}\\
     \texttt{output} &\texttt{= get\_data(parameter->sample\_out);}\\
@@ -1563,6 +1584,7 @@ $$
 #### 4.2.1.4. Teaching the Network
 
 The network is taught by the function
+
 $$
 \texttt{learn(network,\ parameter,\ start\_time);}
 $$
@@ -1622,6 +1644,7 @@ and execution
 occurs immediately.
 
 If `-x` was specified, the learning parameters are saved by
+
 $$
 \texttt{store\_learnt\_parameters(parameter);}
 $$
@@ -1639,6 +1662,7 @@ The input of every neuron is the sum of the outputs of all the neurons
 below times their interconnecting weights. The output of every neuron is
 its input times the transfer function. The call that performs these
 functions is
+
 $$
 \texttt{operate(network,\ input\_case->item,\ parameter);}
 $$
@@ -1731,6 +1755,7 @@ This technique gave the following results:
 | Pyramid | 20 μsec (=0.02msec) |
 
 A good approximation of speeds in general then is
+
 $$
 {\rm PC}_{\rm V20\ (8088)} = {{\rm PC}_{\rm 8087} \over 12.5} 
             = {{\rm Pyramid} \over 459}
@@ -1798,6 +1823,7 @@ $$
 So for a typical problem with 3 layers, (195 neurons
 in the input layer, 30 in the middle layer, and 5 in the output
 layer, or 6000 weights in total,) the expected execution times are
+
 $$
 \begin{aligned}
 {\rm PC}_{\rm V20\ (8088)} &= 30.35 {\rm\ sec}\\
@@ -1874,6 +1900,7 @@ $$
 $$
 
 So the equation for memory usage by a network becomes
+
 $$
 \texttt{NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
     (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
@@ -1908,6 +1935,7 @@ $\partial E/\partial x$ and $\partial E/\partial y$. The
 arrays refer to different layers of neurons at a time, but for the rule
 of thumb we will invent a worst case. The worst case is where we have
 two big layers of the same size next to each other, so
+
 $$
 {\rm calculation}_{\rm space} = (n_{\rm neurons in\ biggest\ layer}\times 16)
 $$
@@ -1931,6 +1959,7 @@ $$
 
 Using again the example of a 3 layer (195, 30, 5)
 network, (with 5 learning cases and 20 execution cases,) we get
+
 $$
 \begin{aligned}
 {\rm Memory\ required} &= 310 + (3 \times 4) + (230 \times 12) + 
@@ -2364,6 +2393,7 @@ to zero. This procedure was followed several hundred times, to produce
 weight casualty rates of 0%, 2.5%, 5%, 10%, 20%, 30%, and 40%. The
 results of this damage appear in the table below. Actual and total error
 are given for each percentage group.
+
 <table border="1">
 <tr><th align="center"></th><th colspan="7" align="center">Casualty Rate (weights)</th></tr>
 <tr><th align="center">Error</th><th align="center">0%</th><th align="center">2.5%</th><th align="center">5%</th><th align="center">10%</th><th align="center">20%</th><th align="center">30%</th><th align="center">40%</th></tr>
@@ -2418,6 +2448,7 @@ between 0 and 7 out of 15 middle layer neurons is examined.
 
 A table containing total and actual error data for a varying number of
 neurons removed is shown in figure 17.
+
 <table border="1">
 <tr><th align="center"></th><th colspan="8" align="center">Number of Casualties (neurons)</th></tr>
 <tr><th align="center">Error</th><th align="center">0</th><th align="center">1</th><th align="center">2</th><th align="center">3</th><th align="center">4</th><th align="center">5</th><th align="center">6</th><th align="center">7</th></tr>
@@ -2472,6 +2503,7 @@ regard to failure in intermediate layer neurons.
 
 Angus \[28\] gives a simple calculation for mean time between failure
 (MTBF), which we use below for illustrative purposes. From \[28\],
+
 $$
 {\displaystyle\theta_{\rm sys}} = 
     {\displaystyle{\sum_{i=0}^{n-k} {n\choose i} (\lambda/\mu)^i}\over

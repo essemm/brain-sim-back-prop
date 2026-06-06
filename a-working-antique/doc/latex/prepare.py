@@ -769,7 +769,16 @@ def fix_display_math(text: str) -> str:
             pass  # drop blank lines inside $$...$$
         else:
             out.append(line)
-    return '\n'.join(out)
+    # GitHub requires a blank line before every opening $$ — add one where missing.
+    out2 = []
+    in_math2 = False
+    for line in out:
+        if line.rstrip() == '$$':
+            if not in_math2 and out2 and out2[-1].strip() != '':
+                out2.append('')
+            in_math2 = not in_math2
+        out2.append(line)
+    return '\n'.join(out2)
 
 
 def fix_inline_math_symbols(text: str) -> str:
@@ -910,12 +919,12 @@ def fix_inline_math_symbols(text: str) -> str:
     text = re.sub(r'\$([a-zA-Z]):([a-zA-Z])\$', r'\1:\2', text)
 
     # ── Subscripted variables ────────────────────────────────────────────────
-    # Subscript + trailing punctuation: $y_j,$ → y_j,   $x_j:$ → x_j:
-    text = re.sub(r'\$([a-zA-Z])_([a-zA-Z0-9])([,:])\$', r'\1_\2\3', text)
-    # Braced subscript: $w_{ji}$  $a_1$ etc. (only simple alphanumeric content)
-    text = re.sub(r'\$([a-zA-Z])_\{([a-zA-Z0-9,]+)\}\$', r'\1_\2', text)
-    # Simple subscript: $x_j$  $y_i$
-    text = re.sub(r'\$([a-zA-Z])_([a-zA-Z0-9])\$', r'\1_\2', text)
+    # Subscript + trailing punctuation: $y_j,$ → $y_j$,
+    text = re.sub(r'\$([a-zA-Z])_([a-zA-Z0-9])([,:])\$', r'$\1_\2$\3', text)
+    # Braced subscript: $w_{ji}$ etc. (only simple alphanumeric content)
+    text = re.sub(r'\$([a-zA-Z])_\{([a-zA-Z0-9,]+)\}\$', r'$\1_{\2}$', text)
+    # Simple subscript: $x_j$ $y_i$
+    text = re.sub(r'\$([a-zA-Z])_([a-zA-Z0-9])\$', r'$\1_\2$', text)
 
     # ── Single-letter variables ──────────────────────────────────────────────
     # With trailing comma: $i,$ → *i*,
