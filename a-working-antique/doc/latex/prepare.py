@@ -8,9 +8,11 @@ can't parse. This script expands them to standard LaTeX equivalents and
 writes a single combined file ready for pandoc.
 """
 
+import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -450,6 +452,9 @@ FRONT_MATTER_NOISE_RE = re.compile(
 
 def clean_tex_text(s: str) -> str:
     """Strip TeX markup from a cell to get readable plain text."""
+    # Preserve \{ and \} (literal braces in math mode) before any other processing,
+    # using placeholders that survive the brace-stripping loop at the end.
+    s = s.replace('\\{', '\x00LB\x00').replace('\\}', '\x00RB\x00')
     # TeX commands end when a non-letter follows — use (?![a-zA-Z]) not \b
     # because \b treats _ as a word char, so \alpha\b fails on \alpha_0.
     s = re.sub(r'\\langle(?![a-zA-Z])', '<', s)
@@ -477,15 +482,22 @@ def clean_tex_text(s: str) -> str:
     s = re.sub(r'\\ldots(?![a-zA-Z])', '...', s)
     s = re.sub(r'\\vdots(?![a-zA-Z])', '⋮', s)
     s = re.sub(r'\\cdots(?![a-zA-Z])', '...', s)
+    s = re.sub(r'\\rightarrow(?![a-zA-Z])', '→', s)
+    s = re.sub(r'\\leftarrow(?![a-zA-Z])', '←', s)
+    s = re.sub(r'\\downarrow(?![a-zA-Z])', '↓', s)
+    s = re.sub(r'\\uparrow(?![a-zA-Z])', '↑', s)
+    s = re.sub(r'\\mapright(?![a-zA-Z])', '→', s)
+    s = re.sub(r'\\mapdown(?![a-zA-Z])', '↓', s)
+    s = re.sub(r'\\mapup(?![a-zA-Z])', '↑', s)
     # Escaped special characters
     s = re.sub(r'\\%', '%', s)
-    # Escaped braces → plain braces, then stripped below
-    s = re.sub(r'\\[{}]', '', s)
     # TeX control space \ and spacing
     s = re.sub(r'\\ ', ' ', s)
     s = re.sub(r'\\[,;!]', '', s)
     # Strip inline math delimiters, keep content
     s = re.sub(r'\$(.*?)\$', lambda m: m.group(1), s)
+    # Convert TeX subscript notation _N (single digit) to Unicode subscripts.
+    s = re.sub(r'_(\d)', lambda m: '₀₁₂₃₄₅₆₇₈₉'[int(m.group(1))], s)
     # TeX double quotes: ``word'' → "word"
     s = re.sub(r"``(.*?)''", r'"\1"', s)
     # \multispan{N} or \multispan N — strip the command+count, keep following text
@@ -501,7 +513,67 @@ def clean_tex_text(s: str) -> str:
     # Strip trailing & (column separator residue) and whitespace
     s = s.strip().rstrip('&').strip()
     s = re.sub(r'\s+', ' ', s).strip()
+    # Restore preserved literal braces.
+    s = s.replace('\x00LB\x00', '{').replace('\x00RB\x00', '}')
     return s
+
+
+def matrix_to_diagram(matrix_body: str) -> str:
+    r"""Convert a TeX \matrix body to a column-aligned ASCII diagram.
+
+    Unlike halign_to_code, this preserves the 2-D column structure so that
+    vertical arrows, labels below arrows, and labels above rows all align
+    with the reference (most-populated) row.
+    """
+    rows_raw = re.split(r'\\cr', matrix_body)
+    grid: list[list[str]] = []
+    for row in rows_raw:
+        row = row.strip()
+        if not row:
+            continue
+        cells = [clean_tex_text(c.strip()) for c in row.split('&')]
+        grid.append(cells)
+    if not grid:
+        return ''
+
+    # Reference row: the one with the most non-empty cells (the main flow row).
+    ref_idx = max(range(len(grid)), key=lambda i: sum(1 for c in grid[i] if c))
+    ref_row = grid[ref_idx]
+    ncols = len(ref_row)
+
+    # Compute column start positions and widths from the reference row.
+    sep_len = 2
+    col_starts: list[int] = []
+    col_widths: list[int] = []
+    pos = 0
+    for cell in ref_row:
+        col_starts.append(pos)
+        w = max(1, len(cell))
+        col_widths.append(w)
+        pos += w + sep_len
+
+    # Column centres — used to centre non-reference-row content.
+    col_centers = [col_starts[i] + col_widths[i] // 2 for i in range(ncols)]
+
+    lines: list[str] = []
+    for row_idx, row in enumerate(grid):
+        padded = row + [''] * (ncols - len(row))
+        if row_idx == ref_idx:
+            parts = [cell if cell else ' ' * col_widths[i] for i, cell in enumerate(padded)]
+            lines.append((' ' * sep_len).join(parts).rstrip())
+        else:
+            buf: list[str] = []
+            for i, cell in enumerate(padded):
+                if not cell or i >= ncols:
+                    continue
+                start = max(0, col_centers[i] - len(cell) // 2)
+                while len(buf) < start + len(cell):
+                    buf.append(' ')
+                for j, ch in enumerate(cell):
+                    buf[start + j] = ch
+            lines.append(''.join(buf).rstrip())
+
+    return '\n'.join(lines)
 
 
 def halign_to_code(halign_body: str) -> str:
@@ -560,6 +632,35 @@ def halign_to_code(halign_body: str) -> str:
     return '\n'.join(result).strip()
 
 
+def _strip_leading_noalign(row: str) -> tuple[list[str], str]:
+    r"""Strip leading \noalign{...}, \hline, \hrule from a \cr-segment.
+
+    Uses brace-aware extraction so nested braces inside \noalign{} are handled.
+    Returns (list_of_noalign_arg_strings, remaining_row_text).
+    """
+    contents: list[str] = []
+    row = row.strip()
+    while True:
+        if re.match(r'\\(hline|hrule)\b', row):
+            row = re.sub(r'^\\(hline|hrule)\b\s*', '', row)
+            continue
+        m = re.match(r'\\noalign\s*\{', row)
+        if m:
+            depth = 1
+            i = m.end()
+            while i < len(row) and depth > 0:
+                if row[i] == '{':
+                    depth += 1
+                elif row[i] == '}':
+                    depth -= 1
+                i += 1
+            contents.append(row[m.end():i - 1])
+            row = row[i:].strip()
+            continue
+        break
+    return contents, row
+
+
 def halign_to_table(halign_body: str) -> str:
     r"""Convert a \halign body to a Markdown pipe table or an HTML table.
 
@@ -581,6 +682,8 @@ def halign_to_table(halign_body: str) -> str:
     grid_raw = []
     has_colspan = False
     first = True
+    preamble_lines: list[str] = []   # meaningful \noalign content before first data row
+    interstitial_rows: list[str] = []  # \noalign content between/after data rows
 
     for row in rows_raw:
         row = row.strip()
@@ -596,11 +699,23 @@ def halign_to_table(halign_body: str) -> str:
             continue
         if re.match(r'(\\hline|\\hrule)\s*$', row):
             continue
-        row = re.sub(r'^(\\noalign\{[^{}]*\}|\\hline\b|\\hrule\b)\s*', '', row).strip()
+        # Brace-aware strip: handles \noalign with nested {} (e.g. \noalign{\noindent$\{...\}$})
+        noalign_texts, row = _strip_leading_noalign(row)
+        # Collect non-trivial noalign content.
+        for t in noalign_texts:
+            cleaned = clean_tex_text(t)
+            if cleaned:
+                if not grid_raw:
+                    preamble_lines.append(cleaned)  # before first row → preamble text
+                else:
+                    interstitial_rows.append(cleaned)  # between/after rows → table rows
         if not row:
             continue
-        if re.match(r'\\noalign\b|\\hline\b|\\hrule\b', row):
-            continue
+
+        # Flush pending interstitial rows as single-cell rows before this data row.
+        for interstitial in interstitial_rows:
+            grid_raw.append([[interstitial, 1]])
+        interstitial_rows = []
 
         row_stripped = row.rstrip('&').strip()
         if vrule_table:
@@ -636,6 +751,10 @@ def halign_to_table(halign_body: str) -> str:
         if cells:
             grid_raw.append(cells)
 
+    # Flush any trailing interstitials (e.g. \noalign{\quad\vdots} after last data row).
+    for interstitial in interstitial_rows:
+        grid_raw.append([[interstitial, 1]])
+
     if not grid_raw:
         return ''
 
@@ -668,7 +787,10 @@ def halign_to_table(halign_body: str) -> str:
                 cells_html.append(f'<{tag}{attrs}>{content}</{tag}>')
             lines.append('<tr>' + ''.join(cells_html) + '</tr>')
         lines.append('</table>')
-        return '\n'.join(lines)
+        table_text = '\n'.join(lines)
+        if preamble_lines:
+            return '\n\n'.join(preamble_lines) + '\n\n' + table_text
+        return table_text
 
     # --------------------------------------------------------------- Markdown
     grid = [[c[0] for c in row] for row in grid_raw]
@@ -679,7 +801,10 @@ def halign_to_table(halign_body: str) -> str:
     header = fmt_row(grid[0])
     sep    = '| ' + ' | '.join(['---'] * ncols) + ' |'
     body   = '\n'.join(fmt_row(r) for r in grid[1:])
-    return header + '\n' + sep + ('\n' + body if body else '')
+    table_text = header + '\n' + sep + ('\n' + body if body else '')
+    if preamble_lines:
+        return '\n\n'.join(preamble_lines) + '\n\n' + table_text
+    return table_text
 
 
 def _extract_halign_body(text: str, start: int) -> tuple[str, int]:
@@ -720,7 +845,7 @@ def replace_vbox_tables(text: str) -> str:
             mm = re.search(r'\\matrix\{', content)
             if mm:
                 body, _ = _extract_halign_body(content, mm.end())
-                code = halign_to_code(body)
+                code = matrix_to_diagram(body)
                 return '```\n' + code + '\n```' if code else m.group(0)
 
         if '\\vbox' not in content and '\\halign' not in content:
@@ -752,10 +877,12 @@ def fix_display_math(text: str) -> str:
     block into separate paragraphs, causing Markdown italic processing to corrupt
     underscores (e.g. y_i becomes y followed by italic "i w").
     """
-    # Match a closing $$ that is followed by non-whitespace on the same line.
+    # Split $$ that has content on same line: opening (followed by \S) or closing (preceded by \S).
     text = re.sub(r'\$\$( *)(\S)', r'$$\n\n\2', text)
-    # Match an opening $$ that is preceded by non-whitespace on the same line.
     text = re.sub(r'(\S)( *)\$\$', r'\1\n\n$$', text)
+    # Second pass: step 2 can leave $$\content still on one line when two adjacent $$ blocks
+    # (e.g. "}}$$   $$\vbox{") had their gap consumed as a step-1 match, leaving $\content.
+    text = re.sub(r'\$\$( *)(\S)', r'$$\n\n\2', text)
     # Remove blank lines inside $$ ... $$ blocks using a line-scanning approach.
     # The regex approach fails because the non-greedy match stops at the wrong \n$$.
     lines = text.split('\n')
@@ -1274,23 +1401,87 @@ def main():
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")
 
-    # Generate PDF — strip the manually-inserted Markdown TOC first; pandoc --toc
-    # generates its own correct TOC internally, and the GFM anchor links in our
-    # manual TOC produce only "undefined reference" warnings in the LaTeX pass.
+    # Generate PDF.
+    # Strip the manually-inserted Markdown TOC (pandoc --toc builds its own)
+    # and strip the plain-text FRONT_MATTER block, replacing it with a raw-LaTeX
+    # titlepage block that reproduces the original TFRONT.TEX layout.
+    # documentclass=report maps # → \chapter and starts each chapter on a new page.
     pdf_out = HERE.parent / "thesis.pdf"
+    # Build the title page as a plain .tex snippet passed via --include-before-body.
+    # pandoc inserts that file BEFORE \tableofcontents, giving: title → TOC → chapters.
+    _PDF_TITLEPAGE_TEX = (
+        '\\begin{titlepage}\n'
+        '\\begin{center}\n'
+        '\\vspace*{2cm}\n'
+        '\n'
+        '{\\normalsize Thesis}\n'
+        '\n'
+        '\\vspace{1.4cm}\n'
+        '\n'
+        '\\noindent\\rule{4.5cm}{0.4pt}\n'
+        '\n'
+        '\\vspace{0.2cm}\n'
+        '\n'
+        '{\\LARGE\\bfseries Brain Simulation:}\n'
+        '\n'
+        '\\vspace{0.1cm}\n'
+        '\n'
+        '{\\LARGE\\bfseries Computation in}\n'
+        '\n'
+        '\\vspace{0.1cm}\n'
+        '\n'
+        '{\\LARGE\\bfseries Back Propagation}\n'
+        '\n'
+        '\\vspace{0.1cm}\n'
+        '\n'
+        '{\\LARGE\\bfseries Neural Networks}\n'
+        '\n'
+        '\\vspace{0.2cm}\n'
+        '\n'
+        '\\noindent\\rule{4.5cm}{0.4pt}\n'
+        '\n'
+        '\\vspace{1cm}\n'
+        '\n'
+        '{\\normalsize by}\n'
+        '\n'
+        '\\vspace{0.5cm}\n'
+        '\n'
+        '{\\Large Scott MacGIBBON}\n'
+        '\n'
+        '\\vspace{1cm}\n'
+        '\n'
+        '{\\normalsize Supervisor: Dr Peter Nickolls}\n'
+        '\n'
+        '\\vspace{2cm}\n'
+        '\n'
+        '{\\small 4 November, 1988}\n'
+        '\n'
+        '\\end{center}\n'
+        '\\end{titlepage}\n'
+    )
     md_for_pdf = re.sub(
         r'^## Table of Contents\n.*?(?=^# )',
         '', md, flags=re.MULTILINE | re.DOTALL,
     )
-    result = subprocess.run(
-        ["pandoc", "-", "-o", str(pdf_out),
-         "--pdf-engine=/usr/local/texlive/2026basic/bin/universal-darwin/xelatex",
-         "--resource-path", str(HERE.parent),
-         "-V", "mainfont=Palatino",
-         "--toc"],
-        input=md_for_pdf,
-        capture_output=True, text=True,
-    )
+    # Strip the plain-text title block (everything before the first # heading).
+    md_for_pdf = re.sub(r'\A.*?(?=^# )', '', md_for_pdf, flags=re.DOTALL | re.MULTILINE)
+    fd, titlepage_path = tempfile.mkstemp(suffix='.tex')
+    try:
+        os.write(fd, _PDF_TITLEPAGE_TEX.encode())
+        os.close(fd)
+        result = subprocess.run(
+            ["pandoc", "-", "-o", str(pdf_out),
+             "--pdf-engine=/usr/local/texlive/2026basic/bin/universal-darwin/xelatex",
+             "--resource-path", str(HERE.parent),
+             f"--include-before-body={titlepage_path}",
+             "-V", "mainfont=Palatino",
+             "-V", "documentclass=report",
+             "--toc"],
+            input=md_for_pdf,
+            capture_output=True, text=True,
+        )
+    finally:
+        os.unlink(titlepage_path)
     if result.returncode != 0:
         print(result.stderr, file=sys.stderr)
         sys.exit(result.returncode)

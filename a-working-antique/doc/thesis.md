@@ -942,50 +942,67 @@ which is surrounded by {} brackets. These data items are optional.
 If they are used, however, please note the quoted and bracketed tokens
 and data items necessary.
 
-| "layers" | < n> |  |  |  |  |
+{< ... user comment ... >}
+
+| "[start]" |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- |
-| "neurons" | < a_0 | a_1 | a_2 | ... | a_n-1> |
+| "layers" | < n> |  |  |  |  |
+| "neurons" | < a₀ | a₁ | a₂ | ... | a_n-1> |
 | "output width" | < m> |  |  |  |  |
 | "alpha" | <α> |  |  |  |  |
 | "epsilon" | <ε> |  |  |  |  |
 
-| "sample in" | path<teaching input file name> |
+| "sample in" | {path}<teaching input file name> |
 | --- | --- |
-| "sample out" | path<expected output file name> |
-| "execute in" | path<test data file name> |
-| "execute out" | path<test output file name> |
-| "network save" | path<network save file name> |
-| "max sweeps" | < q> |
+| "sample out" | {path}<expected output file name> |
+| "execute in" | {path}<test data file name> |
+| "execute out" | {path}<test output file name> |
+| "network save" | {path}<network save file name> |
+| {"max sweeps" | < q>} |
+
 Simply place the desired value next to the appropriate token. Tokens
 must be in order. For the "neurons" token, the order of the
 numbers $a_0 \to a_{n-1}$ is taken as the number of neurons in the
 layers $0 \to n-1$. Hence the example
+
+⋮
+
 | layers | 3 |  |  |
 | --- | --- | --- | --- |
 | neurons | 13 | 20 | 5 |
+
 means that there are 13 neurons on the input (layer 0), 20 in
 the intermediate layer (layer 1), and 5 in the output layer
 (layer 2).
+
 The tokens "alpha" and "epsilon" refer to the learning parameters
 α and ε.
+
 The file name following the "sample in" token is the file used as
 training input for the network, and the file name following the "sample
 out" token is the expected output file, used for comparison and
 calculating the error.
+
 The "execute in" and "execute out" tokens precede the file names for use
 in operating the network once it is taught and the final destination of
 the output.
+
 The token "network save" comes before the name of the file where the
 network is to finally be saved once it has been taught, or the program
 terminated.
+
 Finally, "max sweeps" is the maximum number of training sweeps that will
 occur. Once this number is reached, (and it will not be reached if the
 network is completely taught,) the network is saved and execution
 begins.
+
 Formats of data files are shown below.
+
 Command line options used to specify a configuration file instead of
 keyboard entry are found in section 3.1.5. Command line options.
+
 ### 3.1.2. Using a Pre-Made Network
+
 The user is able to load a network file which contains all the data
 necessary (especially weights) for operation of the network, or
 continued teaching, or both. The code is designed so that if it is
@@ -994,22 +1011,29 @@ present status and elapsed *t* are stored into a network file. The
 network is also saved when it has been fully taught, or the maximum time
 has elapsed (depending upon flags set, so see 3.1.5. Command line
 options).
+
 #### 3.1.2.1. Network File Format
+
 The format of a network file is described below. The symbol format is
 the same as the previously described configuration file format
 (3.1.1.2).
-| "layers" | < n> |  |  |  |  |
+
+{< ... user comment ... >}
+
+| "[start]" |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- |
-| "neurons" | < a_0 | a_1 | a_2 | ... | a_n-1> |
-| "weights" | < b_0 | b_1 | b_2 | ... | b_m-1> |
+| "layers" | < n> |  |  |  |  |
+| "neurons" | < a₀ | a₁ | a₂ | ... | a_n-1> |
+| "weights" | < b₀ | b₁ | b₂ | ... | b_m-1> |
 | "output width" | < m> |  |  |  |  |
 | "alpha" | <α> |  |  |  |  |
 | "epsilon" | <ε> |  |  |  |  |
-| "sample in" | path<teaching input file name> |
+
+| "sample in" | {path}<teaching input file name> |
 | --- | --- |
-| "sample out" | path<expected output file name> |
-| "execute in" | path<test data file name> |
-| "execute out" | path<test output file name> |
+| "sample out" | {path}<expected output file name> |
+| "execute in" | {path}<test data file name> |
+| "execute out" | {path}<test output file name> |
 | "start time" | < q> |
 | "learn time" | < r> |
 
@@ -1028,10 +1052,13 @@ that there are no weights associated with the output n-1th layer).
 
 For example, consider the following fragment of a network file:
 
+⋮
+
 | "layers" | 3 |  |  |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | "neurons" | 1 | 2 | 3 |  |  |  |  |  |
 | "weights" | $w_{1,1}$ | $w_{1,2}$ | $w_{2,1}$ | $w_{2,2}$ | $w_{2,3}$ | $w_{2,4}$ | $w_{2,5}$ | $w_{2,6}$ |
+| ⋮ |  |  |  |  |  |  |  |  |
 
 Here there are 3 layers; the input layer contains 1 neuron, the
 middle layer contains 2 neurons, and the top layer 3 neurons. The
@@ -1080,9 +1107,17 @@ there are more input neurons than there is data, an error occurs.
 
 The format for the file is as shown below:
 
-| α_1 | β_1 | γ_1 | δ_1 | ... |
+{<... user comment ...>}
+
+"[start]"
+
+| α₀ | β₀ | γ₀ | δ₀ | ... |
 | --- | --- | --- | --- | --- |
-| α_2 | β_2 | γ_2 | δ_2 | ... |
+| "[start]" |  |  |  |  |
+| α₁ | β₁ | γ₁ | δ₁ | ... |
+| "[start]" |  |  |  |  |
+| α₂ | β₂ | γ₂ | δ₂ | ... |
+| ⋮ |  |  |  |  |
 
 #### 3.1.3.2. Expected Data File Format
 
@@ -1524,10 +1559,10 @@ network that you want executed, it will apply the required data to the
 input, calculate, then save the output. Hence, the program looks like:
 
 ```
-expected data,  neural
+  expected data,                     neural
 configuration data  →  teacher  →  `operator'  →  output
-↓  ↑
-network file  run data
+                          ↓             ↑
+                    network file    run data
 ```
 
 The items configuration and expected data, network file, run data, and

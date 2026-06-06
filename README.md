@@ -53,7 +53,7 @@ The most subtle change over the decades concerned `rand()`. On the original 16-b
 
 The "working antique" directory also contains the thesis documents converted from plain TeX. To convert this was more painful than the code! The process was: create a Python script that pre-processed each TeX file converting headings, equations, tables, and references into LaTeX that `pandoc` could then process. Then `pandoc` created a Markdown version. From this, a PDF was generated using `pandoc` that in turn used the `xelatex` PDF engine to bring over the equations.
 
-These are all in the `a-working-antique/doc` directory. [Thesis in markdown format](a-working-antique/doc/thesis.md) or [PDF](a-working-antique/doc/thesis.pdf)
+These are all in the `a-working-antique/doc` directory. The original thesis has been transcribed into [Markdown format](a-working-antique/doc/thesis.md) or [PDF](a-working-antique/doc/thesis.pdf)
 
 ## Building
 
