@@ -773,34 +773,169 @@ def fix_display_math(text: str) -> str:
 
 
 def fix_inline_math_symbols(text: str) -> str:
-    """Convert simple inline math expressions to plain Unicode text.
+    """Convert all remaining inline $...$ math to plain text / Markdown.
 
-    In the original TeX, bare numbers and single symbols are written in math
-    mode ($0.5$, $\\varepsilon$, $\\Delta w(t)$) for font consistency or to
-    suppress line breaks.  On GitHub these render as literal $...$ strings
-    rather than the intended character.  More complex math (subscripts,
-    partial derivatives, equations) is left as-is for the PDF renderer.
+    GitHub's KaTeX rendering is unreliable for inline $...$ expressions, so
+    this function converts every known pattern to a GitHub-friendly equivalent.
+    Patterns are ordered from most-specific to least-specific to avoid partial
+    matches.  Display-math $$...$$ blocks are left for the PDF renderer.
     """
+    # ── Numbers ──────────────────────────────────────────────────────────────
     # $10\,000$ → 10,000  (TeX thin-space thousands separator)
     text = re.sub(r'\$(\d+)\\,(\d+)\$', r'\1,\2', text)
-    # $0.5$  $3.$  $100$ → plain number (decimal or integer, optional trailing dot)
+    # $0.5$  $3.$  $100$ → plain number
     text = re.sub(r'\$(\d+(?:\.\d*)?)\$', r'\1', text)
-    # $(4)$  $(12)$ → (4)  (12)  (equation-reference cross-links)
+    # $(4)$ → (4)  (equation cross-references)
     text = re.sub(r'\$\((\d+)\)\$', r'(\1)', text)
-    # $\varepsilon = 1.0$ → ε = 1.0
+    # $+0.3$  $-0.3$ → +0.3  -0.3  (signed numbers, before flag pattern)
+    text = re.sub(r'\$([+-]\d+(?:\.\d+)?)\$', r'\1', text)
+
+    # ── Greek letters ────────────────────────────────────────────────────────
     text = re.sub(r'\$\\varepsilon\s*=\s*(\d+(?:\.\d+)?)\$', r'ε = \1', text)
-    # $\varepsilon$ → ε  (standalone Greek letter)
     text = re.sub(r'\$\\varepsilon\$', 'ε', text)
-    # $\alpha$ → α
     text = re.sub(r'\$\\alpha\$', 'α', text)
-    # $\Delta w(t)$ and multiline variant $\Delta\n    w(t)$ → Δw(t)
-    # $\Delta w(t-1)$ → Δw(t-1)
+
+    # ── Δw expressions (before single-letter $w$ rule) ───────────────────────
     text = re.sub(r'\$\\Delta\s+w\(t\)\$', 'Δw(t)', text)
     text = re.sub(r'\$\\Delta w\(t-1\)\$', 'Δw(t-1)', text)
-    # $\partial E \over \partial X$ (possibly multiline) → ∂E/∂X
+    # Multiline: $\Delta w = {\partial E \over \partial w}.$ → Δw = ∂E/∂w.
+    text = re.sub(r'\$\\Delta w =\s+\{\\partial E \\over \\partial w\}\.\$',
+                  'Δw = ∂E/∂w.', text, flags=re.DOTALL)
+    # Standalone $\Delta w$ → Δw
+    text = re.sub(r'\$\\Delta w\$', 'Δw', text)
+
+    # ── Partial derivatives ──────────────────────────────────────────────────
     text = re.sub(r'\$\\partial E \\over\s+\\partial (\w+)\$', r'∂E/∂\1', text)
-    # $\sum {\partial E \over \partial X}$ → Σ∂E/∂X
     text = re.sub(r'\$\\sum \{?\\partial E \\over\s+\\partial (\w+)\}?\$', r'Σ∂E/∂\1', text)
+
+    # ── Command-line flags ───────────────────────────────────────────────────
+    # Flag with brace-arg and angle-bracket arg: $-c\{{\rm path}\}\langle{\rm file name}\rangle$
+    text = re.sub(
+        r'\$(-[a-zA-Z])\\\{\{\\rm\s+([^}]+)\}\\}\{?\\langle\{?\\rm\s+([^}]+)\}?\\rangle\$',
+        lambda m: f'`{m.group(1)}{{{m.group(2).strip()}}}<{m.group(3).strip()}>`',
+        text,
+    )
+    # Flag with angle-bracket arg only: $-n\langle{\rm name}\rangle$
+    text = re.sub(
+        r'\$(-[a-zA-Z])\\langle\{?\\rm\s+([^}]+)\}?\\rangle\$',
+        lambda m: f'`{m.group(1)}<{m.group(2).strip()}>`',
+        text,
+    )
+    # Simple flags: $-v$  $-1$  $-?$ etc.
+    text = re.sub(r'\$(-[a-zA-Z0-9?!]+)\$', lambda m: f'`{m.group(1)}`', text)
+
+    # ── E_TOTAL (before single-letter $E$ rule) ──────────────────────────────
+    text = re.sub(r'\$E_\{\\rm TOTAL\}\s*=\s*0\$', 'E_TOTAL = 0', text)
+    text = re.sub(r'\$E_\{\\rm TOTAL\}\$', 'E_TOTAL', text)
+
+    # ── Other specific complex expressions ───────────────────────────────────
+    text = re.sub(r'\$n_\{\\rm layer\\ 1\}\s*=\s*15\$', 'n_layer_1 = 15', text)
+    text = re.sub(r'\$y_\{\\text\{bias\}\} = 1,\$', 'y_bias = 1,', text)
+    text = re.sub(r'\$w_\{j,\\text\{bias\}\}\$', 'w_j,bias', text)
+
+    # ── Scientific notation and powers (before single-letter rules) ──────────
+    text = re.sub(r'\$(\d+(?:\.\d+)?)\\times10\^\{?(\d+)\}?\$', r'\1×10^\2', text)
+    text = re.sub(r'\$10\^\{?(\d+)\}?\$', r'10^\1', text)
+    text = re.sub(r'\$(\d+)\\times\$', r'\1×', text)          # $1\times$ → 1×
+    text = re.sub(r'\$(\d+)\\%\$', r'\1%', text)              # $95\%$ → 95%
+
+    # ── fishNET inline command examples ──────────────────────────────────────
+    # ${\rm fishNET\ } -x {\rm \thinspace} -v$ → `fishNET -x -v`
+    text = re.sub(
+        r'\$\{\\rm fishNET\\ \}\s*([^$]+?)\$',
+        lambda m: '`fishNET ' + re.sub(
+            r' +', ' ',
+            re.sub(r'\{?\\rm\s*(?:\\thinspace\s*)?\}?', ' ', m.group(1)),
+        ).strip() + '`',
+        text,
+    )
+
+    # ── Trademark, standalone single-char math ───────────────────────────────
+    text = re.sub(r'\$\^\{\\rm\s+TM\}\$', '™', text)
+    text = re.sub(r'\$-\$', '-', text)
+    text = re.sub(r'\$=\$', '=', text)
+
+    # ── Approximation \sim ───────────────────────────────────────────────────
+    text = re.sub(
+        r'\$\\sim\s*([^$]+)\$',
+        lambda m: '≈' + re.sub(r'\\times', '×', re.sub(r'\s+', ' ', m.group(1))).strip(),
+        text,
+    )
+
+    # ── Greek letter assignments / comparisons ────────────────────────────────
+    text = re.sub(r'\$\\alpha\s*=\s*([0-9.]+)\$', r'α = \1', text)
+    text = re.sub(r'\$\\alpha e\^\{-t\}\s*\\Delta w\(t-1\)\$', 'αe^{-t}Δw(t-1)', text)
+    text = re.sub(r'\$\\varepsilon\s*([><=!]+)\s*([^$\n]+)\$', r'ε \1 \2', text)
+    text = re.sub(
+        r'\$\\lambda\s*=\s*\{(\d+)\\over([\d\\,]+)\}\$',
+        lambda m: 'λ = ' + m.group(1) + '/' + m.group(2).replace(r'\,', ','),
+        text,
+    )
+    text = re.sub(
+        r'\$\\mu\s*=\s*\{(\d+)\\over(\d+)\}\$',
+        lambda m: 'μ = ' + m.group(1) + '/' + m.group(2),
+        text,
+    )
+    text = re.sub(r'\$\\theta_\{\\rm\s+([^}]+)\}\$', r'θ_\1', text)
+
+    # ── Variable = value (possibly multiline) ────────────────────────────────
+    text = re.sub(r'\$([a-zA-Z])\s*=\s*(\d+(?:\.\d+)?)\$', r'\1 = \2', text, flags=re.DOTALL)
+
+    # ── Fractions with \over ─────────────────────────────────────────────────
+    text = re.sub(r'\$\(\{?(\d+)\\over(\d+)\}?\)\$', r'(\1/\2)', text)
+    text = re.sub(r'\$(\d+)\\over(\d+)\$', r'\1/\2', text)
+
+    # ── Additional \times patterns ────────────────────────────────────────────
+    text = re.sub(r'\$(\d+(?:\.\d+)?)\\times\s+10\^\{?(\d+)\}?\$', r'\1×10^\2', text)
+    text = re.sub(r'\$(\d+)\\times\s+(\d+)\$', r'\1×\2', text)          # $5\times 7$
+    text = re.sub(r'\$(\d+)\s+\\times\$', r'\1×', text)                 # $1 \times$
+
+    # ── Hardware / measurement notation ──────────────────────────────────────
+    text = re.sub(r'\$\{\\rm\s+([A-Za-z]+)\}(\d+)\$', r'\1\2', text)   # ${\rm V}20$ → V20
+    text = re.sub(r'\$(\d+(?:\.\d+)?)\s*\{\\rm\s+([^}]+)\}\$', r'\1 \2', text)  # 4.77 {\rm MHz}
+    text = re.sub(r'\$(\d+)\{\\rm\s+([^}]+)\}\$', r'\1\2', text)        # 640{\rm k}
+
+    # ── Standalone subscripts ────────────────────────────────────────────────
+    text = re.sub(r'\$_(\d)\$', lambda m: '₀₁₂₃₄₅₆₇₈₉'[int(m.group(1))], text)
+    text = re.sub(r'\$_\{\\rm\s+([^}]+)\}\$', r'_\1', text)
+    text = re.sub(r'\$_\{([^{}]+)\}\$', r'_\1', text)
+
+    # ── Subscript with \rm (before generic subscript rules) ─────────────────
+    text = re.sub(r'\$([a-zA-Z])_\{\\rm\s+([^}]+)\}\$', r'\1_\2', text)
+
+    # ── n:G notation ─────────────────────────────────────────────────────────
+    text = re.sub(r'\$([a-zA-Z]):([a-zA-Z])\$', r'\1:\2', text)
+
+    # ── Subscripted variables ────────────────────────────────────────────────
+    # Subscript + trailing punctuation: $y_j,$ → y_j,   $x_j:$ → x_j:
+    text = re.sub(r'\$([a-zA-Z])_([a-zA-Z0-9])([,:])\$', r'\1_\2\3', text)
+    # Braced subscript: $w_{ji}$  $a_1$ etc. (only simple alphanumeric content)
+    text = re.sub(r'\$([a-zA-Z])_\{([a-zA-Z0-9,]+)\}\$', r'\1_\2', text)
+    # Simple subscript: $x_j$  $y_i$
+    text = re.sub(r'\$([a-zA-Z])_([a-zA-Z0-9])\$', r'\1_\2', text)
+
+    # ── Single-letter variables ──────────────────────────────────────────────
+    # With trailing comma: $i,$ → *i*,
+    text = re.sub(r'\$([a-zA-Z]),\$', r'*\1*,', text)
+    # Standalone: $i$  $j$  $t$  $E$ etc. → *i* *j* *t* *E*
+    text = re.sub(r'\$([a-zA-Z])\$', r'*\1*', text)
+
+    # ── Arithmetic and range expressions ─────────────────────────────────────
+    text = re.sub(r'\$([a-zA-Z])-(\d+)\$', r'\1-\2', text)          # $n-1$ → n-1
+    text = re.sub(r'\$([a-zA-Z]_\d+)\s*\\times\s*([a-zA-Z]_\d+)\$',
+                  r'\1 × \2', text)                                  # $a_0 \times a_1$
+    # Ranges: $X\to Y$ — strip TeX braces from both sides
+    def _debraces(s: str) -> str:
+        s = re.sub(r'_\{([^{}]+)\}', r'_\1', s)
+        return re.sub(r'\{([^{}]+)\}', r'\1', s).strip()
+    text = re.sub(r'\$([^$]+?)\\to\s*([^$]+?)\$',
+                  lambda m: f'{_debraces(m.group(1))} to {_debraces(m.group(2))}',
+                  text)
+
+    # ── Special bracket / brace placeholders ────────────────────────────────
+    text = re.sub(r'\$\\langle\\rangle\$', '<>', text)
+    text = re.sub(r'\$\\\{\\\}\$', '{}', text)
+
     return text
 
 
@@ -960,8 +1095,8 @@ def main():
     md = fix_display_math(md)        # normalise $$ spacing first
     md = replace_vbox_tables(md)     # then convert \vbox tables
     md = strip_heading_attrs(md)     # remove {#id .unnumbered} noise
-    md = fix_inline_math_symbols(md)       # unwrap bare-number $N$, Greek letters, Δw(t)
-    md = fix_display_command_blocks(md)   # $${\rm fishNET...}$$ → centred <code>
+    md = fix_display_command_blocks(md)    # $${\rm fishNET...}$$ → centred <code> (before inline)
+    md = fix_inline_math_symbols(md)       # unwrap bare-number $N$, Greek letters, etc.
     md = generate_toc(md)                 # insert TOC after front matter
     md_out.write_text(md, encoding="utf-8")
     print(f"Post-processed: {md_out}")

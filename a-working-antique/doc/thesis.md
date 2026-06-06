@@ -51,28 +51,28 @@ Supervisor: Dr Peter Nickolls
       - [3.1.4.2. Output Data File Format](#3142-output-data-file-format)
     - [3.1.5. Command Line Options](#315-command-line-options)
       - [3.1.5.1. Screen Input/Output Control](#3151-screen-inputoutput-control)
-        - [3.1.5.1.1. $-v$ (verbose) flag](#31511--v-verbose-flag)
-        - [3.1.5.1.2. $-q$ (quiet) flag](#31512--q-quiet-flag)
+        - [3.1.5.1.1. `-v` (verbose) flag](#31511--v-verbose-flag)
+        - [3.1.5.1.2. `-q` (quiet) flag](#31512--q-quiet-flag)
         - [3.1.5.1.3. Default](#31513-default)
       - [3.1.5.2. Loading Configuration and Network Files from Disk](#3152-loading-configuration-and-network-files-from-disk)
-        - [3.1.5.2.1. $-c$ (load configuration file) directive](#31521--c-load-configuration-file-directive)
-        - [3.1.5.2.2. $-n$ (load network file) directive](#31522--n-load-network-file-directive)
+        - [3.1.5.2.1. `-c` (load configuration file) directive](#31521--c-load-configuration-file-directive)
+        - [3.1.5.2.2. `-n` (load network file) directive](#31522--n-load-network-file-directive)
         - [3.1.5.2.3. Default](#31523-default)
       - [3.1.5.3. Using the Network File](#3153-using-the-network-file)
-        - [3.1.5.3.1. $-e$ (execute) flag](#31531--e-execute-flag)
-        - [3.1.5.3.2. $-t$ (teach) flag](#31532--t-teach-flag)
+        - [3.1.5.3.1. `-e` (execute) flag](#31531--e-execute-flag)
+        - [3.1.5.3.2. `-t` (teach) flag](#31532--t-teach-flag)
         - [3.1.5.3.3. Default](#31533-default)
       - [3.1.5.4. Saving the Network File](#3154-saving-the-network-file)
-        - [3.1.5.4.1. $-s$ (store "taught" network) flag](#31541--s-store-taught-network-flag)
-        - [3.1.5.4.2. $-d$ (don't store network) flag](#31542--d-dont-store-network-flag)
-        - [3.1.5.4.3. $-x$ (store learning information and time) flag](#31543--x-store-learning-information-and-time-flag)
+        - [3.1.5.4.1. `-s` (store "taught" network) flag](#31541--s-store-taught-network-flag)
+        - [3.1.5.4.2. `-d` (don't store network) flag](#31542--d-dont-store-network-flag)
+        - [3.1.5.4.3. `-x` (store learning information and time) flag](#31543--x-store-learning-information-and-time-flag)
         - [3.1.5.4.4. Default](#31544-default)
       - [3.1.5.5. Calculation of Δw(t)](#3155-calculation-of-wt)
-        - [3.1.5.5.1. $-1$ (each) mode](#31551--1-each-mode)
-        - [3.1.5.5.2. $-a$ (all) mode](#31552--a-all-mode)
+        - [3.1.5.5.1. -1 (each) mode](#31551--1-each-mode)
+        - [3.1.5.5.2. `-a` (all) mode](#31552--a-all-mode)
         - [3.1.5.5.3. Default](#31553-default)
       - [3.1.5.6. Printing the Help Message](#3156-printing-the-help-message)
-        - [3.1.5.6.1. $-?$, $-h$ (help) flags](#31561----h-help-flags)
+        - [3.1.5.6.1. `-?`, `-h` (help) flags](#31561----h-help-flags)
       - [3.1.5.7. Unrecognised Options](#3157-unrecognised-options)
       - [3.1.5.8. Default (no options set)](#3158-default-no-options-set)
   - [3.2. Operations Performed](#32-operations-performed)
@@ -251,7 +251,7 @@ Neural networks are often described as a network of "collective
 decision" \[2\] circuits. They gain their power the same way the human
 brain does: many (many many) simple analog devices computing at the same
 time, while connected in parallel and continuously communicating with
-each other. The human brain has, by most estimates, $10^{11}$ neurons
+each other. The human brain has, by most estimates, 10^11 neurons
 (100 billion!) with up to 10,000 interconnections per neuron.
 Imitating the performance of a human "biological neural network" with an
 artificial one is not and may never be feasible. However, some of the
@@ -350,12 +350,12 @@ form (cybernetics) in the future.
 
 As mentioned earlier, neural networks gain their power from the
 connection of simple analog devices in parallel. The human brain has
-roughly $10^{11}$ neurons, and each neuron can have up to 10,000
+roughly 10^11 neurons, and each neuron can have up to 10,000
 interconnections. Each connection can be an excitatory or inhibitory
 input or feedback, or an output connection to other neurons.
 
 At present, it seems the largest neurocomputer[^1] built to date
-has $10^6$ neurons and interconnections totalling $1.5\times10^6$ in
+has 10^6 neurons and interconnections totalling 1.5×10^6 in
 total \[1\]. This is, of course, far from the complexity of the human
 brain, but as we shall see it still offers a great deal of power in
 solving problems.
@@ -374,7 +374,7 @@ given input, even though we cannot write down a fixed algorithm on how
 to do it.
 
 But neural networks, without being programmed with an algorithm but
-taught instead, can already perform many of these tasks with $95\%$
+taught instead, can already perform many of these tasks with 95%
 accuracy. For example, Kohonen \[10\] has built a phonetic typewriter,
 Fukushima \[11\] has used his "improved"[^2] neocognitron model to
 recognise Chinese characters, and many authors have shown the ability of
@@ -398,7 +398,7 @@ circuits, take inputs and move to minimize some function of the
 the connections between the neurons. Some authors, notably Hopfield and
 Tank \[2\][^3]and recognized in \[13\] as relating to other physical
 systems as well, notably spin glasses, see neural networks as an energy
-reducing machine: imagine an $n$-dimensional surface of hills and
+reducing machine: imagine an *n*-dimensional surface of hills and
 valleys, with the computation beginning at some high point on the
 surface. As the computation procedes it will move to a valley, downhill
 (i.e.  minimizing "computational energy"), until it is stable. The final
@@ -453,11 +453,11 @@ solution to the serial solution shows some staggering results!
 
 Let's see the difference between a brute force approach, a good serial
 algorithm, and a Hopfield neural network solution. Based upon estimates
-from \[15\], probably $10^{30}$ comparisons would be needed for a brute
+from \[15\], probably 10^30 comparisons would be needed for a brute
 force approach. This is obviously not computable. An excellent serial
 algorithmic estimation approach would require roughly 1,500
 comparisons in the best case (but probably many more). But a Hopfield
-neural network, it has been found, will select one of the best $10^7$
+neural network, it has been found, will select one of the best 10^7
 solutions (and this is as good as or better than the algorithmic
 approach described above) in a single convergence of the network, or
 several time-constants of the ciruit of figure 3. Quite a difference.
@@ -640,23 +640,23 @@ following mathematics holds:
 
 **Figure 7:** A feedforward neural network
 
-Consider two neurons, $i$ and $j$, with neuron $i$ being a lower layer
-(that is closer to the input) than neuron $j$. Let the inputs to a
-neuron $j$ be $x_j$, and the outputs of a neuron $i$ be $y_i$. Let the
-weight of the connection between $i$ and $j$ be $w_{ji}$. Then the total
-input $x_j$ into a neuron $j$ is a linear function of the outputs $y_i$
-of the units connected to $j$ and of the weights $w_{ji}$:
+Consider two neurons, *i* and *j*, with neuron *i* being a lower layer
+(that is closer to the input) than neuron *j*. Let the inputs to a
+neuron *j* be x_j, and the outputs of a neuron *i* be y_i. Let the
+weight of the connection between *i* and *j* be w_ji. Then the total
+input x_j into a neuron *j* is a linear function of the outputs y_i
+of the units connected to *j* and of the weights w_ji:
 $$
 x_j = \sum_i y_i w_{ji}.\qquad\text{(1)}
 $$
 
-Extra input or "bias" can be added to a neuron, say $j$, equivalent to a
+Extra input or "bias" can be added to a neuron, say *j*, equivalent to a
 threshold of the opposite sign of its weight, assuming the input is 1.
-The bias is treated just like any other $y$, ie $y_{\text{bias}} = 1,$
-but $w_{j,\text{bias}}$ gives the negative threshold for $j$.
+The bias is treated just like any other *y*, ie y_bias = 1,
+but w_j,bias gives the negative threshold for *j*.
 
-Each neuron $j$ has a non-integral output $y_j,$ which is a non-linear
-function of its input $x_j:$
+Each neuron *j* has a non-integral output y_j, which is a non-linear
+function of its input x_j:
 $$
 y_j = {1 \over 1 + \text{e}^{-x_j}}.\qquad\text{(2)}
 $$
@@ -664,16 +664,16 @@ $$
 The input/output function doesn't need to be the sigmoid response, any
 non-linear function with a bounded derivative will do.
 
-Let $c$ be an index of cases, $j$ be an index of output neurons, $y$ be
-the actual state of an output neuron, and let $d$ be the desired state
-(or expected answer). The total error, $E,$ is defined as
+Let *c* be an index of cases, *j* be an index of output neurons, *y* be
+the actual state of an output neuron, and let *d* be the desired state
+(or expected answer). The total error, *E*, is defined as
 $$
 E = {1 \over 2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2. \qquad\text{(3)}
 $$
 
 The whole aim of this technique is to minimize the error, ie. make the
-expected and actual outputs more similar. To minimize $E$ by gradient
-descent, we need the partial derivative of $E$ with respect to each
+expected and actual outputs more similar. To minimize *E* by gradient
+descent, we need the partial derivative of *E* with respect to each
 weight in the network. So from (3),
 $$
 {\partial E \over \partial y_j} = y_j - d_j. \qquad\text{(4)}
@@ -696,7 +696,7 @@ $$
 $$
 
 So we can calculate how a change in
-input $x$ to an output neuron will affect the error. However, the input
+input *x* to an output neuron will affect the error. However, the input
 to an output layer neuron is a linear combination of the outputs from
 the lower layers and their weights. So we can compute what the effect on
 the error would be for changes in lower states and weights:
@@ -713,7 +713,7 @@ $$
 $$
 
 and
-taking into account all connections from $i,$
+taking into account all connections from *i*,
 $$
 {\partial E \over \partial y_i} = \sum_j {\partial E \over \partial x_j}
 w_{ji}.\qquad\text{(10)}
@@ -729,8 +729,7 @@ weights.
 ## 2.2. Modification of Weights
 
 The simplest scheme of weight modification is to modify them as we go
-for every input/output pair. (To change $w$, modify by $\Delta w =
-{\partial E \over \partial w}.$) This method doesn't require
+for every input/output pair. (To change *w*, modify by Δw = ∂E/∂w.) This method doesn't require
 ∂E/∂w to be stored for each pass.
 
 Another method, used by Rumelhart et al. \[20\] is to accumulate
@@ -742,13 +741,13 @@ $$
 where ε is a constant of proportionality
 and ∂E/∂w has been accumulated over all cases. An alternative version
 which apparently offers speed improvements is to use a proportion of the
-previous $\Delta w$,
+previous Δw,
 $$
 \Delta w(t) = -\varepsilon {\partial E \over \partial w(t)} + \alpha
             \Delta w(t-1), \qquad\text{(12)}
 $$
 
-where $t$ is a count of the number of times all input/output pairs have
+where *t* is a count of the number of times all input/output pairs have
 been presented and α is an exponential decay factor. This is the
 method that I will use in the software model of the back-propagation
 network.
@@ -769,11 +768,11 @@ The first algorithm is:
 1.  Set up random weights between neurons.
 
 2.  Set Σ∂E/∂w to zero, and set
-    $E_{\rm TOTAL}$ to zero.
+    E_TOTAL to zero.
 
 3.  Input data sample and compare output with expected answer. For all
     output neurons, if output differs from the expected value by more
-    than 0.2, increment $E_{\rm TOTAL}$.
+    than 0.2, increment E_TOTAL.
 
 4.  If dealing with the weights for the top layer,
     calculate ∂E/∂y from (4). Otherwise,
@@ -788,9 +787,9 @@ The first algorithm is:
 
 8.  Calculate Δw(t) from (12), and save Δw(t) as Δw(t-1) for next pass.
 
-9.  Apply Δw(t) to change weights, $w$.
+9.  Apply Δw(t) to change weights, *w*.
 
-10. If $E_{\rm TOTAL} = 0$, we are finished and the network has
+10. If E_TOTAL = 0, we are finished and the network has
     "learnt". Otherwise, go back to 2. and repeat the procedure for
     the full set of data pairs.
 
@@ -798,11 +797,11 @@ The second (alternative) algorithm is:
 
 1.  Set up random weights between neurons.
 
-2.  Set $E_{\rm TOTAL}$ to zero.
+2.  Set E_TOTAL to zero.
 
 3.  Input data sample and compare output with expected answer. For all
     output neurons, if output differs from the expected value by more
-    than 0.2, increment $E_{\rm TOTAL}$.
+    than 0.2, increment E_TOTAL.
 
 4.  If dealing with the weights for the top layer,
     calculate ∂E/∂y from (4). Otherwise,
@@ -814,11 +813,11 @@ The second (alternative) algorithm is:
 
 7.  Calculate Δw(t) from (12), and save Δw(t) as Δw(t-1) for next pass.
 
-8.  Apply Δw(t) to change weights, $w$.
+8.  Apply Δw(t) to change weights, *w*.
 
 9.  If there are more input/output data pairs, go to 3. again.
 
-10. If $E_{\rm TOTAL} = 0$, we are finished and the network has
+10. If E_TOTAL = 0, we are finished and the network has
     "learnt". Otherwise, go back to 2. and repeat the procedure for
     the full set of data pairs.
 
@@ -895,12 +894,12 @@ after typing the parameter being considered.
 #### 3.1.1.2. Configuration File Format
 
 The format of a configuration file is described below. The
-symbols $\langle\rangle$ are used to delimit user required data. All
+symbols <> are used to delimit user required data. All
 information in double quotes "" are tokens and must be inserted
 *exactly* as they appear otherwise an error will occur. (The error
 message is 'appropriate token not found'.) All tokens and data must also
 appear in the order shown below. The exception is any piece of data
-which is surrounded by $\{\}$ brackets. These data items are optional.
+which is surrounded by {} brackets. These data items are optional.
 If they are used, however, please note the quoted and bracketed tokens
 and data items necessary.
 
@@ -920,8 +919,8 @@ and data items necessary.
 | "max sweeps" | < q> |
 Simply place the desired value next to the appropriate token. Tokens
 must be in order. For the "neurons" token, the order of the
-numbers $a_0\to a_{n-1}$ is taken as the number of neurons in the
-layers $0\to n-1$. Hence the example
+numbers a_0 to a_n-1 is taken as the number of neurons in the
+layers 0 to n-1. Hence the example
 | layers | 3 |  |  |
 | --- | --- | --- | --- |
 | neurons | 13 | 20 | 5 |
@@ -952,7 +951,7 @@ The user is able to load a network file which contains all the data
 necessary (especially weights) for operation of the network, or
 continued teaching, or both. The code is designed so that if it is
 halted (a Ctrl-c in MSDOS, or a BREAK or DEL in Unix) the network's
-present status and elapsed $t$ are stored into a network file. The
+present status and elapsed *t* are stored into a network file. The
 network is also saved when it has been fully taught, or the maximum time
 has elapsed (depending upon flags set, so see 3.1.5. Command line
 options).
@@ -977,16 +976,16 @@ the same as the previously described configuration file format
 
 Place the desired value next to the appropriate token. Tokens must be in
 order. For the "neurons" token, the order of the numbers
-$a_0\to a_{n-1}$ is taken as the same as the number of neurons in the
-layers $0\to n-1$. Data following the "weights" token behaves
-identically: if there are $a_0$ neurons in layer 0, and $a_1$ in
-layer 1, then there will be $a_0 \times a_1$ weights between layer 0
-and layer 1. The first $a_1$ weights are the strengths of connections
+a_0 to a_n-1 is taken as the same as the number of neurons in the
+layers 0 to n-1. Data following the "weights" token behaves
+identically: if there are a_0 neurons in layer 0, and a_1 in
+layer 1, then there will be a_0 × a_1 weights between layer 0
+and layer 1. The first a_1 weights are the strengths of connections
 between the first neuron in layer 0 and the neurons in the layer
-above. The second $a_1$ weights apply to the second neuron's connections
-to the layer above, etc., until the $a_0$th $a_1$ weights apply to the
+above. The second a_1 weights apply to the second neuron's connections
+to the layer above, etc., until the a_0th a_1 weights apply to the
 last neuron in layer 0. The pattern is repeated for all layers (note
-that there are no weights associated with the output $n-1$th layer).
+that there are no weights associated with the output n-1th layer).
 
 For example, consider the following fragment of a network file:
 
@@ -997,19 +996,19 @@ For example, consider the following fragment of a network file:
 
 Here there are 3 layers; the input layer contains 1 neuron, the
 middle layer contains 2 neurons, and the top layer 3 neurons. The
-weights $w_{1,1}$ and $w_{1,2}$ connect the single input neuron to the
+weights w_1,1 and w_1,2 connect the single input neuron to the
 first and second of the 2 second layer neurons respectively. The
-weights $w_{2,1}\to w_{2,3}$ connect the first neuron in the second
-layer with the neurons $1\to 3$ in the top layer, etc.
+weights w_2,1 to w_2,3 connect the first neuron in the second
+layer with the neurons 1 to 3 in the top layer, etc.
 
-The token "start time" marks the value of $t$ that the network will
+The token "start time" marks the value of *t* that the network will
 start learning from, if the user desires continued teaching of the
 network. In other words, it is a measure of how long the network had
 been taught for if it was generated by a Ctrl-c or BREAK, or saved when
-it had finished learning or reached the "max sweeps" value of $t$.
+it had finished learning or reached the "max sweeps" value of *t*.
 
 The token "learn time" is equivalent to the "max sweeps" token and
-indicates to the software what value of $t$ to stop training the network
+indicates to the software what value of *t* to stop training the network
 at if the user desires continued teaching of the network.
 
 Command line options used to specify a network file and what is to be
@@ -1064,7 +1063,7 @@ Configuration and network files, and keyboard input, contain the tokens
 to the files used as input and output for the network after it is
 trained. The "execute in" file contains data for the inputs of the
 bottom (layer 0) neurons, and the "execute out" file is used to store
-the output from the top (layer $n-1$) neurons for each case presented to
+the output from the top (layer n-1) neurons for each case presented to
 the bottom layer. Any previous contents of the "execute out" file are
 overwritten by the new input cases' outputs.
 
@@ -1094,11 +1093,11 @@ is selected by typing
 
 
 For example,
-to specify the flags $-x$ and $-v$ (the meaning of these two flags will
+to specify the flags `-x` and `-v` (the meaning of these two flags will
 be explained in detail below,) you could type
-${\rm fishNET\ } -x {\rm \thinspace} -v$ or ${\rm fishNET\ } -xv$. The
-exception to this method are the $-c$ and $-n$ flags, which can only
-appear at the end of a "$-$" list or by themselves. This is because they
+`fishNET -x -v` or `fishNET -xv`. The
+exception to this method are the `-c` and `-n` flags, which can only
+appear at the end of a "-" list or by themselves. This is because they
 refer to file names. For example,
 
 <div align="center"><code>fishNET -n<netfile> -q.</code></div>
@@ -1109,110 +1108,110 @@ by function.
 
 #### 3.1.5.1. Screen Input/Output Control
 
-##### 3.1.5.1.1. $-v$ (verbose) flag
+##### 3.1.5.1.1. `-v` (verbose) flag
 
-The $-v$ flag causes the program to produce verbose runtime information
+The `-v` flag causes the program to produce verbose runtime information
 about the present status of the network. It displays the expected output
 from the network alongside the actual output, a running measure of
-errors, and the elapsed time, $t$. This process slows down execution
+errors, and the elapsed time, *t*. This process slows down execution
 speed by the amount of time taken for screen output.
 
-This flag cannot be used with the $-q$ flag.
+This flag cannot be used with the `-q` flag.
 
-##### 3.1.5.1.2. $-q$ (quiet) flag
+##### 3.1.5.1.2. `-q` (quiet) flag
 
-The $-q$ flag causes suppression of all runtime messages. This flag is
+The `-q` flag causes suppression of all runtime messages. This flag is
 good for batch mode processing, and of course gives the fastest
 execution speed by virtue of minimal screen output.
 
-This flag cannot be used with the $-v$ flag.
+This flag cannot be used with the `-v` flag.
 
 ##### 3.1.5.1.3. Default
 
-If neither the $-q$ or $-v$ flags are set, the default mode is used.
+If neither the `-q` or `-v` flags are set, the default mode is used.
 This mode causes fishNET to print rudimentary information about loading
 status, and displays the elapsed time and total error while the program
 is running.
 
 #### 3.1.5.2. Loading Configuration and Network Files from Disk
 
-##### 3.1.5.2.1. $-c$ (load configuration file) directive
+##### 3.1.5.2.1. `-c` (load configuration file) directive
 
-The $-c\{{\rm path}\}\langle{\rm file name}\rangle$ directive lets the
+The `-c{path}<file name>` directive lets the
 user load a configuration file of parameters into the simulator. The
 format of the file is described in an earlier section entitled
 3.1.1.2. Configuration file format.
 
-This directive can't be used with the $-n$ directive.
+This directive can't be used with the `-n` directive.
 
-##### 3.1.5.2.2. $-n$ (load network file) directive
+##### 3.1.5.2.2. `-n` (load network file) directive
 
-The $-n\{{\rm path}\}\langle{\rm file name}\rangle$ directive enables
+The `-n{path}<file name>` directive enables
 the user to load a pre-taught or manually created network file into the
 simulator. The format of the file is described in an earlier section,
 3.1.2.1. Network file format.
 
-This directive can't be used with the $-c$ directive.
+This directive can't be used with the `-c` directive.
 
 ##### 3.1.5.2.3. Default
 
-There is no default file loaded. If neither $-c$ or $-n$ is specified,
+There is no default file loaded. If neither `-c` or `-n` is specified,
 the user is queried via the screen and keyboard for the appropriate
 parameter values.
 
 #### 3.1.5.3. Using the Network File
 
-##### 3.1.5.3.1. $-e$ (execute) flag
+##### 3.1.5.3.1. `-e` (execute) flag
 
-The $-e$ flag is used after the $-n\langle{\rm name}\rangle$ directive
+The `-e` flag is used after the `-n<name>` directive
 to tell the simulator to execute the network with the data files whose
 names are included in the network file. The network will *not* continue
 to be trained.
 
-The $-e$ flag can't be used with the $-t$ flag.
+The `-e` flag can't be used with the `-t` flag.
 
-##### 3.1.5.3.2. $-t$ (teach) flag
+##### 3.1.5.3.2. `-t` (teach) flag
 
-The $-t$ flag is used after the $-n\langle{\rm name}\rangle$ directive
+The `-t` flag is used after the `-n<name>` directive
 to tell the simulator to continue teaching the network with the sample
 input and output files whose names are included in the network file.
 When the network is "taught", execution with the data file (the name of
 which is also in the network file,) will occur.
 
-The $-t$ flag can't be used with the $-e$ flag.
+The `-t` flag can't be used with the `-e` flag.
 
 ##### 3.1.5.3.3. Default
 
-If neither the $-e$ or $-t$ flags are used with the $-n$ directive, an
+If neither the `-e` or `-t` flags are used with the `-n` directive, an
 error occurs. In other words, you must tell the program what you want to
 do with a network file!
 
 #### 3.1.5.4. Saving the Network File
 
-##### 3.1.5.4.1. $-s$ (store "taught" network) flag
+##### 3.1.5.4.1. `-s` (store "taught" network) flag
 
-The $-s$ flag tells the program to store the network after it is taught.
+The `-s` flag tells the program to store the network after it is taught.
 If this flag is set, once the errors drop below the threshold, the
 network is automatically stored in the file named through the keyboard,
 network, or configuration files. The format of the saved file is
 specified in an earlier section, 3.1.2.1. Network file format.
 
-This flag can't be used with the $-e$ (execute) flag, or the $-d$ or
-$-x$ flags (see below).
+This flag can't be used with the `-e` (execute) flag, or the `-d` or
+`-x` flags (see below).
 
-##### 3.1.5.4.2. $-d$ (don't store network) flag
+##### 3.1.5.4.2. `-d` (don't store network) flag
 
-The $-d$ flag indicates that once the network is taught, it will not be
+The `-d` flag indicates that once the network is taught, it will not be
 stored. If this flag is set, execution begins immediately after the
 network is taught, and although the network is not saved to disk, the
 output from the execution is.
 
-This flag can't be used with the $-s$ or $-x$ save flags. If it is used
-with the $-e$ flag it is ignored.
+This flag can't be used with the `-s` or `-x` save flags. If it is used
+with the `-e` flag it is ignored.
 
-##### 3.1.5.4.3. $-x$ (store learning information and time) flag
+##### 3.1.5.4.3. `-x` (store learning information and time) flag
 
-The $-x$ flag is intended primarily for experimental use of the program.
+The `-x` flag is intended primarily for experimental use of the program.
 When this flag is set, the program will teach or continue to teach the
 network but when it is "taught" only the necessary parameters are saved
 to disk. These parameters are the weight modification factors α
@@ -1221,51 +1220,51 @@ files and time required to teach the network. This saves time and disk
 space for users of fishNET who are experimenting with the parameters'
 and data's effects on learning speed.
 
-This flag can't be used with the $-s$ or $-d$ save flags, or the $-e$
+This flag can't be used with the `-s` or `-d` save flags, or the `-e`
 execute flag.
 
 ##### 3.1.5.4.4. Default
 
 If none of the save flags is specified, the user is queried via the
-screen and keboard. The choices available are akin to the $-s$ and $-d$
-flags (there is no equivalent $-x$ option).
+screen and keboard. The choices available are akin to the `-s` and `-d`
+flags (there is no equivalent `-x` option).
 
 #### 3.1.5.5. Calculation of Δw(t)
 
 The package fishNET offers two ways to calculate ∂E/∂w and Δw(t), both enumerated in algorithmic form in
 the previous chapter.
 
-##### 3.1.5.5.1. $-1$ (each) mode
+##### 3.1.5.5.1. -1 (each) mode
 
-When the $-1$ flag is set, the program will calculate and apply
+When the -1 flag is set, the program will calculate and apply
 Δw(t) for each I/O case. This mode is only included for
 experimental purposes (for a description of the algorithm used, see the
 second algorithm in the previous chapter).
 
-The $-1$ flag can't be used with the $-a$ flag.
+The -1 flag can't be used with the `-a` flag.
 
-##### 3.1.5.5.2. $-a$ (all) mode
+##### 3.1.5.5.2. `-a` (all) mode
 
-If the $-a$ flag is specified, the calculation of Δw(t) is once
+If the `-a` flag is specified, the calculation of Δw(t) is once
 per sweep (presentation) of all I/O cases. ∂E/∂w
 values are calculated for each I/O case and added together.
 Δw(t) is calculated at the end of each sweep from the
 accumulated ∂E/∂w value. This is the most
 commonly used mode.
 
-The $-a$ flag can't be used with the $-1$ flag.
+The `-a` flag can't be used with the -1 flag.
 
 ##### 3.1.5.5.3. Default
 
-If neither the $-1$ or $-a$ flags are specified, the $-a$ mode is
-assumed. Unless $-q$ (quiet) has been set, a message is issued to this
+If neither the -1 or `-a` flags are specified, the `-a` mode is
+assumed. Unless `-q` (quiet) has been set, a message is issued to this
 effect.
 
 #### 3.1.5.6. Printing the Help Message
 
-##### 3.1.5.6.1. $-?$, $-h$ (help) flags
+##### 3.1.5.6.1. `-?`, `-h` (help) flags
 
-If the $-?$ or $-h$ flags are specified, the program doesn't run and a
+If the `-?` or `-h` flags are specified, the program doesn't run and a
 help message is displayed. The help message contains information on
 every flag and is located in the file `help.hlp` under all
 implementations of the program.
@@ -1280,7 +1279,7 @@ If any other option is specified, the program displays the message
 #### 3.1.5.8. Default (no options set)
 
 If no options are set, the program asks for all information about file
-names and parameters, the same way it does if neither $-c$ or $-n$ is
+names and parameters, the same way it does if neither `-c` or `-n` is
 specified.
 
 This is the recommended mode for "beginners".
@@ -1326,7 +1325,7 @@ structures used to implement the back-propagation algorithm. The package
 has been written entirely in C and all references to C "objects" such as
 keywords or variable names will be in `typewriter` style type. All
 developmental work was carried out on an IBM PC, using Microsoft
-QuickC$^{\rm TM}$. The software has been sucessfully ported without
+QuickC™. The software has been sucessfully ported without
 modification to a Pyramid super-mini running Unix Version V. Execution
 speeds will be discussed in a later chapter, entitled "Performance".
 
@@ -1357,8 +1356,8 @@ problem.
 
 In all sections following, the makeup of the individual C structures
 will be discussed, with field meanings, names and types given. The
-format followed will be --- structure type name: field$_0$ description,
-type, name; field$_1$ description, type, name; etc. First I will
+format followed will be --- structure type name: field₀ description,
+type, name; field₁ description, type, name; etc. First I will
 describe the most important structure, namely that used for the network,
 then the other structures used for different purposes within the
 network.
@@ -1469,7 +1468,7 @@ When a network file is loaded, it contains the complete network
 The function which reads in the network files returns a pointer to a
 struct called `LOAD_BOTH`. Contained in `LOAD_BOTH` are: a pointer to a
 network, `LAYER *network`; a pointer to a structure containing all run
-time information, `QUESTION *parameter`; and the value of $t$ at which
+time information, `QUESTION *parameter`; and the value of *t* at which
 the network will start teaching, `int start_time`.
 
 ## 4.2. Program Design
@@ -1509,7 +1508,7 @@ which returns a pointer to
 a structure containing the important parameters of network operation,
 read from the keyboard.
 
-If the $-c$ option was used, the program instead calls
+If the `-c` option was used, the program instead calls
 $$
 \texttt{parameter = finput\_parameters(config\_file);}
 $$
@@ -1519,7 +1518,7 @@ a pointer to a structure, containing the important parameters of network
 operation, read from the file whose name is held in the variable
 `char *config_file`.
 
-If the $-n$ option was used, fishNET loads the network at the same time
+If the `-n` option was used, fishNET loads the network at the same time
 as the operational parameters, so please see the next section on
 allocating space for the network.
 
@@ -1535,7 +1534,7 @@ This function allocates
 space (from the heap) and sets up random weights for a network of the
 desired size, and returns a pointer to it (`LAYER *`).
 
-If the network is to be loaded from disk (the $-n$ command line
+If the network is to be loaded from disk (the `-n` command line
 directive was used), fishNET reads the parameters and allocates space
 for the network by
 $$
@@ -1546,7 +1545,7 @@ The function takes as its arguments the name of the network file, and
 returns a pointer to a structure which contains: a pointer to a
 structure which holds the parameters; a pointer to a network, with the
 values read from the file as the weights; and an integer value of the
-time $t$ the network is to start learning at. For more information about
+time *t* the network is to start learning at. For more information about
 the data structures used see 4.1. Data structure design.
 
 #### 4.2.1.3. Loading the Expected Data
@@ -1571,11 +1570,11 @@ $$
 This function
 uses the information in the variable `parameter`, which is actually a
 pointer to a structure of type `QUESTION`, to modify the network, which
-is pointed to by `LAYER *network`. The initial value of $t$ used by the
+is pointed to by `LAYER *network`. The initial value of *t* used by the
 routine is `int start_time`. The algorithms are explained in Chapter 2,
 and are implemented exactly as documented there.
 
-If the first algorithm is being used, ($-a$ specified, or the command
+If the first algorithm is being used, (`-a` specified, or the command
 line default,) `learn` calls the routines `operate`, `back_propagate`,
 and `apply_delta_w` to implement the algorithm. Actually,
 `apply_delta_w` is executed first, because a `do …while` loop is used to
@@ -1593,7 +1592,7 @@ expected output, and is described earlier.
 
 `Apply_delta_w` is used to calculate and then add Δw(t) for every weight in the network.
 
-If the second algorithm is used (the $-1$ flag was used), the functions
+If the second algorithm is used (the -1 flag was used), the functions
 called are slightly different. First, `learn` calls `operate`, then a
 function called `back­_propagate­_apply­_delta­_w`. This routine is a
 combination of the two like--named routines described above,
@@ -1605,14 +1604,14 @@ purposes.
 
 #### 4.2.1.5. Saving the Network
 
-Once the network is fully 'taught', or the maximum value of $t$ is
+Once the network is fully 'taught', or the maximum value of *t* is
 reached, the action depends upon the setting of the command line options
-$-d$, $-s$, and $-x$.
+`-d`, `-s`, and `-x`.
 
-If $-d$ was specified, execution occurs immediately and the network is
+If `-d` was specified, execution occurs immediately and the network is
 discarded.
 
-If $-s$ was selected, the network is saved to disk by a call to the
+If `-s` was selected, the network is saved to disk by a call to the
 function
 
 $$
@@ -1622,7 +1621,7 @@ $$
 and execution
 occurs immediately.
 
-If $-x$ was specified, the learning parameters are saved by
+If `-x` was specified, the learning parameters are saved by
 $$
 \texttt{store\_learnt\_parameters(parameter);}
 $$
@@ -1665,7 +1664,7 @@ speed, not lack of memory. Long before available memory with a PC runs
 short, patience inevitably does. Lack of memory has actually only
 happened once, and this was a deliberate experiment to see how large a
 network could be. In reality, the time taken to learn (in physical
-seconds, not internal learning time $t$) becomes so large that it is
+seconds, not internal learning time *t*) becomes so large that it is
 nearly pointless continuing. Just how large is feasible? Hopefully with
 the help of this chapter the reader can calculate how long it will take
 and maybe rethink network size and shape. Thus it is execution speed,
@@ -1680,11 +1679,11 @@ with follows:
 ### 5.1.1. The (almost) Standard IBM-PC
 
 As mentioned above, fishNET's development was undertaken entirely on a
-1985 vintage true-blue IBM-PC. The $4.77 {\rm MHz}$ intel 8088 has
-been replaced by a National ${\rm V}20$ workalike processor, which is
+1985 vintage true-blue IBM-PC. The 4.77 MHz intel 8088 has
+been replaced by a National V20 workalike processor, which is
 marginally faster with screen and disk I/O and up to 5 times faster
 for some processor operations. The speed improvement, however, is only
-about $20\%$ in general. The machine has $640{\rm k}$ of RAM.
+about 20% in general. The machine has 640 k of RAM.
 
 ### 5.1.2. The Turbo-Charging 8087
 
@@ -1752,19 +1751,19 @@ For the simulator to operate upon a network (that is, use the runtime
 data), there are a number of mathematical operations involved. A summary
 is
 
-1.  $1\times$ transfer function calculation per neuron, which is
+1.  1× transfer function calculation per neuron, which is
 
-    1.  $1 \times$ negate,
+    1.  1× negate,
 
-    2.  $1\times$ `exp` calculation,
+    2.  1× `exp` calculation,
 
-    3.  $1\times$ `double` add, and
+    3.  1× `double` add, and
 
-    4.  $1\times$ `double` divide.
+    4.  1× `double` divide.
 
-2.  $1\times$ `double` multiplication per weight, and
+2.  1× `double` multiplication per weight, and
 
-3.  $1\times$ `double` addition per weight.
+3.  1× `double` addition per weight.
 
 Hence, using \[27\], we find that the approximate execution speed for a
 single input case is of the order of
@@ -1787,7 +1786,7 @@ $$
 
 These values are very approximate. However, they still
 show an interesting trend. Assuming that the Pyramid is at least 37
-times faster than the PC$_{\rm 8087}$, we find
+times faster than the PC_8087, we find
 
 $$
 \begin{aligned}
@@ -1812,8 +1811,8 @@ These are close to the roughly measured times.
 As you can see, the fact that there are so many more weights than
 neurons means that calculations involving weights consume the most
 significant part of the time, even though the execution speed of a
-neuron is typically $3 \to 12$ times slower. In these calculations,
-memory addressing time has been ignored, as it is $100 \to 1000$ times
+neuron is typically 3 to 12 times slower. In these calculations,
+memory addressing time has been ignored, as it is 100 to 1000 times
 faster than floating point operations.
 
 ## 5.3. Memory Used
@@ -1879,7 +1878,7 @@ $$
 \texttt{NETWORK}_{\rm space} = (n_{\rm layer} \times 4) + 
     (n_{\rm neuron} \times 12) + (n_{\rm weight} \times 24),
 $$
-where $n_{\rm layer}$ is the number or layers, etc.
+where n_layer is the number or layers, etc.
 
 Memory required for teaching and execution data depends upon the number
 of neurons in the input and output layers, and the number of I/O cases.
@@ -1959,11 +1958,11 @@ simple perceptual problem, wetware produces an answer in 200
 milliseconds. Assume we used a tiny fraction of the brain,
 say 300,000 neurons. Assume again that we have only 5,000
 connections per neuron. Then if the 300,000 are equally divided in 3
-layers, we have $1\times 10^9$ weights. And it can produce an answer
+layers, we have 1×10^9 weights. And it can produce an answer
 in 200 milliseconds.
 
-A Pyramid would require $\sim 7.7 \times 10^3$ seconds $=$ 2 hours 9
-minutes to do the same calculation, and a plain PC would take $\sim 41$
+A Pyramid would require ≈7.7 × 10^3 seconds = 2 hours 9
+minutes to do the same calculation, and a plain PC would take ≈41
 days 4 hours. This also involves *no* consideration for how long it
 would take to teach the software models by back-propagation.
 
@@ -2005,7 +2004,7 @@ behaviour, and the effect of casualties within the network.
 
 The first piece of test data that was created and run on the network was
 a simple O and X recogniser. There were 9 neurons (bits) on the input,
-$6 \to 9$ neurons in the middle layer, and 2 output neurons (bits),
+6 to 9 neurons in the middle layer, and 2 output neurons (bits),
 each one of which signalled either a O or a X. The network converged to
 a solution in about 100 learning iterations for 7 intermediate layer
 neurons; the speed of learning versus number of intermediate neurons
@@ -2083,10 +2082,10 @@ Various sizes (geometries) of the input layer were tried, and to make
 symmetric letters easier to encode an odd number of neurons was always
 used in both dimensions. The number of neurons in the bottom layer was
 increased as the processing speed increased due to the addition of the
-floating point processor (8087). First attempts were for a $5\times 7$
+floating point processor (8087). First attempts were for a 5×7
 grid of input neurons, but this was too small for reasonable test data
-to be generated. $9\times 11$ was also tried, before finally
-selecting $13\times 15$. This rather large number of neurons, (195 in
+to be generated. 9×11 was also tried, before finally
+selecting 13×15. This rather large number of neurons, (195 in
 the bottom layer,) gives a dot matrix encoded letter that is of
 reasonable quality, while still being easily computable in a network on
 a PC with an 8087.
@@ -2099,9 +2098,9 @@ throughout the thesis for experimental purposes.
 In this chapter, the dot matrix encoding of English language characters
 will be considered in detail. There are two important facets to consider
 in these experiments: learning time, and error rate. Learning time is
-the length of time in machine (or algorithm) time units $t$ which is
+the length of time in machine (or algorithm) time units *t* which is
 required for the network to produce results which are sufficiently
-accurate. Error rate is calculated as the total error, or $E$, which is
+accurate. Error rate is calculated as the total error, or *E*, which is
 the sum of the square of the difference between the expected output and
 actual output of the network.
 
@@ -2123,22 +2122,22 @@ and 0.1, but the extra computational effort for a PC implementation
 would be considerable (in many cases, most neurons were within 0.1 of
 their desired value, with only a few being as far as 0.2 away). The
 final invariant used here is the spread of the initial weights. They
-were each randomly set to a value between $+0.3$ and $-0.3$.
+were each randomly set to a value between +0.3 and -0.3.
 
 The two learning calculation variables, α and ε, can
 have a wide range of values. Just *how* wide appears to depend largely
 upon the problem. For all experiments examined here, α was set
 to 0.9. This doesn't pose a problem, because beyond values of a few
-tens of $t$ the equation $\alpha e^{-t} \Delta w(t-1)$ drops to almost
+tens of *t* the equation αe^{-t}Δw(t-1) drops to almost
 zero. Hence α is not really a significant factor in the
 calculations beyond the very beginning, and most authors
-set $\alpha = 0.9$.
+set α = 0.9.
 
 So all learning equation parameter variations refer to ε.
 The number of neurons in the second layer (referred to as layer 1, since
 counting starts at 0,) was also widely varied during experimentation. We
 examine below the effects of these parameters' variations on learning
-time $t$ and error rate $E$. A summary is included at the end of this
+time *t* and error rate *E*. A summary is included at the end of this
 chapter.
 
 ## 7.1. Variation of Learning Time with Parameters
@@ -2147,7 +2146,7 @@ This experiment dealt with the length of time taken to fully train the
 network with the error criteria set above. However, there is a subtle
 difference to most authors approach to this problem.
 
-As initial weights varied randomly from $+0.3$ to $-0.3$, most
+As initial weights varied randomly from +0.3 to -0.3, most
 experiments here were run 4 times in order to get more statistical
 accuracy. Just under 80 simulations were performed, and the averages and
 standard deviations calculated. Both parameters of interest,
@@ -2181,23 +2180,22 @@ converge to a solution any faster. In fact, as ε increases
 beyond about 0.5, the network begins to become unstable during
 learning.
 
-This phenomenon can be observed with the $-v$ option set in fishNET.
+This phenomenon can be observed with the `-v` option set in fishNET.
 With large ε, some output neurons converge quickly towards
 the desired result. However, the others tend to move in the opposite
-direction to the one desired. After several tens of $t$, the outputs
+direction to the one desired. After several tens of *t*, the outputs
 suddenly begin to "swap", and the neurons that had an output very close
 to the desired output (some will be less than 0.05 away) begin to move
 away from the desired result, and the outputs which were the opposite
 tend to moves towards the correct output. This see-saw effect can
-continue for several hundred $t$, until usually it will decrease in
+continue for several hundred *t*, until usually it will decrease in
 oscillation size, and all outputs will move slowly toward the desired
 result.
 
 Before the final set of experiments quoted here were run, a previous set
 of ε values was tried. In this group were the values 1.2,
 1.5, and 2.0. None of these values converged systematically in less
-than $t =
-5000$, which is the default limiting value. This fact, and the standard
+than t = 5000, which is the default limiting value. This fact, and the standard
 deviations of the learning times examined below, tends to indicate
 that ε = 1.0 is near the boundary of stable learning for
 this particular problem.
@@ -2207,11 +2205,11 @@ network appears to have trouble learning for both a large ε
 and a large number of intermediate layer neurons, and the huge standard
 deviations in these cases point this out. In fact, for the case
 where ε = 1.0, and middle layer neurons numbered 70, the
-learning time varied from between $t=361$ and $t=838$. This is a very
+learning time varied from between t = 361 and t = 838. This is a very
 different result to the ε = 0.3 or ε = 0.5
 standard deviations. A graph of standard deviation versus neurons in
 layer 1 for all ε values is shown in figure 12. In general,
-for $\varepsilon > 0.5$, the standard deviation of learning time (and
+for ε > 0.5, the standard deviation of learning time (and
 hence the instability during learning) increases as a function of
 both ε and neurons in the middle layer.
 
@@ -2234,7 +2232,7 @@ the experiment was a good one to test the network's level of
 generalisation. Due to the large number of computations necessary, and
 the disk space needed to store the networks, (training was done on the
 Pyramid 9810, but all analysis, that is execution, was done on the
-PC$_{8087}$,) only one of each category was tested. This means that the
+PC_8087,) only one of each category was tested. This means that the
 shape of the graph of total error versus neurons should be viewed only
 for trends and may not itself be overly statistically accurate. The data
 appears below:
@@ -2335,7 +2333,7 @@ The approach taken involved selection of a network, then damaging the
 network and examining its behaviour for the same data set used in the
 last chapter. The network selected had the largest ε used,
 ε = 1.0, and the smallest number of middle layer neurons,
-$n_{\rm layer\ 1} = 15$. This combination was chosen because it had the
+n_layer_1 = 15. This combination was chosen because it had the
 lowest error rate out of any of the networks examined previously, and
 because it was easiest to edit, with only a small number of middle layer
 neurons.
@@ -2344,7 +2342,7 @@ Casualties in the network took two forms. First, random weights were
 damaged (set to zero) to simulate the destruction of connections between
 neurons. Various percentages of total connections were removed,
 namely 2.5%, 5%, 10%, 20%, 30%, and finally 40%. The total error, (as
-before, $E$, the sum of the square of the difference between actual and
+before, *E*, the sum of the square of the difference between actual and
 expected outputs,) and actual error (the number of cases where the
 output layer neurons chose the wrong pattern,) were calculated.
 
@@ -2396,12 +2394,12 @@ actual error are rapidly on the increase.
 Looking at the graph, we see that the error starts to increase rapidly
 beyond casualty rates around 30%. Error rates of both kinds become
 exponentially worse, and the network can be said to be no longer able to
-recognize patterns meaningfully. (Actual error has risen from $3\over20$
-or $4\over20$ cases at $20\to30$% casualties, to $15\over20$ by 40%
+recognize patterns meaningfully. (Actual error has risen from 3/20
+or 4/20 cases at 20 to 30% casualties, to 15/20 by 40%
 casualties.)
 
 From this data, we draw the conclusion that our ε = 1.0 and
-$n_{\rm layer\ 1} = 15$ network can sustain random injuries in up to
+n_layer_1 = 15 network can sustain random injuries in up to
 between 20% and 30% of weights, and still function satisfactorily. This
 is quite incredible.
 
@@ -2443,7 +2441,7 @@ neurons increases.
 
 The data, then, shows us that the removal of a neuron has a more
 dramatic effect as a straight percentage of neurons in the middle layer
-than weight damage has. If more than about 13% $({2\over15})$ are
+than weight damage has. If more than about 13% (2/15) are
 damaged the network can't really be used. It is possible as well to look
 at the removal of neurons as a form of weight damage. By looking at it
 in this way, some remarkable conclusions can be drawn about the
@@ -2451,7 +2449,7 @@ representation of knowledge in the network, without even having to
 examine the distribution of weight patterns in the network.
 
 If one neuron out of 15 is damaged, then this is equivalent to the
-systematic (instead of random) removal of $1\over15$th of the total
+systematic (instead of random) removal of 1/15th of the total
 neurons in the network. Once the number of systematically removed
 weights reaches more than 13%, the performance degrades rapidly. This
 fact reveals some important aspects of network behaviour. Even though
@@ -2504,9 +2502,9 @@ and have almost no effect on network behaviour. Assume that we have some
 method of knowing that any individual neuron (op-amp) has malfunctioned
 and can replace it within 1 hour. Also assume that the mean time to
 failure for each op-amp is 10,000 hours of continuous operation.
-Then, MTBF ($\theta_{\rm sys}$) for this network is $7.337004\times10^8$
+Then, MTBF (θ_sys) for this network is 7.337004×10^8
 hours, or 83,756 years. Quite a long time. (These figures come
-from $n=15$, $k=13$, $\lambda = {1\over10\,000}$, and $\mu={1\over1}$.)
+from n = 15, k = 13, λ = 1/10,000, and μ = 1/1.)
 
 ## 8.4. Summary
 
@@ -2653,7 +2651,7 @@ patterns.
 
 Finally, and most difficult, would be a truly parallel processing
 version of the back-propagation algorithm, aimed at operation in an
-$n$-transputer environment.
+*n*-transputer environment.
 
 ---THE END ---
 
@@ -2844,7 +2842,7 @@ Transactions on Acoustics, Speech, and Signal Processing **IEEE-ASSP
 \[27\] Thomas Plum and Jim Brodie, "Efficient C," Plum Hall, Cardiff New
 Jersey, 1985.
 
-\[28\] John E. Angus, "On Computing MTBF for a $k$-out-of-$n:G$
+\[28\] John E. Angus, "On Computing MTBF for a *k*-out-of-n:G
 Repairable System," *IEEE Transactions on Reliability **37*** no 3
 (1988), 312--313.
 
