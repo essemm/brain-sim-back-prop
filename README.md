@@ -35,7 +35,7 @@ Lastly, the repo and the project have different names. Calling the project `fish
 There are two directories:
 
 - `the-museum--from-original-disks/` — Original K&R C source as recovered from the floppy disks, kept for reference, as well as original thesis Tex documents
-- `a-working-antique/` — Modernised ANSI C version; this is the one to build and run
+- `a-working-antique/` — "Modernised" ANSI C version; this is the one to build and run. It also contains a modern version of the thesis document in Markdown and PDF.
 
 The code in the working antique directory was minimally converted to ANSI C (C89/90):
 
@@ -49,7 +49,7 @@ The code in the working antique directory was minimally converted to ANSI C (C89
 
 The goal was the minimum modernisation needed to get a clean build with zero warnings under Apple clang, while staying true to the original logic — not a rewrite into modern C (C11/C17 etc.).
 
-The most subtle change over the decades concerned `rand()`. On the original 16-bit DOS compiler, RAND_MAX was 32767, while on today's macOS it's $2^{31} - 1$. The original `#define RANDDIV 54612.0` assumed that smaller maximum, so weight initialisation in the network was scaled incorrectly. Since the weights were so huge, the network never converged. Changing `RANDDIV` to `#define RANDDIV ((double)RAND_MAX / 0.6)` corrected this - I was truly surprised that the code ran. The supplied test case is the same one I used back in 1988, a set of 5 dot matrix letters with 5 output values indicating which letter was recognised (Chapter 7). In the thesis I also had a set of letters with (what now seems minor) noise to test the resilience of the matches. I also "damaged" the saved weight values to demonstrate the impacts of errors on matching performance (Chapter 8).
+The most subtle change that impacted this code over the decades concerned `rand()`. On the original 16-bit DOS compiler, RAND_MAX was 32767, while on today's macOS it's $2^{31} - 1$. The original `#define RANDDIV 54612.0` assumed that smaller maximum, so weight initialisation in the network was scaled incorrectly. Since the weights were so huge, the network never converged. Changing `RANDDIV` to `#define RANDDIV ((double)RAND_MAX / 0.6)` corrected this - I was truly surprised that the code ran. The supplied test case is the same one I used back in 1988, a set of 5 13x15 dot matrix letters (A, V, C, E, T) with 5 output values indicating which letter was recognised (Chapter 7). In the thesis I also had a set of letters with (what now seems minor) noise to test the resilience of the matches. I also "damaged" the saved weight values to demonstrate the impacts of errors on matching performance (Chapter 8).
 
 The "working antique" directory also contains the thesis documents converted from plain TeX. To convert this was more painful than the code! The process was: create a Python script that pre-processed each TeX file converting headings, equations, tables, and references into LaTeX that `pandoc` could then process. Then `pandoc` created a Markdown version. From this, a PDF was generated using `pandoc` that in turn used the `xelatex` PDF engine to bring over the equations.
 
